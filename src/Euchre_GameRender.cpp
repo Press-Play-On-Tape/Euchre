@@ -187,7 +187,7 @@ void Game::renderGame() {
 
 
 
-    // Render ---------------------------------------------------------------------------------------
+    // Render Hands ---------------------------------------------------------------------------------------
 
     // Player 0
 
@@ -263,10 +263,12 @@ void Game::renderGame() {
     }
 
 
+    // Render Played Cards -----------------------------------------------------------------------------------
 
-    // Played cards?
-
-    for (uint8_t i = this->dealer + 1; i < this->dealer + 5; i++) {
+//    for (uint8_t i = this->gameStatus.getCurrentPlayer() + 1; i < this->gameStatus.getCurrentPlayer() + 5; i++) {
+    // printf("First Player %i, ", this->gameStatus.getFirstPlayer());
+    for (uint8_t i = this->gameStatus.getFirstPlayer(); i < this->gameStatus.getFirstPlayer() + 4; i++) {
+    // printf(" %i", (i %4));
 
         if (i % 4 == 0) {
             if (this->gameStatus.getCurrentHand(0).getNumber() != Cards::NoCard) {
@@ -293,6 +295,7 @@ void Game::renderGame() {
         }
 
     }
+    // printf(" \n");
 
 
     // Bid?
@@ -598,7 +601,7 @@ void Game::renderHandOver(uint8_t winner) {
                 break;
 
             case 5:
-                if (this->playAlone) {
+                if (!this->playAlone) {
                     PD::setCursor(40, 125);
                     PD::print("Team Alpha win 2 points.");
                 }
@@ -629,7 +632,7 @@ void Game::renderHandOver(uint8_t winner) {
                 break;
 
             case 5:
-                if (this->playAlone) {
+                if (!this->playAlone) {
                     PD::setCursor(40, 125);
                     PD::print("Team Beta win 2 points.");
                 }

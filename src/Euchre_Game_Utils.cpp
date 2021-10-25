@@ -15,13 +15,13 @@ void Game::incMode() {
                         Constants::BidDialogueDelay, Constants::BidDialogueDelay, Constants::BidDialogueDelay, Constants::BidDialogueDelay,  // Open_Bid_00 ... Open_Bid_03
                         1,                                          // DealerExtraCard
                         0,                                          // StartPlay
-                        4,                                          // Lead Card
-                        8, 6, 7,                                    // Follow_01 - Follow_03
-                        8,
+                        10,                                         // Lead Card
+                        10, 10, 10,                                 // Follow_01 - Follow_03
+                        5,
                         };
 
     this->counter++;
-printf(" incMode(0) %i == %i\n", this->counter, static_cast<uint8_t>(this->gameState));
+//printf(" incMode(0) %i == %i\n", this->counter, delay[static_cast<uint8_t>(this->gameState)]);
     if (this->counter == delay[static_cast<uint8_t>(this->gameState)]) {
 
         if (this->nextState != GameState::None) {
@@ -34,7 +34,7 @@ printf(" to state %i\n", (uint16_t)this->gameState);
         else {
 
 printf(" incMode(2) Transition from state %i", (uint16_t)this->gameState);
-            this->gameState = static_cast<GameState>(static_cast<uint8_t>(this->gameState) + 1);
+            this->gameState++;
 printf(" to state %i\n", (uint16_t)this->gameState);
 
         }
@@ -80,7 +80,7 @@ void Game::handlePlayerBid(uint8_t playerIdx) {
 
             case 0:
                 this->hands[playerIdx].setCallStatus(CallStatus::Pass);
-                this->gameState = static_cast<GameState>(static_cast<uint8_t>(this->gameState) + 1);
+                this->gameState++;
                 this->counter = 0;
                 this->deal++;
                 break;
@@ -92,6 +92,13 @@ void Game::handlePlayerBid(uint8_t playerIdx) {
                 this->counter = 0;
                 this->deal++;
                 this->playAlone = (this->dialogCursor == 2);
+
+                for (uint8_t i = 0; i < 4; i++) {
+
+                    this->hands[i].shuffleHandTrumps(this->gameStatus.getTrumps());
+
+                }
+
                 break;
 
 
@@ -136,34 +143,53 @@ void Game::handlePlayerSecondBid(uint8_t playerIdx) {
         switch (this->dialogCursor) {
 
             case 0:
-                this->hands[playerIdx].setCallStatus(CallStatus::Pass);
-                this->gameState = static_cast<GameState>(static_cast<uint8_t>(this->gameState) + 1);
-                this->counter = 0;
-                this->deal++;
+                if (this->gameState == GameState::Game_Open_Bid_03) {
+
+                    this->gameState = GameState::Game_NewHand_Init;
+
+                }
+                else {
+                    this->hands[playerIdx].setCallStatus(CallStatus::Pass);
+                    this->gameState++;
+                    this->counter = 0;
+                    this->deal++;
+                }
                 break;
 
             case 1:
             case 3:
             case 5:
             case 7:
-printf("Go %i \n", this->dialogCursor);            
                 this->hands[playerIdx].setCallStatus(CallStatus::SecondRound);
                 this->gameState = GameState::Game_StartPlay;
                 this->counter = 0;
                 this->gameStatus.setTrumps(static_cast<CardSuit>((this->dialogCursor - 1) / 2));
                 this->playAlone = false;
+
+                for (uint8_t i = 0; i < 4; i++) {
+
+                    this->hands[i].shuffleHandTrumps(this->gameStatus.getTrumps());
+
+                }
+
                 break;
 
             case 2:
             case 4:
             case 6:
             case 8:
-printf("Alone %i \n", this->dialogCursor);            
                 this->hands[playerIdx].setCallStatus(CallStatus::SecondRound);
                 this->gameState = GameState::Game_StartPlay;
                 this->counter = 0;
                 this->gameStatus.setTrumps(static_cast<CardSuit>((this->dialogCursor - 2) / 2));
                 this->playAlone = true;
+
+                for (uint8_t i = 0; i < 4; i++) {
+
+                    this->hands[i].shuffleHandTrumps(this->gameStatus.getTrumps());
+
+                }
+
                 break;
 
         }
@@ -264,7 +290,6 @@ bool Game::doSecondBid(uint8_t handNumber) {
 
         this->gameStatus.setTrumps(highSuit);
         this->hands[handNumber].setCallStatus(CallStatus::SecondRound);
-        this->nextState = GameState::Game_StartPlay;
 
         return true;
 

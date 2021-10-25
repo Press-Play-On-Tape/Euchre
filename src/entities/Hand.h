@@ -56,7 +56,7 @@ struct Hand {
 
         }
         
-        void sortHand(int n, bool scoringHand, CardSuit suit) {
+        void sortHand(int n, bool scoringHand, CardSuit suit, bool trumpsOnLeft = true) {
 
             uint8_t i, j;
 
@@ -66,9 +66,17 @@ struct Hand {
 
                     if (scoringHand) {
 
-                        if (this->hand[j].getCardValue(suit) < this->hand[j+1].getCardValue(suit)) {
-                            this->swap(j, j + 1);
+                        if (trumpsOnLeft) {
+                            if (this->hand[j].getCardValue(suit) < this->hand[j+1].getCardValue(suit)) {
+                                this->swap(j, j + 1);
+                            }
                         }
+                        else {
+                            if (this->hand[j].getCardValue(suit) > this->hand[j+1].getCardValue(suit)) {
+                                this->swap(j, j + 1);
+                            }
+                        }
+
                     }
                     else {
 
@@ -117,6 +125,12 @@ struct Hand {
         void shuffleHand() {
 
             this->sortHand(this->cardsInHand, false, CardSuit::None);
+
+        } 
+
+        void shuffleHandTrumps(CardSuit trumps) {
+
+            this->sortHand(this->cardsInHand, true, trumps, false);
 
         } 
 

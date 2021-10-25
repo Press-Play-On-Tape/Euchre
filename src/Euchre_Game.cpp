@@ -49,6 +49,7 @@ printf("Game_NewHand_Init -------------------\n");
             this->playAlone = false;
             this->gameState = GameState::Game_NewHand_00;
             this->gameStatus.init();
+            // this->dealer = 3; ///SJH remove
             [[fallthrough]]
 
         case GameState::Game_NewHand_00 ... GameState::Game_NewHand_07:
@@ -127,6 +128,12 @@ print();
                             this->gameStatus.setTrumps(dealerCard.getSuit(CardSuit::None));
                             this->nextState = GameState::Game_DealerExtraCard;
 
+                            for (uint8_t i = 0; i < 4; i++) {
+
+                                this->hands[i].shuffleHandTrumps(this->gameStatus.getTrumps());
+
+                            }
+
                         }
                         else {
 
@@ -161,7 +168,32 @@ print();
                     if (counter == 0) {
     printf("Round Two of Bidding --------------------------------------------------------\n");                    
 
-                        this->doSecondBid((this->dealer + offset) % 4);
+                        if (this->doSecondBid((this->dealer + offset) % 4)) {
+
+                            for (uint8_t i = 0; i < 4; i++) {
+
+                                this->hands[i].shuffleHandTrumps(this->gameStatus.getTrumps());
+
+                            }
+                                                            
+                            this->nextState = GameState::Game_StartPlay;
+
+
+                        }
+                        else {
+                            
+                            if (this->gameState == GameState::Game_Open_Bid_03) {
+                                
+                                this->nextState = GameState::Game_NewHand_Init;
+
+                            }
+                            else {
+                                
+                                this->nextState = GameState::None;
+
+                            }
+
+                        }
 
                     }
 
@@ -181,6 +213,7 @@ print();
 
                     this->hands[0].addCard(this->dealerCard);
                     this->dealerCard.init(Cards::NoCard);
+                    this->hands[0].shuffleHandTrumps(this->gameStatus.getTrumps());
 
                 }
 
@@ -246,34 +279,42 @@ printf("----------------------------------------------------------------------\n
                     card.print();
                     printf(".\n");
 
+                    this->gameStatus.setFirstPlayer(this->gameStatus.getCurrentPlayer());
                     this->gameStatus.incCurrentPlayer();
                     this->gameState = GameState::Game_Follow_01;
                     this->bidCursor = 0;
+                    this->counter = 0;
 
                 }
 
             }   
             else {
 
-                uint8_t i = this->hands[this->gameStatus.getCurrentPlayer()].leadACard(this->gameStatus.getTrumps(), this->gameStatus, this->hands[this->gameStatus.getCurrentPlayer()].isBidWinner(), this->hands[(this->gameStatus.getCurrentPlayer() + 2) % 4].isBidWinner());
-                // printf("Card Selected %i\n", i);
-                Card card = this->hands[this->gameStatus.getCurrentPlayer()].getCard(i);
-                // printf("sdfsdfsdfsdfsdf\n");
-                // printf("Card Selected ");
-                // card.print();
-                // printf(".");
-                this->hands[this->gameStatus.getCurrentPlayer()].removeCard(i);
-// printf("...3a\n");
+                if (this->counter == 0) {
+                    uint8_t i = this->hands[this->gameStatus.getCurrentPlayer()].leadACard(this->gameStatus.getTrumps(), this->gameStatus, this->hands[this->gameStatus.getCurrentPlayer()].isBidWinner(), this->hands[(this->gameStatus.getCurrentPlayer() + 2) % 4].isBidWinner());
+                    // printf("Card Selected %i\n", i);
+                    Card card = this->hands[this->gameStatus.getCurrentPlayer()].getCard(i);
+                    // printf("sdfsdfsdfsdfsdf\n");
+                    // printf("Card Selected ");
+                    // card.print();
+                    // printf(".");
+                    this->hands[this->gameStatus.getCurrentPlayer()].removeCard(i);
+                    this->gameStatus.setFirstPlayer(this->gameStatus.getCurrentPlayer());
+    // printf("...3a\n");
 
-                this->gameStatus.playCard(card);
-// printf("...3b\n");
+                    this->gameStatus.playCard(card);
+    // printf("...3b\n");
 
-                printf("Player %i leads a ", this->gameStatus.getCurrentPlayer());
-                card.print();
-                printf(".\n");
+                    printf("Player %i leads a ", this->gameStatus.getCurrentPlayer());
+                    card.print();
+                    printf(".\n");
 
-                this->gameStatus.incCurrentPlayer();
-                this->gameState = GameState::Game_Follow_01;
+//                    this->gameStatus.incCurrentPlayer();
+                    //this->gameState = GameState::Game_Follow_01;
+
+                }
+
+                this->incMode();
 
             }         
 
@@ -285,96 +326,65 @@ printf("----------------------------------------------------------------------\n
 
             if (this->gameStatus.getCurrentPlayer() == 0) {
 
-                uint8_t selectedCard = this->handlePlayACard(this->gameStatus.getCurrentPlayer(), this->gameStatus.getSuitLed());
+                switch (this->counter) {
 
-                if (selectedCard != Cards::NoCard) {
+                    case 0:
+                        {                        
+                            uint8_t selectedCard = this->handlePlayACard(this->gameStatus.getCurrentPlayer(), this->gameStatus.getSuitLed());
 
-                    Card card = this->hands[this->gameStatus.getCurrentPlayer()].getCard(selectedCard);
-                    this->hands[this->gameStatus.getCurrentPlayer()].removeCard(selectedCard);
-// printf("....1A\n");
-                    this->gameStatus.playCard(card);
-// printf("....1B\n");
+                            if (selectedCard != Cards::NoCard) {
 
-                    printf("Player %i follows with a ", this->gameStatus.getCurrentPlayer());
-                    card.print();
-                    printf(".\n");
-                    printf("GameState: %i\n", (uint16_t)this->gameState);
+                                Card card = this->hands[this->gameStatus.getCurrentPlayer()].getCard(selectedCard);
+                                this->hands[this->gameStatus.getCurrentPlayer()].removeCard(selectedCard);
+            // printf("....1A\n");
+                                this->gameStatus.playCard(card);
+            // printf("....1B\n");
 
-                    this->gameStatus.incCurrentPlayer();
-                    this->bidCursor = 0;
+                                printf("Player %i follows with a ", this->gameStatus.getCurrentPlayer());
+                                card.print();
+                                printf(".\n");
+                                printf("GameState: %i\n", (uint16_t)this->gameState);
 
-                    if (this->gameState == GameState::Game_Follow_03) {
-printf("Ypu pressed a key\n");
-                        uint8_t winner = this->gameStatus.whoWon();
-                        printf("Player %i wins.\n", winner);
-                        this->gameStatus.incTricks(winner);
-                        
-                        if (this->hands[0].getCardsInHand() > 0) {
+                                // this->gameStatus.incCurrentPlayer();
+                                this->bidCursor = 0;
 
-                            if (winner == 0 || winner == 2) {
+                                if (this->gameState == GameState::Game_Follow_03) {
+            printf("Ypu pressed a key\n");
+                                    uint8_t winner = this->gameStatus.whoWon();
+                                    printf("Player %i wins.\n", winner);
+                                    this->gameStatus.incTricks(winner);
+                                    
+                                    if (this->hands[0].getCardsInHand() > 0) {
 
-                                switch (this->gameStatus.getTricks0and2()) {
+                                        // this->counter = 0;
+                                        printf("this->nextState = GameState::Game_EndOfTrick;\n");
+                                        this->nextState = GameState::Game_EndOfTrick;
 
-                                    case 0 ... 2:
-                                        this->gameStatus.incHands((winner + 1) % 4, 2);
-                                        break;
+                                    }
+                                    else {
+                                        printf("this->nextState = GameState::Game_EndOfHand;\n");
+                                        this->nextState = GameState::Game_EndOfHand;
+                                    }
 
-                                    case 3 ... 4:
-                                        this->gameStatus.incHands(winner, 1);
-                                        break;
+                                }
+                                else {
 
-                                    case 5:
-                                        if (this->playAlone) {
-                                            this->gameStatus.incHands(winner, 2);
-                                        }
-                                        else {
-                                            this->gameStatus.incHands(winner, 4);
-                                        }
-                                        break;
+                                    printf("GameState: %i, this->nextState = none;\n ", (uint16_t)this->gameState);                        
+                                    this->nextState = GameState::None;
 
-                                }                
+                                }
 
-                            }
-
-                            if (winner == 1 || winner == 3) {
-
-                                switch (this->gameStatus.getTricks1and3()) {
-
-                                    case 0 ... 2:
-                                        this->gameStatus.incHands((winner + 1) % 4, 2);
-                                        break;
-
-                                    case 3 ... 4:
-                                        this->gameStatus.incHands(winner, 1);
-                                        break;
-
-                                    case 5:
-                                        if (this->playAlone) {
-                                            this->gameStatus.incHands(winner, 2);
-                                        }
-                                        else {
-                                            this->gameStatus.incHands(winner, 4);
-                                        }
-                                        break;
-
-                                }                
+                                this->counter = 1;
 
                             }
-                            
-                            this->gameState = GameState::Game_EndOfTrick;
-                        }
-                        else {
-                            printf("this->gameState = GameState::Game_EndOfHand;\n");
-                            this->gameState = GameState::Game_EndOfHand;
-                        }
 
-                    }
-                    else {
+                        }
+                        break;
 
-                        printf("GameState: %i, this->gameState++;\n ", (uint16_t)this->gameState);                        
-                        this->gameState++;
-                        this->counter = 0;//SJH??
-                    }
+                    default:
+                        this->incMode();
+                        break;
+
 
                 }
 
@@ -404,6 +414,7 @@ printf("----------------------------------------------------------------------\n
                         this->gameStatus.incTricks(winner);
 
                         if (this->hands[0].getCardsInHand() > 0) {
+                            this->counter = 0;
                             this->nextState = GameState::Game_EndOfTrick;
                         }
                         else {
@@ -420,7 +431,7 @@ printf("----------------------------------------------------------------------\n
 
                 }
 
-printf("this->counter %i\n", this->counter);
+// printf("this->counter %i\n", this->counter);
                 this->incMode();
 
             }
@@ -428,6 +439,64 @@ printf("this->counter %i\n", this->counter);
             break;
 
         case GameState::Game_EndOfTrick:
+
+            if (this->counter == 0) {
+
+                this->counter = 1;
+                uint8_t winner = this->gameStatus.whoWon();
+
+                if (winner == 0 || winner == 2) {
+
+                    switch (this->gameStatus.getTricks0and2()) {
+
+                        case 0 ... 2:
+                            this->gameStatus.incHands((winner + 1) % 4, 2);
+                            break;
+
+                        case 3 ... 4:
+                            this->gameStatus.incHands(winner, 1);
+                            break;
+
+                        case 5:
+                            if (!this->playAlone) {
+                                this->gameStatus.incHands(winner, 2);
+                            }
+                            else {
+                                this->gameStatus.incHands(winner, 4);
+                            }
+                            break;
+
+                    }                
+
+                }
+
+                if (winner == 1 || winner == 3) {
+
+                    switch (this->gameStatus.getTricks1and3()) {
+
+                        case 0 ... 2:
+                            this->gameStatus.incHands((winner + 1) % 4, 2);
+                            break;
+
+                        case 3 ... 4:
+                            this->gameStatus.incHands(winner, 1);
+                            break;
+
+                        case 5:
+                            if (!this->playAlone) {
+                                this->gameStatus.incHands(winner, 2);
+                            }
+                            else {
+                                this->gameStatus.incHands(winner, 4);
+                            }
+                            break;
+
+                    }                
+
+                }
+
+            }
+
 
             if (PC::buttons.pressed(BTN_A)) { 
 printf("case GameState::Game_EndOfTrick:\n");                
@@ -443,6 +512,7 @@ printf("case GameState::Game_EndOfTrick:\n");
                     this->gameState = GameState::Game_LeadCard;
                     this->dialogCursor = 0;
                     this->text = nullptr;
+                    this->counter = 0;
 
                 }
 

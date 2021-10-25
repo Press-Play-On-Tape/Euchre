@@ -15,6 +15,7 @@ struct GameStatus {
         CardSuit suitLed;
         CardSuit trumps = CardSuit::None;
 
+        uint8_t firstPlayer;
         uint8_t currentPlayer;
         uint8_t lastPlayerIdx;
         uint8_t numberOfPlayers;
@@ -28,8 +29,10 @@ struct GameStatus {
 
     public:
 
+        uint8_t getFirstPlayer()                                                { return this->firstPlayer; }    
         uint8_t getCurrentPlayer()                                              { return this->currentPlayer; }    
         uint8_t getLastPlayerIdx()                                              { return this->lastPlayerIdx; }    
+
         uint8_t getTricks(uint8_t playerIdx)                                    { return this->tricks[playerIdx]; }    
         uint8_t getTricks0and2()                                                { return this->tricks[0] + this->tricks[2]; }    
         uint8_t getTricks1and3()                                                { return this->tricks[1] + this->tricks[3]; }    
@@ -47,7 +50,9 @@ struct GameStatus {
         bool getHasBeenPlayed(Card card)                                        { return this->hasBeenPlayed[static_cast<uint8_t>(card.getSuit(CardSuit::None))][card.getNumber()]; }
         Card getCurrentHand(uint8_t playerIdx)                                  { return this->currentHand[playerIdx]; }
 
+        void setFirstPlayer(uint8_t val)                                        { this->firstPlayer = val; }
         void setCurrentPlayer(uint8_t val)                                      { this->currentPlayer = val; }
+        
         void setTrumps(CardSuit val)                                            { this->trumps = val; }
         void setNumberOfPlayers(uint8_t val)                                    { this->numberOfPlayers = val; }
         void setShowHands(bool val)                                             { this->showHands = val; }
