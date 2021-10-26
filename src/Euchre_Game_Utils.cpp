@@ -60,7 +60,7 @@ void Game::print() {
 
 }
 
-void Game::handlePlayerBid(uint8_t playerIdx) {
+bool Game::handlePlayerBid(uint8_t playerIdx) {
 
     if (PC::buttons.pressed(BTN_LEFT) && this->dialogCursor > 0) { 
 
@@ -80,18 +80,18 @@ void Game::handlePlayerBid(uint8_t playerIdx) {
 
             case 0:
                 this->hands[playerIdx].setCallStatus(CallStatus::Pass);
-                this->gameState++;
+                this->nextState = GameState::None;
                 this->counter = 0;
                 this->deal++;
-                break;
+                return true;
 
             case 1 ... 2:
                 this->hands[playerIdx].setCallStatus(CallStatus::FirstRound);
-                this->gameState = GameState::Game_DealerExtraCard;
+                this->nextState = GameState::Game_DealerExtraCard;
                 this->gameStatus.setTrumps(this->dealerCard.getSuit(CardSuit::None));
+                this->gameStatus.setPlayAlone(this->dialogCursor == 2);
                 this->counter = 0;
                 this->deal++;
-                this->playAlone = (this->dialogCursor == 2);
 
                 for (uint8_t i = 0; i < 4; i++) {
 
@@ -99,12 +99,14 @@ void Game::handlePlayerBid(uint8_t playerIdx) {
 
                 }
 
-                break;
+                return true;
 
 
         }
 
     } 
+
+    return false;
 
 }
 
@@ -164,7 +166,7 @@ void Game::handlePlayerSecondBid(uint8_t playerIdx) {
                 this->gameState = GameState::Game_StartPlay;
                 this->counter = 0;
                 this->gameStatus.setTrumps(static_cast<CardSuit>((this->dialogCursor - 1) / 2));
-                this->playAlone = false;
+                this->gameStatus.setPlayAlone(false);
 
                 for (uint8_t i = 0; i < 4; i++) {
 
@@ -182,7 +184,7 @@ void Game::handlePlayerSecondBid(uint8_t playerIdx) {
                 this->gameState = GameState::Game_StartPlay;
                 this->counter = 0;
                 this->gameStatus.setTrumps(static_cast<CardSuit>((this->dialogCursor - 2) / 2));
-                this->playAlone = true;
+                this->gameStatus.setPlayAlone(true);
 
                 for (uint8_t i = 0; i < 4; i++) {
 

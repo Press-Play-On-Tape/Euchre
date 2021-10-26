@@ -28,12 +28,11 @@ class Game {
 
         uint8_t counter;
         uint8_t deal;
-        uint8_t dealer;
         uint8_t threshold;
         uint8_t bidCursor;
         uint8_t dialogCursor;
         Card dealerCard;
-        bool playAlone = false;
+        
 
         const uint8_t *text = nullptr;
 
@@ -54,7 +53,7 @@ class Game {
         
         void incMode();
         void print();
-        void handlePlayerBid(uint8_t playerIdx);
+        bool handlePlayerBid(uint8_t playerIdx);
         void handlePlayerSecondBid(uint8_t playerIdx);  
         uint8_t handleDiscardACard(uint8_t playerIdx);  
         uint8_t handlePlayACard(uint8_t playerIdx, CardSuit suitLed = CardSuit::None);  

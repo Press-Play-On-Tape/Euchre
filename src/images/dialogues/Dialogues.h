@@ -59,6 +59,8 @@ namespace Images {
     #include "selection/StickIt_Selected.h"
     #include "selection/ShowAll.h"
     #include "selection/ShowAll_Selected.h"
+    #include "selection/ShowWinner.h"
+    #include "selection/ShowWinner_Selected.h"
 
     #include "selection/Seat_Bot.h"
     #include "selection/Seat_Bot_Disabled.h"
@@ -78,6 +80,13 @@ namespace Images {
     #include "selection/Position3.h"
     #include "selection/Position3_Selected.h"
     #include "selection/Position3_Disabled.h"
+
+    #include "endOfGame/EOG_01.h"
+    #include "endOfGame/EOG_02.h"
+    #include "endOfGame/EOG_04.h"
+    #include "endOfGame/Euchre.h"
+    #include "endOfGame/TeamAlpha.h"
+    #include "endOfGame/TeamBeta.h"
 
     const uint8_t * const Text_Suits_Team[] = { 
         Text_Spades_Team,

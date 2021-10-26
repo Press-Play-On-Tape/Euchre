@@ -19,8 +19,12 @@ struct GameStatus {
         uint8_t currentPlayer;
         uint8_t lastPlayerIdx;
         uint8_t numberOfPlayers;
+        uint8_t dealer;
+
         bool stickIt = false;
         bool showHands = true;
+        bool showWinner = true;
+        bool playAlone = false;
 
         uint8_t tricks[4] = { 0, 0, 0, 0 };
         uint8_t points0and2 = 0;
@@ -40,8 +44,13 @@ struct GameStatus {
         uint8_t getPoints1and3()                                                { return this->points1and3; }    
         uint8_t getNumberOfPlayers()                                            { return this->numberOfPlayers; }    
         uint8_t getPlayer2Pos()                                                 { return this->player2Pos; }    
+        uint8_t getDealer()                                                     { return this->dealer; }    
+
         bool getShowHands()                                                     { return this->showHands; }    
         bool getStickIt()                                                       { return this->stickIt; }    
+        bool getShowWinner()                                                    { return this->showWinner; }    
+        bool getPlayAlone()                                                     { return this->playAlone; }    
+
         CardSuit getSuitLed()                                                   { return this->suitLed; }    
         CardSuit getTrumps()                                                    { return this->trumps; }    
 
@@ -55,9 +64,13 @@ struct GameStatus {
         
         void setTrumps(CardSuit val)                                            { this->trumps = val; }
         void setNumberOfPlayers(uint8_t val)                                    { this->numberOfPlayers = val; }
+        void setPlayer2Pos(uint8_t val)                                         { this->player2Pos = val; }
+        void setDealer(uint8_t val)                                             { this->dealer = val; }
+
         void setShowHands(bool val)                                             { this->showHands = val; }
         void setStickIt(bool val)                                               { this->stickIt = val; }
-        void setPlayer2Pos(uint8_t val)                                         { this->player2Pos = val; }
+        void setShowWinner(bool val)                                            { this->showWinner = val; }
+        void setPlayAlone(bool val)                                             { this->playAlone = val; }
 
         void setHasSuit(uint8_t playerIdx, CardSuit suit, HasSuit val)          { this->hasSuit[playerIdx][static_cast<uint8_t>(suit)] = val; }
         void setHasBeenPlayed(CardSuit suit, uint8_t cardIndex, bool val)       { this->hasBeenPlayed[static_cast<uint8_t>(suit)][cardIndex] = val; }
@@ -83,6 +96,7 @@ struct GameStatus {
 
                 this->currentHand[i].init(Cards::NoCard);
                 this->tricks[i] = 0;
+                this->playAlone = false;
 
             }
 

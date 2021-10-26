@@ -56,6 +56,10 @@ void Game::selection() {
                 break;
 
             case 6:
+                this->gameStatus.setShowWinner(!this->gameStatus.getShowWinner());
+                break;
+
+            case 7:
                 this->gameStatus.setShowHands(!this->gameStatus.getShowHands());
                 break;
 
@@ -79,8 +83,8 @@ void Game::selection() {
                 this->dialogCursor = this->bidCursor;
                 break;
 
-            case 6:
-                this->dialogCursor = 5;
+            case 6 ... 7:
+                this->dialogCursor--;
                 break;
 
             default: break;
@@ -108,8 +112,8 @@ void Game::selection() {
                 this->dialogCursor = 5;
                 break;
 
-            case 5:
-                this->dialogCursor = 6;
+            case 5 ... 6:
+                this->dialogCursor++;
                 break;
 
             default: break;
@@ -188,12 +192,21 @@ void Game::selection() {
     }
 
     if (this->dialogCursor != 6) {  
-        PD::drawBitmap(10, 154, this->gameStatus.getShowHands() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-        PD::drawBitmap(19, 154, Images::ShowAll);
+        PD::drawBitmap(10, 153, this->gameStatus.getShowWinner() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
+        PD::drawBitmap(19, 153, Images::ShowWinner);
     }
     else {
-        PD::drawBitmap(10, 154, this->gameStatus.getShowHands() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-        PD::drawBitmap(19, 154, Images::ShowAll_Selected);
+        PD::drawBitmap(10, 153, this->gameStatus.getShowWinner() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
+        PD::drawBitmap(19, 153, Images::ShowWinner_Selected);
+    }
+
+    if (this->dialogCursor != 7) {  
+        PD::drawBitmap(10, 166, this->gameStatus.getShowHands() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
+        PD::drawBitmap(19, 166, Images::ShowAll);
+    }
+    else {
+        PD::drawBitmap(10, 166, this->gameStatus.getShowHands() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
+        PD::drawBitmap(19, 166, Images::ShowAll_Selected);
     }
 
     if (this->gameStatus.getNumberOfPlayers() == 2) {
