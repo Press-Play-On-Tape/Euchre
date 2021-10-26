@@ -249,7 +249,7 @@ void Game::renderGame() {
                 case GameState::Game_StartPlay ... GameState::Game_EndOfHand:
                     PD::drawBitmap(110 + (x0 / 2) + 1, 165 - (this->gameStatus.getDealer() == 0 ? 10 : 0), Images::Tricks_Bot[this->gameStatus.getTricks(0)]); 
                     PD::drawBitmap(2 + (this->gameStatus.getDealer() == 1 ? 10 : 0), (88 + (y1 / 2)) + 1, Images::Tricks_Left[this->gameStatus.getTricks(1)]);
-                    PD::drawBitmap(110 - (x2 / 2) - 11, 2 + (this->gameStatus.getDealer() == 2 ? 10 : 0), Images::Tricks_Top[this->gameStatus.getTricks(2)]);
+                    PD::drawBitmap(110 - (x2 / 2) - 12, 2 + (this->gameStatus.getDealer() == 2 ? 10 : 0), Images::Tricks_Top[this->gameStatus.getTricks(2)]);
                     PD::drawBitmap(209 - (this->gameStatus.getDealer() == 3 ? 10 : 0), (88 - (y3 / 2)) - 11, Images::Tricks_Right[this->gameStatus.getTricks(3)]);
                     break;
 
