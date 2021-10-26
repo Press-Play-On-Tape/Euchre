@@ -275,10 +275,7 @@ void Game::renderGame() {
 
     // Render Played Cards -----------------------------------------------------------------------------------
 
-//    for (uint8_t i = this->gameStatus.getCurrentPlayer() + 1; i < this->gameStatus.getCurrentPlayer() + 5; i++) {
-    // printf("First Player %i, ", this->gameStatus.getFirstPlayer());
     for (uint8_t i = this->gameStatus.getFirstPlayer(); i < this->gameStatus.getFirstPlayer() + 4; i++) {
-    // printf(" %i", (i %4));
 
         if (i % 4 == 0) {
             if (this->gameStatus.getCurrentHand(0).getNumber() != Cards::NoCard) {
@@ -305,7 +302,6 @@ void Game::renderGame() {
         }
 
     }
-    // printf(" \n");
 
 
     // Bid?
@@ -343,7 +339,7 @@ void Game::renderGame() {
 
         case GameState::Game_DealerExtraCard:
             this->renderFinalBid();
-            this->renderSoreboard(Constants::AllWinners, true, true);
+            this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
             this->renderTrumps(this->gameStatus.getTrumps());
             if (this->gameStatus.getDealer() % 4 == 0) { 
                 this->renderDiscardACard(); 
@@ -352,7 +348,7 @@ void Game::renderGame() {
 
         case GameState::Game_LeadCard ... GameState::Game_Follow_03:
             this->renderFinalBid();
-            this->renderSoreboard(Constants::AllWinners, true, true);
+            this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
             this->renderTrumps(this->gameStatus.getTrumps());
             if (this->gameStatus.getCurrentPlayer() == 0) { 
                 this->renderPlayACard(); 
@@ -363,7 +359,7 @@ void Game::renderGame() {
             {
                 uint8_t winner = this->gameStatus.whoWon();
                 this->renderFinalBid();
-                this->renderSoreboard(winner, PC::frameCount % 32 < 16, true);
+                this->renderSoreboard(winner, Constants::AllWinners, PC::frameCount % 32 < 16, true);
                 this->renderTrumps(this->gameStatus.getTrumps());
                 this->renderTrickOver(winner);
             }
@@ -371,18 +367,19 @@ void Game::renderGame() {
 
         case GameState::Game_EndOfHand:
             {
-                uint8_t winner = 0;
+                uint8_t pointsWinner = 0;
+                uint8_t trickWinner = this->gameStatus.whoWon();
 
                 if (this->bidWinner() == 0 || this->bidWinner() == 2) {
 
                     switch (this->gameStatus.getTricks0and2()) {
 
                         case 0 ... 2:
-                            winner = 1;
+                            pointsWinner = 1;
                             break;
 
                         default:
-                            winner = 0;
+                            pointsWinner = 0;
                             break;
 
                     }                
@@ -394,20 +391,20 @@ void Game::renderGame() {
                     switch (this->gameStatus.getTricks1and3()) {
 
                         case 0 ... 2:
-                            winner = 0;
+                            pointsWinner = 0;
                             break;
 
                         default:
-                            winner = 1;
+                            pointsWinner = 1;
                             break;
 
                     }                
 
                 }
 
-                this->renderSoreboard(winner, true, PC::frameCount % 32 < 16);
+                this->renderSoreboard(trickWinner, pointsWinner, PC::frameCount % 32 < 16, PC::frameCount % 32 < 16);
                 this->renderTrumps(this->gameStatus.getTrumps());
-                this->renderHandOver(winner);
+                this->renderHandOver(pointsWinner);
             }
             break;
 
@@ -419,15 +416,15 @@ void Game::renderGame() {
 
 }
 
-void Game::renderSoreboard(uint8_t winner, bool showTrick, bool showHand) {
+void Game::renderSoreboard(uint8_t tricksWinner, uint8_t pointsWinner, bool showTrick, bool showHand) {
 
     // Score board ..
-
+printf("trick %i, points %i\n", tricksWinner, pointsWinner);
     PD::drawBitmap(166, 0, Images::Scoreboard);
-    if (winner == Constants::AllWinners || ((winner == 0 || winner == 2) && showTrick) || winner == 1 || winner == 3) PD::drawBitmap(195, 1, Images::Tricks_Bot[this->gameStatus.getTricks0and2()]);
-    if (winner == Constants::AllWinners || ((winner == 0 || winner == 2) && showHand) || winner == 1 || winner == 3) PD::drawBitmap(206, 1, Images::Hands_Bot[this->gameStatus.getPoints0and2()]);
-    if (winner == Constants::AllWinners || ((winner == 1 || winner == 3) && showTrick) || winner == 0 || winner == 2) PD::drawBitmap(195, 11, Images::Tricks_Bot[this->gameStatus.getTricks1and3()]);
-    if (winner == Constants::AllWinners || ((winner == 1 || winner == 3) && showHand) || winner == 0 || winner == 2) PD::drawBitmap(206, 11, Images::Hands_Bot[this->gameStatus.getPoints1and3()]);
+    if (tricksWinner == Constants::AllWinners || ((tricksWinner == 0 || tricksWinner == 2) && showTrick) || tricksWinner == 1 || tricksWinner == 3) PD::drawBitmap(195, 1, Images::Tricks_Bot[this->gameStatus.getTricks0and2()]);
+    if (pointsWinner == Constants::AllWinners || ((pointsWinner == 0 || pointsWinner == 2) && showHand)  || pointsWinner == 1 || pointsWinner == 3) PD::drawBitmap(206, 1, Images::Hands_Bot[this->gameStatus.getPoints0and2()]);
+    if (tricksWinner == Constants::AllWinners || ((tricksWinner == 1 || tricksWinner == 3) && showTrick) || tricksWinner == 0 || tricksWinner == 2) PD::drawBitmap(195, 11, Images::Tricks_Bot[this->gameStatus.getTricks1and3()]);
+    if (pointsWinner == Constants::AllWinners || ((pointsWinner == 1 || pointsWinner == 3) && showHand)  || pointsWinner == 0 || pointsWinner == 2) PD::drawBitmap(206, 11, Images::Hands_Bot[this->gameStatus.getPoints1and3()]);
 
 }
 

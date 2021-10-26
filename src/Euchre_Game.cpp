@@ -43,6 +43,7 @@ printf("Game_NewHand_Init -------------------\n");
 
             this->print();
 
+            this->upperThreshold = 240;
             this->threshold = 160;
             this->bidCursor = 0;
             this->dialogCursor = 0;
@@ -130,10 +131,25 @@ print();
 
                     if (counter == 0) {
 
-                        if (this->hands[(this->gameStatus.getDealer() + offset) % 4].bid(this->dealerCard.getSuit(CardSuit::None), this->dealerCard, false) > this->threshold) {
+                        if (this->hands[(this->gameStatus.getDealer() + offset) % 4].bid(this->dealerCard.getSuit(CardSuit::None), this->dealerCard, false) > this->upperThreshold) {
 
                             this->hands[(this->gameStatus.getDealer() + offset) % 4].setCallStatus(CallStatus::FirstRound);
                             this->gameStatus.setTrumps(dealerCard.getSuit(CardSuit::None));
+                            this->gameStatus.setPlayAlone(true);
+                            this->nextState = GameState::Game_DealerExtraCard;
+
+                            for (uint8_t i = 0; i < 4; i++) {
+
+                                this->hands[i].shuffleHandTrumps(this->gameStatus.getTrumps());
+
+                            }
+
+                        }
+                        else if (this->hands[(this->gameStatus.getDealer() + offset) % 4].bid(this->dealerCard.getSuit(CardSuit::None), this->dealerCard, false) > this->threshold) {
+
+                            this->hands[(this->gameStatus.getDealer() + offset) % 4].setCallStatus(CallStatus::FirstRound);
+                            this->gameStatus.setTrumps(dealerCard.getSuit(CardSuit::None));
+                            this->gameStatus.setPlayAlone(false);
                             this->nextState = GameState::Game_DealerExtraCard;
 
                             for (uint8_t i = 0; i < 4; i++) {

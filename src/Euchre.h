@@ -28,6 +28,7 @@ class Game {
 
         uint8_t counter;
         uint8_t deal;
+        uint8_t upperThreshold;
         uint8_t threshold;
         uint8_t bidCursor;
         uint8_t dialogCursor;
@@ -65,7 +66,7 @@ class Game {
         void renderPlayerSecondBid();
         void renderDiscardACard();
         void renderPlayACard();
-        void renderSoreboard(uint8_t winner, bool showTrick, bool showHand);
+        void renderSoreboard(uint8_t tricksWinner, uint8_t pointsWinner, bool showTrick, bool showHand);
         void renderTrumps(CardSuit trumps);
         bool doSecondBid(uint8_t handNumber);
         void renderSuit(CardSuit suit);

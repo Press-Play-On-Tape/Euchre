@@ -26,16 +26,16 @@ void Game::incMode() {
 
         if (this->nextState != GameState::None) {
 
-printf(" incMode(1) Transition from state %i", (uint16_t)this->gameState);
+// printf(" incMode(1) Transition from state %i", (uint16_t)this->gameState);
             this->gameState = this->nextState;
             this->nextState = GameState::None;
-printf(" to state %i\n", (uint16_t)this->gameState);
+// printf(" to state %i\n", (uint16_t)this->gameState);
         }
         else {
 
-printf(" incMode(2) Transition from state %i", (uint16_t)this->gameState);
+// printf(" incMode(2) Transition from state %i", (uint16_t)this->gameState);
             this->gameState++;
-printf(" to state %i\n", (uint16_t)this->gameState);
+// printf(" to state %i\n", (uint16_t)this->gameState);
 
         }
 
@@ -269,7 +269,7 @@ bool Game::doSecondBid(uint8_t handNumber) {
     uint16_t clubs =     this->hands[handNumber].bid(CardSuit::Clubs);
     uint16_t spades =    this->hands[handNumber].bid(CardSuit::Spades);
 
-    printf("Hand %i, H: %i, D: %i, S: %i, C%i\n", handNumber, hearts, diamonds, spades, clubs);
+    printf("Hand %i, H: %i, D: %i, S: %i, C: %i\n", handNumber, hearts, diamonds, spades, clubs);
 
     CardSuit highSuit = CardSuit::Hearts;
     uint16_t highScore = hearts;
@@ -288,9 +288,19 @@ bool Game::doSecondBid(uint8_t handNumber) {
         highScore = spades;
     }
 
-    if (highScore > this->threshold) {
+    if (highScore > this->upperThreshold) {
 
         this->gameStatus.setTrumps(highSuit);
+        this->gameStatus.setPlayAlone(true);
+        this->hands[handNumber].setCallStatus(CallStatus::SecondRound);
+
+        return true;
+
+    }
+    else if (highScore > this->threshold) {
+
+        this->gameStatus.setTrumps(highSuit);
+        this->gameStatus.setPlayAlone(false);
         this->hands[handNumber].setCallStatus(CallStatus::SecondRound);
 
         return true;
