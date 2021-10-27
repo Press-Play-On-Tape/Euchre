@@ -43,8 +43,8 @@ printf("Game_NewHand_Init -------------------\n");
 
             this->print();
 
-            this->upperThreshold = 240;
-            this->threshold = 160;
+            this->upperThreshold = 80;
+            this->threshold = 75;
             this->bidCursor = 0;
             this->dialogCursor = 0;
             this->gameState = GameState::Game_NewHand_00;
@@ -131,7 +131,7 @@ print();
 
                     if (counter == 0) {
 
-                        if (this->hands[(this->gameStatus.getDealer() + offset) % 4].bid(this->dealerCard.getSuit(CardSuit::None), this->dealerCard, false) > this->upperThreshold) {
+                        if ((this->gameStatus.getDealer() + offset) % 4 != 2 && this->hands[(this->gameStatus.getDealer() + offset) % 4].bid(this->dealerCard.getSuit(CardSuit::None), this->dealerCard, false) > this->upperThreshold) {
 
                             this->hands[(this->gameStatus.getDealer() + offset) % 4].setCallStatus(CallStatus::FirstRound);
                             this->gameStatus.setTrumps(dealerCard.getSuit(CardSuit::None));
@@ -267,11 +267,20 @@ print();
 
 
         case GameState::Game_StartPlay:
+
             this->gameState++;
             this->gameStatus.initHand((this->gameStatus.getDealer() + 1) % 4);
             this->dialogCursor = 0;
             this->dealerCard.init(Cards::NoCard);
             this->counter = 0;
+
+            if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
+
+                this->gameState++;
+                this->gameStatus.incCurrentPlayer();
+
+            }
+
             [[fallthrough]]       
 
 
@@ -305,9 +314,21 @@ printf("----------------------------------------------------------------------\n
 
                     this->gameStatus.setFirstPlayer(this->gameStatus.getCurrentPlayer());
                     this->gameStatus.incCurrentPlayer();
-                    this->gameState = GameState::Game_Follow_01;
                     this->bidCursor = 0;
                     this->counter = 0;
+
+                    if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
+
+                        this->gameState = GameState::Game_Follow_02;
+                        this->gameStatus.incCurrentPlayer();
+                        
+                    }
+                    else {
+
+                        this->gameState = GameState::Game_Follow_01;
+
+                    }
+
 
                 }
 
@@ -315,7 +336,7 @@ printf("----------------------------------------------------------------------\n
             else {
 
                 if (this->counter == 0) {
-                    uint8_t i = this->hands[this->gameStatus.getCurrentPlayer()].leadACard(this->gameStatus.getTrumps(), this->gameStatus, this->hands[this->gameStatus.getCurrentPlayer()].isBidWinner(), this->hands[(this->gameStatus.getCurrentPlayer() + 2) % 4].isBidWinner());
+                    uint8_t i = this->hands[this->gameStatus.getCurrentPlayer()].leadACard(this->gameStatus.getTrumps(), this->gameStatus, this->hands[this->gameStatus.getCurrentPlayer()].isBidWinner(), this->hands[(this->gameStatus.getCurrentPlayer() + 2) % 4].isBidWinner(), this->hands[this->gameStatus.getCurrentPlayer()].isBidWinner() && this->gameStatus.getPlayAlone());
                     // printf("Card Selected %i\n", i);
                     Card card = this->hands[this->gameStatus.getCurrentPlayer()].getCard(i);
                     // printf("sdfsdfsdfsdfsdf\n");
@@ -332,9 +353,6 @@ printf("----------------------------------------------------------------------\n
                     printf("Player %i leads a ", this->gameStatus.getCurrentPlayer());
                     card.print();
                     printf(".\n");
-
-//                    this->gameStatus.incCurrentPlayer();
-                    //this->gameState = GameState::Game_Follow_01;
 
                 }
 

@@ -59,6 +59,7 @@ class Game {
         uint8_t handleDiscardACard(uint8_t playerIdx);  
         uint8_t handlePlayACard(uint8_t playerIdx, CardSuit suitLed = CardSuit::None);  
         uint8_t bidWinner();
+        bool isPlayingThisHand(uint8_t playerIdx);
 
         void renderGame();
         void renderBids();

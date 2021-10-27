@@ -436,7 +436,7 @@ struct Hand {
 
         }
 
-        uint8_t leadACard(CardSuit trumps, GameStatus &gameStatus, bool isBidWinner, bool isBidWinnerAlt) {
+        uint8_t leadACard(CardSuit trumps, GameStatus &gameStatus, bool isBidWinner, bool isBidWinnerAlt, bool playingAlone) {
 
             uint8_t maybeScore = 0;
             uint8_t maybeIndex = Cards::NoCard;
@@ -499,7 +499,7 @@ struct Hand {
 
                 // Lead a small trump if partner has any ..
 
-                if (gameStatus.getHasSuit((this->handNumber + 2) % 4, trumps) != HasSuit::False) {
+                if (!playingAlone && gameStatus.getHasSuit((this->handNumber + 2) % 4, trumps) != HasSuit::False) {
                     
                     for (uint8_t cardValue = 9; cardValue < Cards::Ten; cardValue++) {
 
@@ -520,17 +520,21 @@ struct Hand {
 
 
                 // Lead a small non-trump if partner has any ..
-                    
-                for (uint8_t cardValue = Cards::Nine; cardValue < Cards::Ten; cardValue++) {
 
-                    for (uint8_t i = 0; i < this->cardsInHand; i++) {
+                if (!playingAlone) {
 
-                        if (this->hand[i].getSuit(trumps) != trumps && this->hand[i].getNumber() == cardValue) {
+                    for (uint8_t cardValue = Cards::Nine; cardValue < Cards::Ten; cardValue++) {
 
-                            if (gameStatus.getHasSuit((this->handNumber + 2) % 4, this->hand[i].getSuit(trumps)) != HasSuit::False) {
+                        for (uint8_t i = 0; i < this->cardsInHand; i++) {
 
-//LEAD printf("leadACard 4 - bid winner, small non-trump\n");
-                                return i;
+                            if (this->hand[i].getSuit(trumps) != trumps && this->hand[i].getNumber() == cardValue) {
+
+                                if (gameStatus.getHasSuit((this->handNumber + 2) % 4, this->hand[i].getSuit(trumps)) != HasSuit::False) {
+
+    //LEAD printf("leadACard 4 - bid winner, small non-trump\n");
+                                    return i;
+
+                                }
 
                             }
 
@@ -570,19 +574,23 @@ struct Hand {
 
                 // Lead an off-suit King? But only if the Ace has been played or your partner may have it ..
 
-                for (uint8_t i = 0; i < this->cardsInHand; i++) {
+                if (!playingAlone) {
+                        
+                    for (uint8_t i = 0; i < this->cardsInHand; i++) {
 
-                    if (this->hand[i].getSuit(trumps) != trumps && this->hand[i].getNumber() == Cards::King) {
+                        if (this->hand[i].getSuit(trumps) != trumps && this->hand[i].getNumber() == Cards::King) {
 
-                        Card card;
-                        card.init(this->hand[i].getSuit(trumps), Cards::Ace);
+                            Card card;
+                            card.init(this->hand[i].getSuit(trumps), Cards::Ace);
 
-                        if (gameStatus.getHasBeenPlayed(card) || gameStatus.getHasSuit((this->handNumber + 2) % 4, this->hand[i].getSuit(trumps)) != HasSuit::False) {
+                            if (gameStatus.getHasBeenPlayed(card) || gameStatus.getHasSuit((this->handNumber + 2) % 4, this->hand[i].getSuit(trumps)) != HasSuit::False) {
 
-                            if (this->evaluatePlay(gameStatus, trumps, i, maybeScore, maybeIndex, 8, 15) != Cards::NoCard) {
+                                if (this->evaluatePlay(gameStatus, trumps, i, maybeScore, maybeIndex, 8, 15) != Cards::NoCard) {
 
-//LEAD printf("leadACard 6 - non-bid winner, off suit K\n");
-                                return i;
+    //LEAD printf("leadACard 6 - non-bid winner, off suit K\n");
+                                    return i;
+
+                                }
 
                             }
 
@@ -592,6 +600,34 @@ struct Hand {
 
                 }
 
+
+                // Lead an off-suit King? But only if the Ace has been played (playing alone) ..
+
+                if (!playingAlone) {
+                        
+                    for (uint8_t i = 0; i < this->cardsInHand; i++) {
+
+                        if (this->hand[i].getSuit(trumps) != trumps && this->hand[i].getNumber() == Cards::King) {
+
+                            Card card;
+                            card.init(this->hand[i].getSuit(trumps), Cards::Ace);
+
+                            if (gameStatus.getHasBeenPlayed(card)) {
+
+                                if (this->evaluatePlay(gameStatus, trumps, i, maybeScore, maybeIndex, 8, 15) != Cards::NoCard) {
+
+    //LEAD printf("leadACard 6 - non-bid winner, off suit K\n");
+                                    return i;
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
 
                 // Did we find a playable card?
 
@@ -616,7 +652,7 @@ struct Hand {
 
                             // Does our partner have any of this suit ?
 
-                            if (gameStatus.getHasSuit((this->handNumber + 2) % 4, this->hand[i].getSuit(trumps)) != HasSuit::False) {
+                            if (!playingAlone && gameStatus.getHasSuit((this->handNumber + 2) % 4, this->hand[i].getSuit(trumps)) != HasSuit::False) {
                                   
                                 if (this->evaluatePlay(gameStatus, trumps, i, maybeScore, maybeIndex, 4, 10) != Cards::NoCard) {
 
@@ -628,7 +664,6 @@ struct Hand {
                             } 
                             else {
 //LEAD printf("leadACard 8 - other play has none of these. \n");
-//SJH Need to add some more logic here
                             }
 
                         }

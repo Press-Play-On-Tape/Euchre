@@ -21,27 +21,74 @@ void Game::incMode() {
                         };
 
     this->counter++;
-//printf(" incMode(0) %i == %i\n", this->counter, delay[static_cast<uint8_t>(this->gameState)]);
+// printf(" incMode(0) %i == %i\n", this->counter, delay[static_cast<uint8_t>(this->gameState)]);
     if (this->counter == delay[static_cast<uint8_t>(this->gameState)]) {
-
-        if (this->nextState != GameState::None) {
-
-// printf(" incMode(1) Transition from state %i", (uint16_t)this->gameState);
-            this->gameState = this->nextState;
-            this->nextState = GameState::None;
-// printf(" to state %i\n", (uint16_t)this->gameState);
-        }
-        else {
-
-// printf(" incMode(2) Transition from state %i", (uint16_t)this->gameState);
-            this->gameState++;
-// printf(" to state %i\n", (uint16_t)this->gameState);
-
-        }
 
         this->counter = 0;
         this->deal++;
         this->gameStatus.incCurrentPlayer();
+
+        if (this->nextState != GameState::None) {
+
+printf(" incMode(1) Transition from state %i", (uint16_t)this->gameState);
+            this->gameState = this->nextState;
+            this->nextState = GameState::None;
+printf(" to state %i\n", (uint16_t)this->gameState);
+        }
+        else {
+
+printf(" incMode(2) Transition from state %i", (uint16_t)this->gameState);
+            this->gameState++;
+
+            switch (this->gameState) {
+
+                case GameState::Game_Follow_01 ... GameState::Game_Follow_02:
+printf("test case GameState::Game_Follow_01 ... GameState::Game_Follow_02 ");
+                    if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
+printf(" player not playing so skip ");
+
+                        this->gameState++;
+                        this->gameStatus.incCurrentPlayer();
+
+                    }
+                    break;
+
+                case GameState::Game_Follow_03:
+printf("test case GameState::Game_Follow_03 ");
+
+                    if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
+printf(" player not playing so skip ");
+                        uint8_t winner = this->gameStatus.whoWon();
+                        printf("Player %i wins.\n", winner);
+                        this->gameStatus.incTricks(winner);
+                        
+                        if (this->hands[0].getCardsInHand() > 0) {
+
+                            // this->counter = 0;
+                            printf("this->nextState = GameState::Game_EndOfTrick;\n");
+                            this->gameState = GameState::Game_EndOfTrick;
+
+                        }
+                        else {
+                            printf("this->nextState = GameState::Game_EndOfHand;\n");
+                            this->gameState = GameState::Game_EndOfHand;
+                        }
+
+                    }
+
+                    break;
+
+
+                default: break;
+
+            }
+printf(" to state %i\n", (uint16_t)this->gameState);
+
+        }
+
+        // this->counter = 0;
+        // this->deal++;
+        // this->gameStatus.incCurrentPlayer();
 
     }
 
@@ -288,7 +335,7 @@ bool Game::doSecondBid(uint8_t handNumber) {
         highScore = spades;
     }
 
-    if (highScore > this->upperThreshold) {
+    if (highScore > this->upperThreshold && handNumber != 2) {
 
         this->gameStatus.setTrumps(highSuit);
         this->gameStatus.setPlayAlone(true);
@@ -324,4 +371,11 @@ uint8_t Game::bidWinner() {
 
     return 0;
     
+}
+
+
+bool Game::isPlayingThisHand(uint8_t playerIdx) {
+
+    return (this->bidWinner() == ((playerIdx + 2) % 4) && !this->gameStatus.getPlayAlone()) || this->bidWinner() != ((playerIdx + 2) % 4);
+
 }

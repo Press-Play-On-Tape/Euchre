@@ -211,35 +211,47 @@ void Game::renderGame() {
 
             // Player 1
 
-            for (uint8_t i = 0; i < this->hands[1].getCardsInHand(); i++) {
+            if (this->isPlayingThisHand(1)) {
 
-                this->renderCard(Orientation::Left, this->hands[1].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, false, this->gameStatus.getShowHands());
+                for (uint8_t i = 0; i < this->hands[1].getCardsInHand(); i++) {
+
+                    this->renderCard(Orientation::Left, this->hands[1].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, false, this->gameStatus.getShowHands());
+
+                }
+
+                if (this->gameStatus.getDealer() == 1) { PD::drawBitmap(2, (88 + (y1 / 2)) + 1, Images::Dealer_Left); }
 
             }
-
-            if (this->gameStatus.getDealer() == 1) { PD::drawBitmap(2, (88 + (y1 / 2)) + 1, Images::Dealer_Left); }
 
 
             // Player 2
 
-            for (uint8_t i = 0; i < this->hands[2].getCardsInHand(); i++) {
+            if (this->isPlayingThisHand(2)) {
 
-                this->renderCard(Orientation::Top, this->hands[2].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, false, this->gameStatus.getShowHands());
+                for (uint8_t i = 0; i < this->hands[2].getCardsInHand(); i++) {
+
+                    this->renderCard(Orientation::Top, this->hands[2].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, false, this->gameStatus.getShowHands());
+
+                }
+
+                if (this->gameStatus.getDealer() == 2) { PD::drawBitmap(110 - (x2 / 2) - 11, 2, Images::Dealer_Top); }
 
             }
-
-            if (this->gameStatus.getDealer() == 2) { PD::drawBitmap(110 - (x2 / 2) - 11, 2, Images::Dealer_Top); }
 
 
             // Player 3
 
-            for (uint8_t i = 0; i < this->hands[3].getCardsInHand(); i++) {
+            if (this->isPlayingThisHand(3)) {
 
-                this->renderCard(Orientation::Right, this->hands[3].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, false, this->gameStatus.getShowHands());
+                for (uint8_t i = 0; i < this->hands[3].getCardsInHand(); i++) {
+
+                    this->renderCard(Orientation::Right, this->hands[3].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, false, this->gameStatus.getShowHands());
+
+                }
+
+                if (this->gameStatus.getDealer() == 3) { PD::drawBitmap(209, (88 - (y3 / 2)) - 11, Images::Dealer_Right); }
 
             }
-
-            if (this->gameStatus.getDealer() == 3) { PD::drawBitmap(209, (88 - (y3 / 2)) - 11, Images::Dealer_Right); }
 
 
             // Display trick count ..
@@ -419,7 +431,7 @@ void Game::renderGame() {
 void Game::renderSoreboard(uint8_t tricksWinner, uint8_t pointsWinner, bool showTrick, bool showHand) {
 
     // Score board ..
-printf("trick %i, points %i\n", tricksWinner, pointsWinner);
+
     PD::drawBitmap(166, 0, Images::Scoreboard);
     if (tricksWinner == Constants::AllWinners || ((tricksWinner == 0 || tricksWinner == 2) && showTrick) || tricksWinner == 1 || tricksWinner == 3) PD::drawBitmap(195, 1, Images::Tricks_Bot[this->gameStatus.getTricks0and2()]);
     if (pointsWinner == Constants::AllWinners || ((pointsWinner == 0 || pointsWinner == 2) && showHand)  || pointsWinner == 1 || pointsWinner == 3) PD::drawBitmap(206, 1, Images::Hands_Bot[this->gameStatus.getPoints0and2()]);
