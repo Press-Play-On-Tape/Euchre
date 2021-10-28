@@ -36,6 +36,11 @@ namespace Constants {
     constexpr uint8_t Dialogue_00_Y = 134;
     constexpr uint8_t NoPlayer = 4;
 
+    constexpr uint8_t EOGText_X = 32;
+    constexpr uint8_t EOGText_Y = 40;   
+    constexpr uint8_t EOGPoints_X = 120;
+    constexpr uint8_t EOGPoints_Y = 60;   
+
 }
 
 enum class GameState : uint8_t {

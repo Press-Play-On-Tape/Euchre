@@ -406,6 +406,7 @@ printf("----------------------------------------------------------------------\n
                                     else {
                                         printf("this->nextState = GameState::Game_EndOfHand;\n");
                                         this->nextState = GameState::Game_EndOfHand;
+                                        this->eog = 0;
                                     }
 
                                 }
@@ -461,6 +462,7 @@ printf("----------------------------------------------------------------------\n
                         }
                         else {
                             this->nextState = GameState::Game_EndOfHand;
+                            this->eog = 0;
                         }
 
                     }
@@ -545,6 +547,7 @@ printf("case GameState::Game_EndOfTrick:\n");
                 if (this->hands[0].getCardsInHand() == 0) {
     
                     this->gameState = GameState::Game_EndOfHand;
+                    this->eog = 0;
 
                 }
                 else {
@@ -567,33 +570,33 @@ printf("case GameState::Game_EndOfTrick:\n");
                 uint8_t winner = this->gameStatus.whoWon();
 
                 if (this->counter == 0) {
-                printf("Player %i wins.  Player %i bid.\n", winner, this->bidWinner());
+printf("Player %i wins.  Player %i bid.\n", winner, this->bidWinner());
 
                     this->counter = 1;
                     //uint8_t winner = this->gameStatus.whoWon();
 
-                    if (winner == 0 || winner == 2) {
+                    if (this->bidWinner() == 0 || this->bidWinner() == 2) {
 
                         switch (this->gameStatus.getTricks0and2()) {
 
                             case 0 ... 2:
-                                this->gameStatus.incHands((winner + 1) % 4, 2);
-printf("Euchre +2\n");                                
+                                this->gameStatus.incHands((this->bidWinner() + 1) % 4, 2);
+printf("A Euchre +2\n");                                
                                 break;
 
                             case 3 ... 4:
-                                this->gameStatus.incHands(winner, 1);
-printf("Normal +1\n");                                
+                                this->gameStatus.incHands(this->bidWinner(), 1);
+printf("A Normal +1\n");                                
                                 break;
 
                             case 5:
                                 if (!this->gameStatus.getPlayAlone()) {
-printf("Team +2\n");                                
-                                    this->gameStatus.incHands(winner, 2);
+printf("A Team +2\n");                                
+                                    this->gameStatus.incHands(this->bidWinner(), 2);
                                 }
                                 else {
-printf("Alone +4\n");                                
-                                    this->gameStatus.incHands(winner, 4);
+printf("A Alone +4\n");                                
+                                    this->gameStatus.incHands(this->bidWinner(), 4);
                                 }
                                 break;
 
@@ -601,28 +604,28 @@ printf("Alone +4\n");
 
                     }
 
-                    if (winner == 1 || winner == 3) {
+                    else if (this->bidWinner() == 1 || this->bidWinner() == 3) {
 
                         switch (this->gameStatus.getTricks1and3()) {
 
                             case 0 ... 2:
-                                this->gameStatus.incHands((winner + 1) % 4, 2);
-printf("Euchre +2\n");                                       
+                                this->gameStatus.incHands((this->bidWinner() + 1) % 4, 2);
+printf("B Euchre +2\n");                                       
                                 break;
 
                             case 3 ... 4:
- printf("Normal +1\n"); 
-                                this->gameStatus.incHands(winner, 1);
+ printf("B Normal +1\n"); 
+                                this->gameStatus.incHands(this->bidWinner(), 1);
                                 break;
 
                             case 5:
                                 if (!this->gameStatus.getPlayAlone()) {
-printf("Team +2\n"); 
-                                    this->gameStatus.incHands(winner, 2);
+printf("B Team +2\n"); 
+                                    this->gameStatus.incHands(this->bidWinner(), 2);
                                 }
                                 else {
-printf("Alone +4\n");                                       
-                                    this->gameStatus.incHands(winner, 4);
+printf("B Alone +4\n");                                       
+                                    this->gameStatus.incHands(this->bidWinner(), 4);
                                 }
                                 break;
 

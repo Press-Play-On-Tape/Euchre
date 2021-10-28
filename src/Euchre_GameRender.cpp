@@ -657,24 +657,59 @@ void Game::renderHandOver(uint8_t winner) {
         switch (this->gameStatus.getTricks0and2()) {
 
             case 0 ... 2:
-                PD::drawBitmap(45, 53, Images::Euchre);
+                PD::drawBitmap(Constants::EOGText_X, Constants::EOGText_Y, Images::Euchre);
                 PD::drawBitmap(49, Constants::Dialogue_00_Y + 6, Images::TeamBeta);
                 PD::drawBitmap(126, Constants::Dialogue_00_Y + 8, Images::EOG_02);
+
+                if (this->eog < 44) {
+                    uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::MinusTwo_CentreX - Images::MinusTwo_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::MinusTwo_CentreY - Images::MinusTwo_OffsetsY[index], 
+                                   Images::MinusTwo[index]);
+                }
+
                 break;
 
             case 3 ... 4:
                 PD::drawBitmap(47, Constants::Dialogue_00_Y + 6, Images::TeamAlpha);
                 PD::drawBitmap(128, Constants::Dialogue_00_Y + 8, Images::EOG_01);
+
+                if (this->eog < 44) {
+                    uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
+                                   Images::PlusOne[index]);
+                }
+
                 break;
 
             case 5:
                 if (!this->gameStatus.getPlayAlone()) {
+
                     PD::drawBitmap(47, Constants::Dialogue_00_Y + 6, Images::TeamAlpha);
                     PD::drawBitmap(128, Constants::Dialogue_00_Y + 8, Images::EOG_02);
+
+                    if (this->eog < 44) {
+                        uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusTwo_CentreX - Images::PlusTwo_OffsetsX[index], 
+                                       Constants::EOGPoints_Y + Images::PlusTwo_CentreY - Images::PlusTwo_OffsetsY[index], 
+                                       Images::PlusTwo[index]);
+                    }
+
                 }
                 else {
+
+                    PD::drawBitmap(45, 53, Images::March);
                     PD::drawBitmap(47, Constants::Dialogue_00_Y + 6, Images::TeamAlpha);
                     PD::drawBitmap(128, Constants::Dialogue_00_Y + 8, Images::EOG_04);
+
+                    if (this->eog < 44) {
+                        uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
+                                       Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
+                                       Images::PlusFour[index]);
+                    }
+
                 }
                 break;
 
@@ -682,36 +717,73 @@ void Game::renderHandOver(uint8_t winner) {
 
     }
 
-    if (this->bidWinner() == 1 || this->bidWinner() == 3) {
+    else if (this->bidWinner() == 1 || this->bidWinner() == 3) {
 
         switch (this->gameStatus.getTricks1and3()) {
 
             case 0 ... 2:
-                PD::drawBitmap(45, 53, Images::Euchre);
+                PD::drawBitmap(Constants::EOGText_X, Constants::EOGText_Y, Images::Euchre);
                 PD::drawBitmap(47, Constants::Dialogue_00_Y + 4, Images::TeamAlpha);
                 PD::drawBitmap(128, Constants::Dialogue_00_Y + 6, Images::EOG_02);
+
+                if (this->eog < 44) {
+                    uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::MinusTwo_CentreX - Images::MinusTwo_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::MinusTwo_CentreY - Images::MinusTwo_OffsetsY[index], 
+                                   Images::MinusTwo[index]);
+                }
+
                 break;
 
             case 3 ... 4:
                 PD::drawBitmap(49, Constants::Dialogue_00_Y + 4, Images::TeamBeta);
                 PD::drawBitmap(126, Constants::Dialogue_00_Y + 6, Images::EOG_01);
+
+                if (this->eog < 44) {
+                    uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
+                                   Images::PlusOne[index]);
+                }
+
                 break;
 
             case 5:
                 if (!this->gameStatus.getPlayAlone()) {
+                    
                     PD::setCursor(40, 125);
                     PD::drawBitmap(49, Constants::Dialogue_00_Y + 4, Images::TeamBeta);
                     PD::drawBitmap(126, Constants::Dialogue_00_Y + 6, Images::EOG_02);
+
+                    if (this->eog < 44) {
+                        uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusTwo_CentreX - Images::PlusTwo_OffsetsX[index], 
+                                       Constants::EOGPoints_Y + Images::PlusTwo_CentreY - Images::PlusTwo_OffsetsY[index], 
+                                       Images::PlusTwo[index]);
+                    }
+
                 }
                 else {
+
+                    PD::drawBitmap(45, 53, Images::March);
                     PD::drawBitmap(49, Constants::Dialogue_00_Y + 4, Images::TeamBeta);
                     PD::drawBitmap(126, Constants::Dialogue_00_Y + 6, Images::EOG_04);
+
+                    if (this->eog < 44) {
+                        uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
+                                       Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
+                                       Images::PlusFour[index]);
+                    }
+
                 }
                 break;
 
         }                
 
     }
+
+    if (this->eog < 44) this->eog++;
 
 }
 

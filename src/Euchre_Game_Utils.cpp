@@ -72,6 +72,7 @@ printf(" player not playing so skip ");
                         else {
                             printf("this->nextState = GameState::Game_EndOfHand;\n");
                             this->gameState = GameState::Game_EndOfHand;
+                            this->eog = 0;
                         }
 
                     }

@@ -32,6 +32,7 @@ class Game {
         uint8_t threshold;
         uint8_t bidCursor;
         uint8_t dialogCursor;
+        uint8_t eog;
         Card dealerCard;
         
 
