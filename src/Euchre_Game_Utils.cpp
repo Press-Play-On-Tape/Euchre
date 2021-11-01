@@ -5,7 +5,9 @@
 using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 
-void Game::incMode() {
+void Game::incMode(bool ignoreCounter, bool increasePlayer) {
+
+    uint8_t prevPlayer = this->gameStatus.getCurrentPlayer();
 
     uint8_t delay[] = { 0, 0, 0, 0, 0, 0, 
                         2, 5, 2, 5, 2, 5, 2, 5,                     // NewHand_00 ... NewHand_07
@@ -21,31 +23,103 @@ void Game::incMode() {
                         };
 
     this->counter++;
-// printf(" incMode(0) %i == %i\n", this->counter, delay[static_cast<uint8_t>(this->gameState)]);
-    if (this->counter == delay[static_cast<uint8_t>(this->gameState)]) {
+
+    if (ignoreCounter || this->counter == delay[static_cast<uint8_t>(this->gameState)]) {
 
         this->counter = 0;
         this->deal++;
-        this->gameStatus.incCurrentPlayer();
+
+        if (increasePlayer){
+
+            switch (this->gameState) {
+
+                case GameState::Game_StartPlay ... GameState::Game_Follow_02:
+                    this->gameStatus.incCurrentPlayer();
+                    break;
+
+                default: break;
+
+            }
+
+        }
 
         if (this->nextState != GameState::None) {
 
+            if (this->cookie->getNumberOfPlayers() == 2) {
+
+                if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
+// printf(" incMode(1) Transition from state %i", (uint16_t)this->gameState);
+// printf("Swap 1\n");  
+                    this->savedState = this->nextState; 
+                    this->gameState = GameState::Swap_Init;
+                    this->nextState = GameState::None;
+                    this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+
+                }
+                else {
+// printf(" incMode(3) Transition from state %i", (uint16_t)this->gameState);
+                    this->gameState = this->nextState;
+                    this->nextState = GameState::None;  
+
+                }
+
+/*                    
+                if (this->gameStatus.getCurrentPlayer() != prevPlayer) {
+
+                    if (this->isHuman(this->gameStatus.getCurrentPlayer())) {
+    
 printf(" incMode(1) Transition from state %i", (uint16_t)this->gameState);
-            this->gameState = this->nextState;
-            this->nextState = GameState::None;
+printf("Swap 1\n");                    
+
+                        this->savedState = this->nextState; 
+                        this->gameState = GameState::Swap_Init;
+                        this->nextState = GameState::None;
+                        this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
 printf(" to state %i\n", (uint16_t)this->gameState);
+
+                    }
+                    else {
+
+printf(" incMode(2) Transition from state %i", (uint16_t)this->gameState);
+                        this->gameState = this->nextState;
+                        this->nextState = GameState::None;
+printf(" to state %i\n", (uint16_t)this->gameState);
+
+                    }
+
+                }
+                else {
+
+printf(" incMode(3) Transition from state %i", (uint16_t)this->gameState);
+                    this->gameState = this->nextState;
+                    this->nextState = GameState::None;
+printf(" to state %i\n", (uint16_t)this->gameState);
+
+                }
+*/
+            }
+            else {
+
+// printf(" incMode(4) Transition from state %i", (uint16_t)this->gameState);
+                this->gameState = this->nextState;
+                this->nextState = GameState::None;
+// printf(" to state %i\n", (uint16_t)this->gameState);
+
+            }
+
         }
         else {
 
-printf(" incMode(2) Transition from state %i", (uint16_t)this->gameState);
+// printf(" incMode(5) Transition from state %i", (uint16_t)this->gameState);
             this->gameState++;
 
             switch (this->gameState) {
 
+//                case GameState::Game_Bid_00 ... GameState::Game_Bid_03:
                 case GameState::Game_Follow_01 ... GameState::Game_Follow_02:
-printf("test case GameState::Game_Follow_01 ... GameState::Game_Follow_02 ");
+// printf("test case GameState::Game_Follow_01 ... GameState::Game_Follow_02 ");
                     if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
-printf(" player not playing so skip ");
+// printf(" player not playing so skip ");
 
                         this->gameState++;
                         this->gameStatus.incCurrentPlayer();
@@ -54,23 +128,23 @@ printf(" player not playing so skip ");
                     break;
 
                 case GameState::Game_Follow_03:
-printf("test case GameState::Game_Follow_03 ");
+// printf("test case GameState::Game_Follow_03 ");
 
                     if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
-printf(" player not playing so skip ");
+// printf(" player not playing so skip ");
                         uint8_t winner = this->gameStatus.whoWon();
-                        printf("Player %i wins.\n", winner);
+                        // printf("Player %i wins.\n", winner);
                         this->gameStatus.incTricks(winner);
                         
                         if (this->hands[0].getCardsInHand() > 0) {
 
                             // this->counter = 0;
-                            printf("this->nextState = GameState::Game_EndOfTrick;\n");
+                            // printf("this->nextState = GameState::Game_EndOfTrick;\n");
                             this->gameState = GameState::Game_EndOfTrick;
 
                         }
                         else {
-                            printf("this->nextState = GameState::Game_EndOfHand;\n");
+                            // printf("this->nextState = GameState::Game_EndOfHand;\n");
                             this->gameState = GameState::Game_EndOfHand;
                             this->eog = 0;
                         }
@@ -83,13 +157,55 @@ printf(" player not playing so skip ");
                 default: break;
 
             }
-printf(" to state %i\n", (uint16_t)this->gameState);
+// printf(" to state %i\n", (uint16_t)this->gameState);
+
+
+            // Should we swap hands?
+
+            switch (this->gameState) {
+
+                case GameState::Game_Bid_01 ... GameState::Game_Open_Bid_03:
+
+                    if (this->cookie->getNumberOfPlayers() == 2) {
+
+                        uint8_t offset = (static_cast<uint8_t>(this->gameState) - static_cast<uint8_t>(GameState::Game_Bid_00) + 1) % 4;
+
+                        if (this->isHuman((this->gameStatus.getDealer() + offset) % 4)) {
+        // printf("Swap 2\n", prevPlayer, this->gameStatus.getCurrentPlayer());                    
+
+                            this->savedState = this->gameState;
+                            this->gameState = GameState::Swap_Init;
+                            this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                        }
+
+                    }
+
+                    break;
+
+                case GameState::Game_LeadCard ... GameState::Game_Follow_03:
+
+                    if (this->cookie->getNumberOfPlayers() == 2) {
+
+                        //if (this->gameStatus.getCurrentPlayer() != prevPlayer) {
+
+        // printf("prefVplayer %i, currentPlayer %i, getPlayerView %i, Swap 3\n", prevPlayer, this->gameStatus.getCurrentPlayer(), this->gameStatus.getPlayerView());                    
+                            if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
+
+                                this->savedState = this->gameState;
+                                this->gameState = GameState::Swap_Init;
+                                this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+
+                            }
+
+                        //}
+
+                    }
+
+                    break;
+
+            }
 
         }
-
-        // this->counter = 0;
-        // this->deal++;
-        // this->gameStatus.incCurrentPlayer();
 
     }
 
@@ -97,6 +213,7 @@ printf(" to state %i\n", (uint16_t)this->gameState);
 
 void Game::print() {
 
+    #ifdef DEBUG
     printf("----------------------------------------------------------------------------\n");
     this->deck.print();
 
@@ -105,6 +222,7 @@ void Game::print() {
         this->hands[i].print();
 
     }
+    #endif
 
 }
 
@@ -128,12 +246,19 @@ bool Game::handlePlayerBid(uint8_t playerIdx) {
 
             case 0:
                 this->hands[playerIdx].setCallStatus(CallStatus::Pass);
+                this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::Pass) + playerIdx)); 
                 this->nextState = GameState::None;
                 this->counter = 0;
                 this->deal++;
                 return true;
 
             case 1 ... 2:
+                if (this->dialogCursor == 1) {
+                    this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::TakeIt) + playerIdx)); 
+                }
+                else {
+                    this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::TakeItAlone) + playerIdx)); 
+                }
                 this->hands[playerIdx].setCallStatus(CallStatus::FirstRound);
                 this->nextState = GameState::Game_DealerExtraCard;
                 this->gameStatus.setTrumps(this->dealerCard.getSuit(CardSuit::None));
@@ -160,7 +285,7 @@ bool Game::handlePlayerBid(uint8_t playerIdx) {
 
 void Game::handlePlayerSecondBid(uint8_t playerIdx) {
 
-    bool stickIt = this->gameStatus.getStickIt() && (this->gameState == GameState::Game_Open_Bid_03);
+    bool stickIt = this->cookie->getStickIt() && (this->gameState == GameState::Game_Open_Bid_03);
 
     if (this->dialogCursor == 0 && stickIt) this->dialogCursor = 1;
 
@@ -194,11 +319,10 @@ void Game::handlePlayerSecondBid(uint8_t playerIdx) {
 
             case 0:
                 if (this->gameState == GameState::Game_Open_Bid_03) {
-
                     this->gameState = GameState::Game_NewHand_Init;
-
                 }
                 else {
+                    this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::Pass) + playerIdx)); 
                     this->hands[playerIdx].setCallStatus(CallStatus::Pass);
                     this->gameState++;
                     this->counter = 0;
@@ -210,6 +334,7 @@ void Game::handlePlayerSecondBid(uint8_t playerIdx) {
             case 3:
             case 5:
             case 7:
+                this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::TakeIt) + playerIdx)); 
                 this->hands[playerIdx].setCallStatus(CallStatus::SecondRound);
                 this->gameState = GameState::Game_StartPlay;
                 this->counter = 0;
@@ -228,6 +353,7 @@ void Game::handlePlayerSecondBid(uint8_t playerIdx) {
             case 4:
             case 6:
             case 8:
+                this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::TakeItAlone) + playerIdx)); 
                 this->hands[playerIdx].setCallStatus(CallStatus::SecondRound);
                 this->gameState = GameState::Game_StartPlay;
                 this->counter = 0;
@@ -317,7 +443,7 @@ bool Game::doSecondBid(uint8_t handNumber) {
     uint16_t clubs =     this->hands[handNumber].bid(CardSuit::Clubs);
     uint16_t spades =    this->hands[handNumber].bid(CardSuit::Spades);
 
-    printf("Hand %i, H: %i, D: %i, S: %i, C: %i\n", handNumber, hearts, diamonds, spades, clubs);
+    // printf("Hand %i, H: %i, D: %i, S: %i, C: %i\n", handNumber, hearts, diamonds, spades, clubs);
 
     CardSuit highSuit = CardSuit::Hearts;
     uint16_t highScore = hearts;
@@ -378,5 +504,20 @@ uint8_t Game::bidWinner() {
 bool Game::isPlayingThisHand(uint8_t playerIdx) {
 
     return (this->bidWinner() == ((playerIdx + 2) % 4) && !this->gameStatus.getPlayAlone()) || this->bidWinner() != ((playerIdx + 2) % 4);
+
+}
+
+bool Game::isHuman(uint8_t playerIdx) {
+
+    if (this->cookie->getNumberOfPlayers() == 1) {
+
+        return playerIdx == 0;
+
+    }
+    else {
+
+        return (playerIdx == 0 || this->cookie->getPlayer2Pos() == playerIdx);
+
+    }
 
 }

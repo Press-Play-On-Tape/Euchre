@@ -38,6 +38,22 @@ void Game::loop() {
             this->selection();
             break;
 
+        case GameState::Swap_Init:
+            this->swap_Init();
+            [[fallthrough]]
+
+        case GameState::Swap:
+            this->swap();
+            break;
+
+        case GameState::Pause_Init:
+            this->pause_Init();
+            [[fallthrough]]
+
+        case GameState::Pause:
+            this->pause();
+            break;
+
         case GameState::Game_Init:
             this->game_Init();
             [[fallthrough]]

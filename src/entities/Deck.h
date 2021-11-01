@@ -90,6 +90,7 @@ struct Deck {
 
         void print() {
 
+            #ifdef DEBUG
             printf("Deck : ");
             
             for (uint8_t i = 0; i <= this->getIndex(); i++) {
@@ -107,6 +108,7 @@ struct Deck {
             }
             
             printf("\n");
+            #endif
 
         }
 

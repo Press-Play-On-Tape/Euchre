@@ -175,6 +175,7 @@ struct Hand {
 
         void print(bool lineEnd = true) {
 
+            #ifdef DEBUG
             printf("Hand %i: ", (uint16_t)this->handNumber);
 
             for (uint8_t i = 0; i < this->cardsInHand; i++) {
@@ -184,6 +185,7 @@ struct Hand {
             }
 
             if (lineEnd) printf("\n");
+            #endif
 
         }
         
@@ -208,10 +210,10 @@ struct Hand {
                 this->sortHand(this->cardsInHand, true, suit);
             }
 
-            /*HAND*/ this->print(false);
-            /*HAND*/ if (isDealer) printf(" (D)");
-            /*HAND*/ if (!isDealer) printf(" (d)");
-            /*HAND*/ printf(" >> ");
+            //HAND this->print(false);
+            //HAND if (isDealer) printf(" (D)");
+            //HAND if (!isDealer) printf(" (d)");
+            //HAND printf(" >> ");
 
             uint8_t handScore = 0;
             bool hasRightBower = false;
@@ -230,12 +232,12 @@ struct Hand {
                     case Cards::RightBower:
                         handScore = handScore + 100;
                         hasRightBower = true;
-                        /*HAND*/ printf("100 Right Bower, ");
+                        //HAND printf("100 Right Bower, ");
                         break;
 
                     case Cards::LeftBower:
                         handScore = handScore + (hasRightBower ? 100 : 80);
-                        /*HAND*/ printf(hasRightBower ? "100 Left Bower (inc RB), " : "80 Left Bower only, ");
+                        //HAND printf(hasRightBower ? "100 Left Bower (inc RB), " : "80 Left Bower only, ");
                         hasRightBower = true;
                         break;
 
@@ -248,22 +250,22 @@ struct Hand {
                                 if (matchingSuit) {
 
                                     if (hasRightBower && hasLeftBower) {
-                                        /*HAND*/ printf("100 Trumps (inc RB, LB), ");
+                                        //HAND printf("100 Trumps (inc RB, LB), ");
                                         handScore = handScore + 100;
                                     }
                                     else if (hasRightBower && !hasLeftBower) {
-                                        /*HAND*/ printf("70 Trumps (inc RB), ");
+                                        //HAND printf("70 Trumps (inc RB), ");
                                         handScore = handScore + 70;
                                     }
                                     else if (!hasRightBower && hasLeftBower) {
-                                        /*HAND*/ printf("60 Trumps (inc LB), ");
+                                        //HAND printf("60 Trumps (inc LB), ");
                                         handScore = handScore + 60;
                                     }
 
                                 }
                                 else {
 
-                                    /*HAND*/ printf("40 Non-Trump, ");
+                                    //HAND printf("40 Non-Trump, ");
                                     handScore = handScore + 40;
 
                                 }
@@ -278,26 +280,26 @@ struct Hand {
 
                                         case 0:
 
-                                            /*HAND*/ printf("20 Trump, ");
+                                            //HAND printf("20 Trump, ");
                                             handScore = handScore + 20;
                                             break;
 
                                         case 1:
-                                            /*HAND*/ printf("*K %i %i*", i, this->hand[i - 1].getCardValue(dealerCard.getSuit(CardSuit::None)));
+                                            //HAND printf("*K %i %i*", i, this->hand[i - 1].getCardValue(dealerCard.getSuit(CardSuit::None)));
                                             switch (this->hand[i - 1].getCardValue(dealerCard.getSuit(CardSuit::None))) {
                                                 
                                                 case Cards::RightBower:
-                                                    /*HAND*/ printf("30 Trump (inc RB), ");
+                                                    //HAND printf("30 Trump (inc RB), ");
                                                     handScore = handScore + 30;
                                                     break;
                                                 
                                                 case Cards::LeftBower:
-                                                    /*HAND*/ printf("25 Trump (inc LB), ");
+                                                    //HAND printf("25 Trump (inc LB), ");
                                                     handScore = handScore + 25;
                                                     break;
                                                 
                                                 case Cards::Ace:
-                                                    /*HAND*/ printf("20 Trump (inc Ace), ");
+                                                    //HAND printf("20 Trump (inc Ace), ");
                                                     handScore = handScore + 20;
                                                     break;
 
@@ -310,12 +312,12 @@ struct Hand {
                                             switch (this->hand[i - 1].getCardValue(dealerCard.getSuit(CardSuit::None))) {
                                                 
                                                 case Cards::LeftBower:
-                                                    /*HAND*/ printf("40 Trump (inc RB, LB), ");
+                                                    //HAND printf("40 Trump (inc RB, LB), ");
                                                     handScore = handScore + 40;
                                                     break;
                                                 
                                                 case Cards::Ace:
-                                                    /*HAND*/ printf("30 Trump (inc Ace), ");
+                                                    //HAND printf("30 Trump (inc Ace), ");
                                                     handScore = handScore + 30;
                                                     break;
 
@@ -325,7 +327,7 @@ struct Hand {
 
                                         case 3:
                                         
-                                            /*HAND*/ printf("100 Trumps (inc RB, LB, A), ");
+                                            //HAND printf("100 Trumps (inc RB, LB, A), ");
                                             handScore = handScore + 100; 
                                             break;
 
@@ -339,7 +341,7 @@ struct Hand {
 
                                         case 0:
 
-                                            /*HAND*/ printf("20 Non-Trumps (no-Ace), ");
+                                            //HAND printf("20 Non-Trumps (no-Ace), ");
                                             handScore = handScore + 20;
                                             break;
 
@@ -347,13 +349,13 @@ struct Hand {
 
                                             if (this->hand[i - 1].getSuit(dealerCard.getSuit(CardSuit::None)) == card.getSuit(dealerCard.getSuit(CardSuit::None))) {
 
-                                                /*HAND*/ printf("30 Non-Trumps (inc Ace), ");
+                                                //HAND printf("30 Non-Trumps (inc Ace), ");
                                                 handScore = handScore + 30;
 
                                             }
                                             else {
 
-                                                /*HAND*/ printf("20 Non-Trumps (no-Ace), ");
+                                                //HAND printf("20 Non-Trumps (no-Ace), ");
                                                 handScore = handScore + 20;
 
                                             }
@@ -371,27 +373,27 @@ struct Hand {
                                     switch (i) {
 
                                         case 0:
-                                            /*HAND*/ printf("10 Trumps, ");
+                                            //HAND printf("10 Trumps, ");
                                             handScore = handScore + 10; 
                                             break;
 
                                         case 1:
-                                            /*HAND*/ printf("15 Trumps, ");
+                                            //HAND printf("15 Trumps, ");
                                             handScore = handScore + 15; 
                                             break;
 
                                         case 2:
-                                            /*HAND*/ printf("30 Trumps, ");
+                                            //HAND printf("30 Trumps, ");
                                             handScore = handScore + 30; 
                                             break;
 
                                         case 3:
-                                            /*HAND*/ printf("45 Trumps, ");
+                                            //HAND printf("45 Trumps, ");
                                             handScore = handScore + 45; 
                                             break;
 
                                         case 4:
-                                            /*HAND*/ printf("100 Trumps (inc RB, LB, A), ");
+                                            //HAND printf("100 Trumps (inc RB, LB, A), ");
                                             handScore = handScore + 100; 
                                             break;
 
@@ -405,7 +407,7 @@ struct Hand {
                                 if (matchingSuit) {
 
                                     handScore = handScore + 5;
-                                    /*HAND*/ printf("5 Trump, ");
+                                    //HAND printf("5 Trump, ");
                                 
                                 }
 
@@ -416,7 +418,7 @@ struct Hand {
                                 if (matchingSuit) {
 
                                     handScore = handScore + 10;
-                                    /*HAND*/ printf("10 Trump, ");
+                                    //HAND printf("10 Trump, ");
                                 
                                 }
 
@@ -431,7 +433,7 @@ struct Hand {
             }
 
             this->restoreHand();
-            /*HAND*/ printf(" = %i\n", handScore);
+            //HAND printf(" = %i\n", handScore);
             return handScore;
 
         }

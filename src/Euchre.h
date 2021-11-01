@@ -20,6 +20,7 @@ class Game {
         SplashScreenVariables splashScreenVariables;
         GameState gameState = GameState::Splash;
         GameState nextState = GameState::None;
+        GameState savedState = GameState::None;
         GameCookie *cookie;
         Deck deck;
         Hand hands[4];
@@ -32,11 +33,15 @@ class Game {
         uint8_t threshold;
         uint8_t bidCursor;
         uint8_t dialogCursor;
+        uint8_t tapeCursor;
         uint8_t eog;
         Card dealerCard;
         
 
         const uint8_t *text = nullptr;
+
+        File mainThemeFile;
+        File soundEffectFile;
 
     public:
 
@@ -52,8 +57,12 @@ class Game {
         void game();
         void selection_Init();
         void selection();
+        void swap_Init();
+        void swap();
+        void pause_Init();
+        void pause();
         
-        void incMode();
+        void incMode(bool ignoreCounter = false, bool increasePlayer = true);
         void print();
         bool handlePlayerBid(uint8_t playerIdx);
         void handlePlayerSecondBid(uint8_t playerIdx);  
@@ -61,9 +70,10 @@ class Game {
         uint8_t handlePlayACard(uint8_t playerIdx, CardSuit suitLed = CardSuit::None);  
         uint8_t bidWinner();
         bool isPlayingThisHand(uint8_t playerIdx);
+        bool isHuman(uint8_t playerIdx);
 
-        void renderGame();
-        void renderBids();
+        void renderGame(bool pause);
+        void renderBids(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03);
         void renderPlayerBid();
         void renderPlayerSecondBid();
         void renderDiscardACard();
@@ -72,10 +82,12 @@ class Game {
         void renderTrumps(CardSuit trumps);
         bool doSecondBid(uint8_t handNumber);
         void renderSuit(CardSuit suit);
-        void renderTrickOver(uint8_t winner);
+        void renderTrickOver(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03, uint8_t winner);
         void renderHandOver(uint8_t winner);
-        void renderFinalBid();
+        void renderFinalBid(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03);
         void renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool highlight, bool raise, bool showCards);
-        
+        void playSpeech(Speech speech);
+        void playTheme(uint8_t themeNumber);
+        void muteTheme();
 };
 

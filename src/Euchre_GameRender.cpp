@@ -157,9 +157,9 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
     
 }
 
-void Game::renderGame() {
+void Game::renderGame(bool pause) {
 
-    PD::fillScreen(3);
+    PD::fillScreen(this->gameStatus.getPlayerView() == 0 ? 3 : 1);
 
 
 
@@ -170,13 +170,13 @@ void Game::renderGame() {
     switch (this->gameState) {
 
         case GameState::Game_DealerExtraCard:
-            if (this->gameStatus.getDealer() % 4 == 0) { 
+            if (this->isHuman(this->gameStatus.getDealer() % 4)) { 
                 highlightCard = true; 
             }
             break;
 
         case GameState::Game_LeadCard ... GameState::Game_Follow_03:
-            if (this->gameStatus.getCurrentPlayer() == 0) { 
+            if (this->isHuman(this->gameStatus.getCurrentPlayer())) { 
                 highlightCard = true; 
             }
             break;
@@ -191,65 +191,81 @@ void Game::renderGame() {
 
     // Player 0
 
-    uint8_t x0 = 40 + ((this->hands[0].getCardsInHand() - 1) * 16);
-    uint8_t y1 = 40 + ((this->hands[1].getCardsInHand() - 1) * 16);
-    uint8_t x2 = 40 + ((this->hands[2].getCardsInHand() - 1) * 16);
-    uint8_t y3 = 40 + ((this->hands[1].getCardsInHand() - 1) * 16);
+    uint8_t position_00 = 0;
+
+    if (this->cookie->getNumberOfPlayers() > 1) {
+
+        if (this->gameStatus.getPlayerView() != 0) {
+
+            position_00 = this->cookie->getPlayer2Pos();
+
+        }
+
+    }
+
+    uint8_t position_01 = (position_00 + 1) % 4;
+    uint8_t position_02 = (position_00 + 2) % 4;
+    uint8_t position_03 = (position_00 + 3) % 4;
+
+    uint8_t x0 = 40 + ((this->hands[position_00].getCardsInHand() - 1) * 16);
+    uint8_t y1 = 40 + ((this->hands[position_01].getCardsInHand() - 1) * 16);
+    uint8_t x2 = 40 + ((this->hands[position_02].getCardsInHand() - 1) * 16);
+    uint8_t y3 = 40 + ((this->hands[position_03].getCardsInHand() - 1) * 16);
 
     switch (this->gameState) {
 
         case GameState::Game_NewHand_00 ... GameState::Game_EndOfTrick:
 
-            for (uint8_t i = 0; i < this->hands[0].getCardsInHand(); i++) {
+            for (uint8_t i = 0; i < this->hands[position_00].getCardsInHand(); i++) {
 
-                this->renderCard(Orientation::Bottom, this->hands[0].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, this->bidCursor == i && highlightCard, false);
+                this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, this->bidCursor == i && highlightCard, false);
 
             }
 
-            if (this->gameStatus.getDealer() == 0) { PD::drawBitmap(110 + (x0 / 2) + 1, 165, Images::Dealer_Bot); }
+            if (this->gameStatus.getDealer() == position_00) { PD::drawBitmap(110 + (x0 / 2) + 1, 165, Images::Dealer_Bot); }
 
 
             // Player 1
 
-            if (this->isPlayingThisHand(1)) {
+            if (this->isPlayingThisHand(position_01)) {
 
-                for (uint8_t i = 0; i < this->hands[1].getCardsInHand(); i++) {
+                for (uint8_t i = 0; i < this->hands[position_01].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Left, this->hands[1].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, false, this->gameStatus.getShowHands());
+                    this->renderCard(Orientation::Left, this->hands[position_01].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, false, this->cookie->getShowHands());
 
                 }
 
-                if (this->gameStatus.getDealer() == 1) { PD::drawBitmap(2, (88 + (y1 / 2)) + 1, Images::Dealer_Left); }
+                if (this->gameStatus.getDealer() == position_01) { PD::drawBitmap(2, (88 + (y1 / 2)) + 1, Images::Dealer_Left); }
 
             }
 
 
             // Player 2
 
-            if (this->isPlayingThisHand(2)) {
+            if (this->isPlayingThisHand(position_02)) {
 
-                for (uint8_t i = 0; i < this->hands[2].getCardsInHand(); i++) {
+                for (uint8_t i = 0; i < this->hands[position_02].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Top, this->hands[2].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, false, this->gameStatus.getShowHands());
+                    this->renderCard(Orientation::Top, this->hands[position_02].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, false, this->cookie->getShowHands());
 
                 }
 
-                if (this->gameStatus.getDealer() == 2) { PD::drawBitmap(110 - (x2 / 2) - 11, 2, Images::Dealer_Top); }
+                if (this->gameStatus.getDealer() == position_02) { PD::drawBitmap(110 - (x2 / 2) - 11, 2, Images::Dealer_Top); }
 
             }
 
 
             // Player 3
 
-            if (this->isPlayingThisHand(3)) {
+            if (this->isPlayingThisHand(position_03)) {
 
-                for (uint8_t i = 0; i < this->hands[3].getCardsInHand(); i++) {
+                for (uint8_t i = 0; i < this->hands[position_03].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Right, this->hands[3].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, false, this->gameStatus.getShowHands());
+                    this->renderCard(Orientation::Right, this->hands[position_03].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, false, this->cookie->getShowHands());
 
                 }
 
-                if (this->gameStatus.getDealer() == 3) { PD::drawBitmap(209, (88 - (y3 / 2)) - 11, Images::Dealer_Right); }
+                if (this->gameStatus.getDealer() == position_03) { PD::drawBitmap(209, (88 - (y3 / 2)) - 11, Images::Dealer_Right); }
 
             }
 
@@ -259,10 +275,10 @@ void Game::renderGame() {
             switch (this->gameState) {
 
                 case GameState::Game_StartPlay ... GameState::Game_EndOfHand:
-                    PD::drawBitmap(110 + (x0 / 2) + 1, 165 - (this->gameStatus.getDealer() == 0 ? 10 : 0), Images::Tricks_Bot[this->gameStatus.getTricks(0)]); 
-                    PD::drawBitmap(2 + (this->gameStatus.getDealer() == 1 ? 10 : 0), (88 + (y1 / 2)) + 1, Images::Tricks_Left[this->gameStatus.getTricks(1)]);
-                    PD::drawBitmap(110 - (x2 / 2) - 12, 2 + (this->gameStatus.getDealer() == 2 ? 10 : 0), Images::Tricks_Top[this->gameStatus.getTricks(2)]);
-                    PD::drawBitmap(209 - (this->gameStatus.getDealer() == 3 ? 10 : 0), (88 - (y3 / 2)) - 11, Images::Tricks_Right[this->gameStatus.getTricks(3)]);
+                    PD::drawBitmap(110 + (x0 / 2) + 1, 165 - (this->gameStatus.getDealer() == position_00 ? 10 : 0), Images::Tricks_Bot[this->gameStatus.getTricks(position_00)]); 
+                    PD::drawBitmap(2 + (this->gameStatus.getDealer() == position_01 ? 10 : 0), (88 + (y1 / 2)) + 1, Images::Tricks_Left[this->gameStatus.getTricks(position_01)]);
+                    PD::drawBitmap(110 - (x2 / 2) - 12, 2 + (this->gameStatus.getDealer() == position_02 ? 10 : 0), Images::Tricks_Top[this->gameStatus.getTricks(position_02)]);
+                    PD::drawBitmap(209 - (this->gameStatus.getDealer() == position_03 ? 10 : 0), (88 - (y3 / 2)) - 11, Images::Tricks_Right[this->gameStatus.getTricks(position_03)]);
                     break;
 
                 default: break;
@@ -278,147 +294,156 @@ void Game::renderGame() {
 
     // Dealer card 
 
-    if (this->dealerCard.getCardIndex() != Cards::NoCard) {
+    if (!pause) {
 
-        this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, true);
-    
-    }
+        if (this->dealerCard.getCardIndex() != Cards::NoCard) {
 
-
-    // Render Played Cards -----------------------------------------------------------------------------------
-
-    for (uint8_t i = this->gameStatus.getFirstPlayer(); i < this->gameStatus.getFirstPlayer() + 4; i++) {
-
-        if (i % 4 == 0) {
-            if (this->gameStatus.getCurrentHand(0).getNumber() != Cards::NoCard) {
-                this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(0), 95, 80, this->gameStatus.isPlayerWinning(0) && this->gameStatus.getShowWinner(), false, true);
-            }
+            this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, true);
+        
         }
 
-        if (i % 4 == 1) {
-            if (this->gameStatus.getCurrentHand(1).getNumber() != Cards::NoCard) {
-                this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(1), 70, 65, this->gameStatus.isPlayerWinning(1) && this->gameStatus.getShowWinner(), false, this->gameStatus.getShowHands());
-            }
-        }
 
-        if (i % 4 == 2) {
-            if (this->gameStatus.getCurrentHand(2).getNumber() != Cards::NoCard) {
-                this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(2), 85, 40, this->gameStatus.isPlayerWinning(2) && this->gameStatus.getShowWinner(), false, this->gameStatus.getShowHands());
-            }
-        }
+        // Render Played Cards -----------------------------------------------------------------------------------
 
-        if (i % 4 == 3) {
-            if (this->gameStatus.getCurrentHand(3).getNumber() != Cards::NoCard) {
-                this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(3), 110, 55, this->gameStatus.isPlayerWinning(3) && this->gameStatus.getShowWinner(), false, this->gameStatus.getShowHands());
-            }
-        }
+        for (uint8_t i = this->gameStatus.getFirstPlayer(); i < this->gameStatus.getFirstPlayer() + 4; i++) {
 
-    }
-
-
-    // Bid?
-
-    switch (this->gameState) {
-
-        case GameState::Game_Bid_00:
-        case GameState::Game_Bid_01:
-        case GameState::Game_Bid_02:
-        case GameState::Game_Bid_03:
-            {
-                uint8_t offset = (static_cast<uint8_t>(this->gameState) - static_cast<uint8_t>(GameState::Game_Bid_00) + 1) % 4;
-                this->renderBids();
-                if ((this->gameStatus.getDealer() + offset) % 4 == 0)    { 
-
-                    this->renderPlayerBid(); 
+            if (i % 4 == position_00) {
+                if (this->gameStatus.getCurrentHand(position_00).getNumber() != Cards::NoCard) {
+    // printf("1) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_00), 95, 80, this->gameStatus.isPlayerWinning(position_00) && this->cookie->getShowWinner(), false, true);
                 }
-
             }
-            break;
 
-        case GameState::Game_Open_Bid_00:
-        case GameState::Game_Open_Bid_01:
-        case GameState::Game_Open_Bid_02:
-        case GameState::Game_Open_Bid_03:
-            {
-                uint8_t offset = (static_cast<uint8_t>(this->gameState) - static_cast<uint8_t>(GameState::Game_Bid_00) + 1) % 4;
-                this->renderBids();
-                if ((this->gameStatus.getDealer() + offset) % 4 == 0) { 
-                    this->renderPlayerSecondBid();
+            if (i % 4 == position_01) {
+                if (this->gameStatus.getCurrentHand(position_01).getNumber() != Cards::NoCard) {
+    // printf("2) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_01), 70, 65, this->gameStatus.isPlayerWinning(position_01) && this->cookie->getShowWinner(), false, this->cookie->getShowHands());
                 }
-
             }
-            break;
 
-        case GameState::Game_DealerExtraCard:
-            this->renderFinalBid();
-            this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
-            this->renderTrumps(this->gameStatus.getTrumps());
-            if (this->gameStatus.getDealer() % 4 == 0) { 
-                this->renderDiscardACard(); 
+            if (i % 4 == position_02) {
+                if (this->gameStatus.getCurrentHand(position_02).getNumber() != Cards::NoCard) {
+    // printf("3) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_02), 85, 40, this->gameStatus.isPlayerWinning(position_02) && this->cookie->getShowWinner(), false, this->cookie->getShowHands());
+                }
             }
-            break;
 
-        case GameState::Game_LeadCard ... GameState::Game_Follow_03:
-            this->renderFinalBid();
-            this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
-            this->renderTrumps(this->gameStatus.getTrumps());
-            if (this->gameStatus.getCurrentPlayer() == 0) { 
-                this->renderPlayACard(); 
+            if (i % 4 == position_03) {
+                if (this->gameStatus.getCurrentHand(position_03).getNumber() != Cards::NoCard) {
+    // printf("4) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_03), 110, 55, this->gameStatus.isPlayerWinning(position_03) && this->cookie->getShowWinner(), false, this->cookie->getShowHands());
+                }
             }
-            break;
 
-        case GameState::Game_EndOfTrick:
-            {
-                uint8_t winner = this->gameStatus.whoWon();
-                this->renderFinalBid();
-                this->renderSoreboard(winner, Constants::AllWinners, PC::frameCount % 32 < 16, true);
+        }
+
+
+        // Bid?
+
+        switch (this->gameState) {
+
+            case GameState::Game_Bid_00:
+            case GameState::Game_Bid_01:
+            case GameState::Game_Bid_02:
+            case GameState::Game_Bid_03:
+                {
+                    uint8_t offset = (static_cast<uint8_t>(this->gameState) - static_cast<uint8_t>(GameState::Game_Bid_00) + 1) % 4;
+                    this->renderBids(position_00, position_01, position_02, position_03);
+                    if (this->isHuman((this->gameStatus.getDealer() + offset) % 4)) { 
+
+                        this->renderPlayerBid(); 
+
+                    }
+
+                }
+                break;
+
+            case GameState::Game_Open_Bid_00:
+            case GameState::Game_Open_Bid_01:
+            case GameState::Game_Open_Bid_02:
+            case GameState::Game_Open_Bid_03:
+                {
+                    uint8_t offset = (static_cast<uint8_t>(this->gameState) - static_cast<uint8_t>(GameState::Game_Bid_00) + 1) % 4;
+                    this->renderBids(position_00, position_01, position_02, position_03);
+                    if (this->isHuman((this->gameStatus.getDealer() + offset) % 4)) { 
+                        this->renderPlayerSecondBid();
+                    }
+
+                }
+                break;
+
+            case GameState::Game_DealerExtraCard:
+                this->renderFinalBid(position_00, position_01, position_02, position_03);
+                this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
                 this->renderTrumps(this->gameStatus.getTrumps());
-                this->renderTrickOver(winner);
-            }
-            break;
-
-        case GameState::Game_EndOfHand:
-            {
-                uint8_t pointsWinner = 0;
-                uint8_t trickWinner = this->gameStatus.whoWon();
-
-                if (this->bidWinner() == 0 || this->bidWinner() == 2) {
-
-                    switch (this->gameStatus.getTricks0and2()) {
-
-                        case 0 ... 2:
-                            pointsWinner = 1;
-                            break;
-
-                        default:
-                            pointsWinner = 0;
-                            break;
-
-                    }                
-
+                if (this->gameStatus.getDealer() % 4 == 0) { 
+                    this->renderDiscardACard(); 
                 }
+                break;
 
-                if (this->bidWinner() == 1 || this->bidWinner() == 3) {
-
-                    switch (this->gameStatus.getTricks1and3()) {
-
-                        case 0 ... 2:
-                            pointsWinner = 0;
-                            break;
-
-                        default:
-                            pointsWinner = 1;
-                            break;
-
-                    }                
-
-                }
-
-                this->renderSoreboard(trickWinner, pointsWinner, PC::frameCount % 32 < 16, PC::frameCount % 32 < 16);
+            case GameState::Game_LeadCard ... GameState::Game_Follow_03:
+                this->renderFinalBid(position_00, position_01, position_02, position_03);
+                this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
                 this->renderTrumps(this->gameStatus.getTrumps());
-                this->renderHandOver(pointsWinner);
-            }
-            break;
+                if (this->gameStatus.getCurrentPlayer() == 0) { 
+                    this->renderPlayACard(); 
+                }
+                break;
+
+            case GameState::Game_EndOfTrick:
+                {
+                    uint8_t winner = this->gameStatus.whoWon();
+                    this->renderFinalBid(position_00, position_01, position_02, position_03);
+                    this->renderSoreboard(winner, Constants::AllWinners, PC::frameCount % 32 < 16, true);
+                    this->renderTrumps(this->gameStatus.getTrumps());
+                    this->renderTrickOver(position_00, position_01, position_02, position_03, winner);
+                }
+                break;
+
+            case GameState::Game_EndOfHand:
+                {
+                    uint8_t pointsWinner = 0;
+                    uint8_t trickWinner = this->gameStatus.whoWon();
+
+                    if (this->bidWinner() == 0 || this->bidWinner() == 2) {
+
+                        switch (this->gameStatus.getTricks0and2()) {
+
+                            case 0 ... 2:
+                                pointsWinner = 1;
+                                break;
+
+                            default:
+                                pointsWinner = 0;
+                                break;
+
+                        }                
+
+                    }
+
+                    if (this->bidWinner() == 1 || this->bidWinner() == 3) {
+
+                        switch (this->gameStatus.getTricks1and3()) {
+
+                            case 0 ... 2:
+                                pointsWinner = 0;
+                                break;
+
+                            default:
+                                pointsWinner = 1;
+                                break;
+
+                        }                
+
+                    }
+
+                    this->renderSoreboard(trickWinner, pointsWinner, PC::frameCount % 32 < 16, PC::frameCount % 32 < 16);
+                    this->renderTrumps(this->gameStatus.getTrumps());
+                    this->renderHandOver(pointsWinner);
+                }
+                break;
+
+        }
 
     }
 
@@ -440,45 +465,45 @@ void Game::renderSoreboard(uint8_t tricksWinner, uint8_t pointsWinner, bool show
 
 }
 
-void Game::renderBids() {
+void Game::renderBids(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03) {
 
-    if (this->hands[0].showCallStatus()) {
-        if (this->hands[0].getCallStatus() == CallStatus::Pass)                                             { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_Pass); }
-        if (this->hands[0].getCallStatus() == CallStatus::FirstRound && !this->gameStatus.getPlayAlone())   { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_TakeIt); }
-        if (this->hands[0].getCallStatus() == CallStatus::FirstRound &&  this->gameStatus.getPlayAlone())   { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_Alone); }
-        if (this->hands[0].getCallStatus() == CallStatus::SecondRound && !this->gameStatus.getPlayAlone())  { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_Suits_Team[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
-        if (this->hands[0].getCallStatus() == CallStatus::SecondRound && this->gameStatus.getPlayAlone())   { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_Suits_Alone[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
+    if (this->hands[position_00].showCallStatus()) {
+        if (this->hands[position_00].getCallStatus() == CallStatus::Pass)                                              { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_Pass); }
+        if (this->hands[position_00].getCallStatus() == CallStatus::FirstRound && !this->gameStatus.getPlayAlone())    { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_TakeIt); }
+        if (this->hands[position_00].getCallStatus() == CallStatus::FirstRound &&  this->gameStatus.getPlayAlone())    { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_Alone); }
+        if (this->hands[position_00].getCallStatus() == CallStatus::SecondRound && !this->gameStatus.getPlayAlone())   { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_Suits_Team[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
+        if (this->hands[position_00].getCallStatus() == CallStatus::SecondRound && this->gameStatus.getPlayAlone())    { PD::drawBitmap(88, 120, Images::Empty_Bottom); PD::drawBitmap(91, 124, Images::Text_Suits_Alone[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
     }
 
-    if (this->hands[1].showCallStatus()) {
-        if (this->hands[1].getCallStatus() == CallStatus::Pass)                                             { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_Pass); }
-        if (this->hands[1].getCallStatus() == CallStatus::FirstRound && !this->gameStatus.getPlayAlone())   { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_TakeIt); }
-        if (this->hands[1].getCallStatus() == CallStatus::FirstRound &&  this->gameStatus.getPlayAlone())   { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_Alone); }
-        if (this->hands[1].getCallStatus() == CallStatus::SecondRound && !this->gameStatus.getPlayAlone())  { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_Suits_Team[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
-        if (this->hands[1].getCallStatus() == CallStatus::SecondRound && this->gameStatus.getPlayAlone())   { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_Suits_Alone[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
+    if (this->hands[position_01].showCallStatus()) {
+        if (this->hands[position_01].getCallStatus() == CallStatus::Pass)                                              { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_Pass); }
+        if (this->hands[position_01].getCallStatus() == CallStatus::FirstRound && !this->gameStatus.getPlayAlone())    { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_TakeIt); }
+        if (this->hands[position_01].getCallStatus() == CallStatus::FirstRound &&  this->gameStatus.getPlayAlone())    { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_Alone); }
+        if (this->hands[position_01].getCallStatus() == CallStatus::SecondRound && !this->gameStatus.getPlayAlone())   { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_Suits_Team[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
+        if (this->hands[position_01].getCallStatus() == CallStatus::SecondRound && this->gameStatus.getPlayAlone())    { PD::drawBitmap(20, 72, Images::Empty_Left); PD::drawBitmap(30, 76, Images::Text_Suits_Alone[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
     }
 
-    if (this->hands[2].showCallStatus()) {
-        if (this->hands[2].getCallStatus() == CallStatus::Pass)                                             { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_Pass); }
-        if (this->hands[2].getCallStatus() == CallStatus::FirstRound && !this->gameStatus.getPlayAlone())   { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_TakeIt); }
-        if (this->hands[2].getCallStatus() == CallStatus::FirstRound &&  this->gameStatus.getPlayAlone())   { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_Alone); }
-        if (this->hands[2].getCallStatus() == CallStatus::SecondRound && !this->gameStatus.getPlayAlone())  { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_Suits_Team[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
-        if (this->hands[2].getCallStatus() == CallStatus::SecondRound && this->gameStatus.getPlayAlone())   { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_Suits_Alone[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
+    if (this->hands[position_02].showCallStatus()) {
+        if (this->hands[position_02].getCallStatus() == CallStatus::Pass)                                              { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_Pass); }
+        if (this->hands[position_02].getCallStatus() == CallStatus::FirstRound && !this->gameStatus.getPlayAlone())    { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_TakeIt); }
+        if (this->hands[position_02].getCallStatus() == CallStatus::FirstRound &&  this->gameStatus.getPlayAlone())    { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_Alone); }
+        if (this->hands[position_02].getCallStatus() == CallStatus::SecondRound && !this->gameStatus.getPlayAlone())   { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_Suits_Team[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
+        if (this->hands[position_02].getCallStatus() == CallStatus::SecondRound && this->gameStatus.getPlayAlone())    { PD::drawBitmap(88, 21, Images::Empty_Top); PD::drawBitmap(91, 31, Images::Text_Suits_Alone[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
     }
 
-    if (this->hands[3].showCallStatus()) {
-        if (this->hands[3].getCallStatus() == CallStatus::Pass)                                             { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_Pass); }
-        if (this->hands[3].getCallStatus() == CallStatus::FirstRound && !this->gameStatus.getPlayAlone())   { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_TakeIt); }
-        if (this->hands[3].getCallStatus() == CallStatus::FirstRound &&  this->gameStatus.getPlayAlone())   { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_Alone); }
-        if (this->hands[3].getCallStatus() == CallStatus::SecondRound && !this->gameStatus.getPlayAlone())  { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_Suits_Team[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
-        if (this->hands[3].getCallStatus() == CallStatus::SecondRound && this->gameStatus.getPlayAlone())   { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_Suits_Alone[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
+    if (this->hands[position_03].showCallStatus()) {
+        if (this->hands[position_03].getCallStatus() == CallStatus::Pass)                                              { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_Pass); }
+        if (this->hands[position_03].getCallStatus() == CallStatus::FirstRound && !this->gameStatus.getPlayAlone())    { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_TakeIt); }
+        if (this->hands[position_03].getCallStatus() == CallStatus::FirstRound &&  this->gameStatus.getPlayAlone())    { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_Alone); }
+        if (this->hands[position_03].getCallStatus() == CallStatus::SecondRound && !this->gameStatus.getPlayAlone())   { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_Suits_Team[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
+        if (this->hands[position_03].getCallStatus() == CallStatus::SecondRound && this->gameStatus.getPlayAlone())    { PD::drawBitmap(140, 72, Images::Empty_Right); PD::drawBitmap(144, 76, Images::Text_Suits_Alone[static_cast<uint8_t>(this->gameStatus.getTrumps())]); }
     }
 
 }
 
-void Game::renderFinalBid() {
+void Game::renderFinalBid(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03) {
 
-    if (this->hands[0].isBidWinner()) { 
+    if (this->hands[position_00].isBidWinner()) { 
         
         if (this->gameStatus.getPlayAlone()) {
             PD::drawBitmap(90, Constants::Dialogue_00_Y, Images::Banner_Alone_Bot);
@@ -491,7 +516,7 @@ void Game::renderFinalBid() {
 
     }
 
-    if (this->hands[1].isBidWinner()) { 
+    if (this->hands[position_01].isBidWinner()) { 
         
         if (this->gameStatus.getPlayAlone()) {
             PD::drawBitmap(31, 68, Images::Banner_Alone_Left);
@@ -504,7 +529,7 @@ void Game::renderFinalBid() {
 
     }
 
-    if (this->hands[2].isBidWinner()) { 
+    if (this->hands[position_02].isBidWinner()) { 
         
         if (this->gameStatus.getPlayAlone()) {
             PD::drawBitmap(90, 27, Images::Banner_Alone_Top);
@@ -517,7 +542,7 @@ void Game::renderFinalBid() {
     
     }
 
-    if (this->hands[3].isBidWinner()) {
+    if (this->hands[position_03].isBidWinner()) {
         
         if (this->gameStatus.getPlayAlone()) {
             PD::drawBitmap(180, 68, Images::Banner_Alone_Right);
@@ -550,7 +575,7 @@ void Game::renderPlayerSecondBid() {
 
     PD::drawBitmap(52, 90, Images::Dialogue_Large_Background);
 
-    if (this->gameStatus.getStickIt() && (this->gameState == GameState::Game_Open_Bid_03))    PD::drawBitmap(54,   92, Images::Dialogue_Pass_Disabled);
+    if (this->cookie->getStickIt() && (this->gameState == GameState::Game_Open_Bid_03))    PD::drawBitmap(54,   92, Images::Dialogue_Pass_Disabled);
 
     if (this->dialogCursor == 0)    PD::drawBitmap(54,   92, Images::Dialogue_Pass);
     if (this->dialogCursor == 1)    PD::drawBitmap(92,   92, Images::Dialogue_Go_Spades);
@@ -583,7 +608,7 @@ void Game::renderTrumps(CardSuit trumps) {
 
 }
 
-void Game::renderTrickOver(uint8_t winner) {
+void Game::renderTrickOver(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03, uint8_t winner) {
 
     if ((this->gameStatus.getTrumps() != this->gameStatus.getSuitLed()) &&
         (this->gameStatus.getTrumps() == this->gameStatus.getCurrentHand(this->gameStatus.whoWon()).getSuit(this->gameStatus.getTrumps()))) {
@@ -623,7 +648,7 @@ void Game::renderTrickOver(uint8_t winner) {
         }
 
     }
-
+/*
     switch (this->gameStatus.whoWon()) {
 
         case 0:
@@ -645,6 +670,35 @@ void Game::renderTrickOver(uint8_t winner) {
             PD::drawBitmap(140, 72, Images::Empty_Right); 
             PD::drawBitmap(144, 76, this->text); 
             break;
+
+    } */
+
+
+    if (this->gameStatus.whoWon() == position_00) {
+
+        PD::drawBitmap(88, 120, Images::Empty_Bottom); 
+        PD::drawBitmap(91, 124, this->text); 
+    
+    }
+
+    if (this->gameStatus.whoWon() == position_01) {
+
+        PD::drawBitmap(20, 85, Images::Empty_Left); 
+        PD::drawBitmap(30, 89, this->text); 
+
+    }
+
+    if (this->gameStatus.whoWon() == position_02) {
+
+        PD::drawBitmap(96, 20, Images::Empty_Top); 
+        PD::drawBitmap(99, 31, this->text); 
+            
+    }
+
+    if (this->gameStatus.whoWon() == position_03) {
+
+        PD::drawBitmap(140, 72, Images::Empty_Right); 
+        PD::drawBitmap(144, 76, this->text); 
 
     }
 

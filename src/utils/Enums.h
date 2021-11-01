@@ -1,8 +1,8 @@
 #pragma once
 
-#define DEBUG
+#define _DEBUG
 #define SOUNDS
-#define COOKIE_INITIALISED 66
+#define COOKIE_INITIALISED 62
 
 namespace Cards {
 
@@ -90,7 +90,11 @@ enum class GameState : uint8_t {
     Game_Xxx,               // 43
     Selection_Init,         // 44
     Selection,              // 45
-    None,                   // 46
+    Swap_Init,              // 46
+    Swap,                   // 47
+    Pause_Init,             // 48
+    Pause,                  // 49
+    None,                   // 50
 };
 
 
@@ -116,6 +120,39 @@ inline GameState operator--(GameState &c, int ) {
     return result;
 }
 
+enum class SoundEffects : uint8_t {
+    Both,
+    Music,
+    SFX,
+    None
+};
+
+inline SoundEffects &operator++(SoundEffects &c ) {
+    c = static_cast<SoundEffects>( (static_cast<uint8_t>(c) + 1) % 4 );
+    return c;
+}
+
+inline SoundEffects operator++(SoundEffects &c, int ) {
+    SoundEffects result = c;
+    ++c;
+    return result;
+}
+
+inline SoundEffects &operator--(SoundEffects &c ) {
+    if (static_cast<uint8_t>(c) > 0) {
+        c = static_cast<SoundEffects>( (static_cast<uint8_t>(c) - 1) % 4 );
+    }
+    else {
+        c = static_cast<SoundEffects>( 3 );
+    }
+    return c;
+}
+
+inline SoundEffects operator--(SoundEffects &c, int ) {
+    SoundEffects result = c;
+    --c;
+    return result;
+}
 
 enum class CardSuit : uint8_t {
     Spades,
@@ -143,4 +180,15 @@ enum class Orientation : uint8_t {
     Left,
     Top,
     Right
+};
+
+enum class Speech : uint8_t {
+    Pass = 0,           
+    TakeIt = 4,
+    TakeItAlone = 8,
+    Winner = 12,
+    Mine = 16,
+    Sorry = 20,
+    Trumped = 24,
+    WooHoo = 28
 };
