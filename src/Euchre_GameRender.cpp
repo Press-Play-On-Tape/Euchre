@@ -376,7 +376,7 @@ void Game::renderGame(bool pause) {
                 this->renderFinalBid(position_00, position_01, position_02, position_03);
                 this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
                 this->renderTrumps(this->gameStatus.getTrumps());
-                if (this->gameStatus.getDealer() % 4 == 0) { 
+                if (this->isHuman(this->gameStatus.getDealer() % 4)) { 
                     this->renderDiscardACard(); 
                 }
                 break;
@@ -385,7 +385,7 @@ void Game::renderGame(bool pause) {
                 this->renderFinalBid(position_00, position_01, position_02, position_03);
                 this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
                 this->renderTrumps(this->gameStatus.getTrumps());
-                if (this->gameStatus.getCurrentPlayer() == 0) { 
+                if (this->isHuman(this->gameStatus.getCurrentPlayer())) { 
                     this->renderPlayACard(); 
                 }
                 break;
@@ -397,6 +397,7 @@ void Game::renderGame(bool pause) {
                     this->renderSoreboard(winner, Constants::AllWinners, PC::frameCount % 32 < 16, true);
                     this->renderTrumps(this->gameStatus.getTrumps());
                     this->renderTrickOver(position_00, position_01, position_02, position_03, winner);
+                    this->counter = 1;
                 }
                 break;
 
@@ -448,7 +449,7 @@ void Game::renderGame(bool pause) {
     }
 
 
-    PD::setCursor(200, 168);
+    PD::setCursor(200, 160);
     PD::print(static_cast<uint16_t>(this->gameState));
 
 }
@@ -616,11 +617,13 @@ void Game::renderTrickOver(uint8_t position_00, uint8_t position_01, uint8_t pos
         if (this->gameStatus.isPlayerWinning((this->gameStatus.whoWon() + 2) % 4, this->gameStatus.whoWon())) {
 
             text = Images::Text_Sorry;
+            if (this->counter == 0) this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::Sorry) + this->gameStatus.whoWon())); 
 
         }
         else {
     
             text = Images::Text_Trumped;
+            if (this->counter == 0) this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::Trumped) + this->gameStatus.whoWon())); 
 
         }
 
@@ -633,14 +636,17 @@ void Game::renderTrickOver(uint8_t position_00, uint8_t position_01, uint8_t pos
 
                 case 0:
                     text = Images::Text_Mine;
+                    if (this->counter == 0) this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::Mine) + this->gameStatus.whoWon())); 
                     break;
 
                 case 1:
                     text = Images::Text_Winner;
+                    if (this->counter == 0) this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::Winner) + this->gameStatus.whoWon())); 
                     break;
 
                 case 2:
                     text = Images::Text_WooHoo;
+                    if (this->counter == 0) this->playSpeech(static_cast<Speech>(static_cast<uint8_t>(Speech::WooHoo) + this->gameStatus.whoWon())); 
                     break;
 
             }
@@ -648,30 +654,6 @@ void Game::renderTrickOver(uint8_t position_00, uint8_t position_01, uint8_t pos
         }
 
     }
-/*
-    switch (this->gameStatus.whoWon()) {
-
-        case 0:
-            PD::drawBitmap(88, 120, Images::Empty_Bottom); 
-            PD::drawBitmap(91, 124, this->text); 
-            break;
-
-        case 1:
-            PD::drawBitmap(20, 85, Images::Empty_Left); 
-            PD::drawBitmap(30, 89, this->text); 
-            break;
-
-        case 2:
-            PD::drawBitmap(96, 20, Images::Empty_Top); 
-            PD::drawBitmap(99, 31, this->text); 
-            break;
-
-        case 3:
-            PD::drawBitmap(140, 72, Images::Empty_Right); 
-            PD::drawBitmap(144, 76, this->text); 
-            break;
-
-    } */
 
 
     if (this->gameStatus.whoWon() == position_00) {

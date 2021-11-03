@@ -44,66 +44,99 @@ void Game::incMode(bool ignoreCounter, bool increasePlayer) {
         }
 
         if (this->nextState != GameState::None) {
+printf(" ..\n");
 
             if (this->cookie->getNumberOfPlayers() == 2) {
+                    
+                switch (this->nextState) {
 
-                if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
-// printf(" incMode(1) Transition from state %i", (uint16_t)this->gameState);
-// printf("Swap 1\n");  
-                    this->savedState = this->nextState; 
-                    this->gameState = GameState::Swap_Init;
-                    this->nextState = GameState::None;
-                    this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                    case GameState::Game_DealerExtraCard:
+
+                        if (this->isHuman(this->gameStatus.getDealer())) {
+
+
+                            // If the dealer is now not playing then skip this state ..
+
+                            if (!this->isPlayingThisHand(this->gameStatus.getDealer())) {
+
+                                this->nextState++;
+
+                printf("isHuman() %i %i %i\n", this->isHuman(this->gameStatus.getCurrentPlayer()) , this->gameStatus.getPlayerView() , this->gameStatus.getCurrentPlayer());
+                                if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
+                printf(" incMode(1b) Transition from state %i", (uint16_t)this->gameState);
+                printf("Swap 1\n");  
+                                    this->savedState = this->nextState; 
+                                    this->gameState = GameState::Swap_Init;
+                                    this->nextState = GameState::None;
+                                    this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                                    this->getSwapCaption(this->savedState);
+
+                                }
+                                else {
+                printf(" incMode(3b) Transition from state %i", (uint16_t)this->gameState);
+                                    this->gameState = this->nextState;
+                                    this->nextState = GameState::None;  
+
+                                }
+
+
+
+                            }
+                            else {
+                                
+                                if  (this->gameStatus.getPlayerView() != this->gameStatus.getDealer()) {
+                printf(" incMode(1a) Transition from state %i", (uint16_t)this->gameState);
+                printf("Swap 1\n");  
+                                    this->savedState = this->nextState; 
+                                    this->gameState = GameState::Swap_Init;
+                                    this->nextState = GameState::None;
+                                    this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                                    this->getSwapCaption(this->savedState);
+
+                                }
+                                else {
+                printf(" incMode(3a) Transition from state %i", (uint16_t)this->gameState);
+                                    this->gameState = this->nextState;
+                                    this->nextState = GameState::None;  
+
+                                }
+
+                            }
+
+                        }
+
+                        break;
+
+                    default:
+
+        printf("isHuman() %i %i %i\n", this->isHuman(this->gameStatus.getCurrentPlayer()) , this->gameStatus.getPlayerView() , this->gameStatus.getCurrentPlayer());
+                        if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
+        printf(" incMode(1b) Transition from state %i", (uint16_t)this->gameState);
+        printf("Swap 1\n");  
+                            this->savedState = this->nextState; 
+                            this->gameState = GameState::Swap_Init;
+                            this->nextState = GameState::None;
+                            this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                            this->getSwapCaption(this->savedState);
+
+                        }
+                        else {
+        printf(" incMode(3b) Transition from state %i", (uint16_t)this->gameState);
+                            this->gameState = this->nextState;
+                            this->nextState = GameState::None;  
+
+                        }
+
+                        break;
 
                 }
-                else {
-// printf(" incMode(3) Transition from state %i", (uint16_t)this->gameState);
-                    this->gameState = this->nextState;
-                    this->nextState = GameState::None;  
 
-                }
-
-/*                    
-                if (this->gameStatus.getCurrentPlayer() != prevPlayer) {
-
-                    if (this->isHuman(this->gameStatus.getCurrentPlayer())) {
-    
-printf(" incMode(1) Transition from state %i", (uint16_t)this->gameState);
-printf("Swap 1\n");                    
-
-                        this->savedState = this->nextState; 
-                        this->gameState = GameState::Swap_Init;
-                        this->nextState = GameState::None;
-                        this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
-printf(" to state %i\n", (uint16_t)this->gameState);
-
-                    }
-                    else {
-
-printf(" incMode(2) Transition from state %i", (uint16_t)this->gameState);
-                        this->gameState = this->nextState;
-                        this->nextState = GameState::None;
-printf(" to state %i\n", (uint16_t)this->gameState);
-
-                    }
-
-                }
-                else {
-
-printf(" incMode(3) Transition from state %i", (uint16_t)this->gameState);
-                    this->gameState = this->nextState;
-                    this->nextState = GameState::None;
-printf(" to state %i\n", (uint16_t)this->gameState);
-
-                }
-*/
             }
             else {
-
-// printf(" incMode(4) Transition from state %i", (uint16_t)this->gameState);
+                // printf(" incMode(4) Transition from state %i", (uint16_t)this->gameState);
                 this->gameState = this->nextState;
                 this->nextState = GameState::None;
-// printf(" to state %i\n", (uint16_t)this->gameState);
+                // printf(" to state %i\n", (uint16_t)this->gameState);
 
             }
 
@@ -115,7 +148,14 @@ printf(" to state %i\n", (uint16_t)this->gameState);
 
             switch (this->gameState) {
 
-//                case GameState::Game_Bid_00 ... GameState::Game_Bid_03:
+                // case GameState::Game_Bid_00 ... GameState::Game_Bid_03:
+
+                //     if (this->nextState == GameState::Game_DealerExtraCard) {
+
+                //     }
+
+                //     break;
+
                 case GameState::Game_Follow_01 ... GameState::Game_Follow_02:
 // printf("test case GameState::Game_Follow_01 ... GameState::Game_Follow_02 ");
                     if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
@@ -176,6 +216,8 @@ printf(" to state %i\n", (uint16_t)this->gameState);
                             this->savedState = this->gameState;
                             this->gameState = GameState::Swap_Init;
                             this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                            this->getSwapCaption(this->savedState);
+
                         }
 
                     }
@@ -194,6 +236,7 @@ printf(" to state %i\n", (uint16_t)this->gameState);
                                 this->savedState = this->gameState;
                                 this->gameState = GameState::Swap_Init;
                                 this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                                this->getSwapCaption(this->savedState);
 
                             }
 
@@ -206,6 +249,33 @@ printf(" to state %i\n", (uint16_t)this->gameState);
             }
 
         }
+
+    }
+
+}
+
+void Game::getSwapCaption(GameState gameState) {
+
+    this->swapCaption = SwapCaption::None;
+
+    switch (gameState) {
+
+        case GameState::Game_Bid_00 ... GameState::Game_Bid_03:
+        case GameState::Game_Open_Bid_00 ... GameState::Game_Open_Bid_03:
+            this->swapCaption = SwapCaption::YourBid;
+            break;
+
+        case GameState::Game_StartPlay ... GameState::Game_LeadCard:
+            this->swapCaption = SwapCaption::LeadACard;
+            break;
+
+        case GameState::Game_Follow_01 ... GameState::Game_Follow_03:
+            this->swapCaption = SwapCaption::FollowALead;
+            break;
+
+        case GameState::Game_DealerExtraCard:
+            this->swapCaption = SwapCaption::DiscardACard;
+            break;
 
     }
 
@@ -265,7 +335,7 @@ bool Game::handlePlayerBid(uint8_t playerIdx) {
                 this->gameStatus.setPlayAlone(this->dialogCursor == 2);
                 this->counter = 0;
                 this->deal++;
-
+printf("this->nextState = GameState::Game_DealerExtraCard;\n");
                 for (uint8_t i = 0; i < 4; i++) {
 
                     this->hands[i].shuffleHandTrumps(this->gameStatus.getTrumps());

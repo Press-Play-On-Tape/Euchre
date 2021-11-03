@@ -192,3 +192,11 @@ enum class Speech : uint8_t {
     Trumped = 24,
     WooHoo = 28
 };
+
+enum class SwapCaption : uint8_t {
+    None,
+    DiscardACard,
+    LeadACard,
+    FollowALead,
+    YourBid
+};           

@@ -25,6 +25,7 @@ class Game {
         Deck deck;
         Hand hands[4];
         GameStatus gameStatus;
+        SwapCaption swapCaption;
 
 
         uint8_t counter;
@@ -89,5 +90,6 @@ class Game {
         void playSpeech(Speech speech);
         void playTheme(uint8_t themeNumber);
         void muteTheme();
+        void getSwapCaption(GameState gameState);
 };
 

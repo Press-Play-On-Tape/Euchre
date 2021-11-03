@@ -13,7 +13,9 @@ void Game::game_Init() {
 
     this->gameState = GameState::Game_NewHand_Init;
     this->nextState = GameState::None;
-    this->gameStatus.setDealer(3);
+//SJH    this->gameStatus.setDealer(3);
+    this->gameStatus.setDealer(2);
+    this->gameStatus.setPlayerView(2);
 
 }   
 
@@ -101,6 +103,7 @@ print();
                 this->dealerCard = this->deck.dealCard();
 
 this->dealerCard.init(CardSuit::Clubs, Cards::Nine);
+this->dealerCard.init(CardSuit::Diamonds, Cards::Nine);
 this->hands[0].getCard(0).init(CardSuit::Spades, Cards::Nine);
 this->hands[0].getCard(1).init(CardSuit::Spades, Cards::Jack);
 this->hands[0].getCard(2).init(CardSuit::Clubs, Cards::Ace);
@@ -124,6 +127,7 @@ this->hands[3].getCard(1).init(CardSuit::Spades, Cards::King);
 this->hands[3].getCard(2).init(CardSuit::Clubs, Cards::Ten);
 this->hands[3].getCard(3).init(CardSuit::Diamonds, Cards::Nine);
 this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
+
 
                 // printf("Hands -----------------------\n");
                 // for (uint8_t i = 0; i < 4; i++) {
@@ -325,6 +329,7 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
                     this->savedState = this->gameState;
                     this->gameState = GameState::Swap_Init;
                     this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                    this->getSwapCaption(this->savedState);
                     break;
                 }
 

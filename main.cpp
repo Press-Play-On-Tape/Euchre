@@ -24,8 +24,8 @@ int main() {
     PD::setInvisibleColor(14);
     PC::setFrameRate(30);
 
-    PD::setFont(font5x7);
-    PD::adjustCharStep = 1;
+    PD::setFont(fontTight);
+    // PD::adjustCharStep = 1;
 
     PD::textWrap = false;
 
