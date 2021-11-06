@@ -6,7 +6,7 @@ using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 
 
-void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool highlight, bool raise, bool showCards, bool highlightAbleToPlay, bool ableToPlay) {
+void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, bool highlightAbleToPlay, bool ableToPlay) {
 
     uint8_t highlight_offset = (raise ? 6 : 0);
 
@@ -14,7 +14,7 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
 
         case Orientation::Bottom:
 
-            if (!highlight) {
+            if (!raise) {
 
                 if (ableToPlay) {
 
@@ -264,19 +264,19 @@ void Game::renderGame(bool pause) {
 
                             CardSuit suitLed = this->gameStatus.getSuitLed();
                             uint8_t canPlay = !this->cookie->getHighlightPlayable() ? true : this->gameStatus.getFirstPlayer() != position_00 && !(this->hands[position_00].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[position_00].hasSuit(suitLed, this->gameStatus.getTrumps()));
-                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, this->bidCursor == i && highlightCard, false, this->cookie->getHighlightPlayable(), canPlay);
+                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, false, this->cookie->getHighlightPlayable(), canPlay);
 
                             // printf("Render1 card: %i, highlightCard %i, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard %i, %i %i\n", i, highlightCard, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard, this->cookie->getHighlightPlayable(), canPlay);
                         }
                         else {
 
                             // printf("Render2 card: %i, %i \n", i, this->cookie->getHighlightPlayable());
-                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, false, false, false, false, false);
+                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, false, false, false, false);
                         }
                         break;
                     
                     default: 
-                        this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, this->bidCursor == i && highlightCard, false, false);
+                        this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, false, false);
                         // printf("Render3 card: %i, highlightCard %i, 0 1\n",i, highlightCard);
                         break;
 
@@ -294,7 +294,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t i = 0; i < this->hands[position_01].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Left, this->hands[position_01].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, false, this->cookie->getShowHands());
+                    this->renderCard(Orientation::Left, this->hands[position_01].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, this->cookie->getShowHands());
 
                 }
 
@@ -309,7 +309,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t i = 0; i < this->hands[position_02].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Top, this->hands[position_02].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, false, this->cookie->getShowHands());
+                    this->renderCard(Orientation::Top, this->hands[position_02].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, this->cookie->getShowHands());
 
                 }
 
@@ -324,7 +324,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t i = 0; i < this->hands[position_03].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Right, this->hands[position_03].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, false, this->cookie->getShowHands());
+                    this->renderCard(Orientation::Right, this->hands[position_03].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, this->cookie->getShowHands());
 
                 }
 
@@ -364,11 +364,11 @@ void Game::renderGame(bool pause) {
             switch (this->gameState) {
 
                 case GameState::Game_DealerCard ... GameState::Game_Bid_03:
-                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, true, false, false);
+                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, true, false, false);
                     break;
 
                 case GameState::Game_Open_Bid_00 ... GameState::Game_StartPlay:
-                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, false, false, false);
+                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, false, false);
                     break;
 
             }
@@ -383,28 +383,28 @@ void Game::renderGame(bool pause) {
             if (i % 4 == position_00) {
                 if (this->gameStatus.getCurrentHand(position_00).getNumber() != Cards::NoCard) {
     // printf("1) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_00), 95, 80, this->gameStatus.isPlayerWinning(position_00) && this->cookie->getShowWinner(), false, true, false, false);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_00), 95, 80, this->gameStatus.isPlayerWinning(position_00) && this->cookie->getShowWinner(), true, false, false);
                 }
             }
 
             if (i % 4 == position_01) {
                 if (this->gameStatus.getCurrentHand(position_01).getNumber() != Cards::NoCard) {
     // printf("2) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_01), 70, 65, this->gameStatus.isPlayerWinning(position_01) && this->cookie->getShowWinner(), false, true, false, false);//this->cookie->getShowHands()), false, false;
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_01), 70, 65, this->gameStatus.isPlayerWinning(position_01) && this->cookie->getShowWinner(), true, false, false);//this->cookie->getShowHands()), false, false;
                 }
             }
 
             if (i % 4 == position_02) {
                 if (this->gameStatus.getCurrentHand(position_02).getNumber() != Cards::NoCard) {
     // printf("3) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_02), 85, 40, this->gameStatus.isPlayerWinning(position_02) && this->cookie->getShowWinner(), false, true, false, false);//this->cookie->getShowHands(), false, false);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_02), 85, 40, this->gameStatus.isPlayerWinning(position_02) && this->cookie->getShowWinner(), true, false, false);//this->cookie->getShowHands(), false, false);
                 }
             }
 
             if (i % 4 == position_03) {
                 if (this->gameStatus.getCurrentHand(position_03).getNumber() != Cards::NoCard) {
     // printf("4) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_03), 110, 55, this->gameStatus.isPlayerWinning(position_03) && this->cookie->getShowWinner(), false, true, false, false);//this->cookie->getShowHands(), false, false);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_03), 110, 55, this->gameStatus.isPlayerWinning(position_03) && this->cookie->getShowWinner(), true, false, false);//this->cookie->getShowHands(), false, false);
                 }
             }
 

@@ -86,7 +86,7 @@ class Game {
         void renderTrickOver(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03, uint8_t winner);
         void renderHandOver(uint8_t winner);
         void renderFinalBid(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03);
-        void renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool highlight, bool raise, bool showCards, bool highlightAbleToPlay = true, bool ableToPlay = true);
+        void renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, bool highlightAbleToPlay = true, bool ableToPlay = true);
         void playSpeech(Speech speech);
         void playTheme(uint8_t themeNumber);
         void muteTheme();
