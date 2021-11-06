@@ -62,6 +62,12 @@ void Game::selection() {
                 break;
 
             case 7:
+printf("toggle from %i ", this->cookie->getHighlightPlayable());            
+                this->cookie->setHighlightPlayable(!this->cookie->getHighlightPlayable());
+printf("to %i\n", this->cookie->getHighlightPlayable());            
+                break;
+
+            case 8:
                 this->cookie->setShowHands(!this->cookie->getShowHands());
                 break;
 
@@ -85,7 +91,7 @@ void Game::selection() {
                 this->dialogCursor = this->bidCursor;
                 break;
 
-            case 6 ... 7:
+            case 6 ... 8:
                 this->dialogCursor--;
                 break;
 
@@ -114,7 +120,7 @@ void Game::selection() {
                 this->dialogCursor = 5;
                 break;
 
-            case 5 ... 6:
+            case 5 ... 7:
                 this->dialogCursor++;
                 break;
 
@@ -185,24 +191,33 @@ void Game::selection() {
 
 
     if (this->dialogCursor != 5) {  
-        PD::drawBitmap(10, 140, this->cookie->getStickIt() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-        PD::drawBitmap(19, 140, Images::StickIt);
+        PD::drawBitmap(10, 127, this->cookie->getStickIt() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
+        PD::drawBitmap(19, 127, Images::StickIt);
     }
     else {
-        PD::drawBitmap(10, 140, this->cookie->getStickIt() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-        PD::drawBitmap(19, 140, Images::StickIt_Selected);
+        PD::drawBitmap(10, 127, this->cookie->getStickIt() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
+        PD::drawBitmap(19, 127, Images::StickIt_Selected);
     }
 
     if (this->dialogCursor != 6) {  
-        PD::drawBitmap(10, 153, this->cookie->getShowWinner() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-        PD::drawBitmap(19, 153, Images::ShowWinner);
+        PD::drawBitmap(10, 140, this->cookie->getShowWinner() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
+        PD::drawBitmap(19, 140, Images::ShowWinner);
     }
     else {
-        PD::drawBitmap(10, 153, this->cookie->getShowWinner() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-        PD::drawBitmap(19, 153, Images::ShowWinner_Selected);
+        PD::drawBitmap(10, 140, this->cookie->getShowWinner() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
+        PD::drawBitmap(19, 140, Images::ShowWinner_Selected);
     }
 
     if (this->dialogCursor != 7) {  
+        PD::drawBitmap(10, 153, this->cookie->getHighlightPlayable() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
+        PD::drawBitmap(19, 153, Images::HighlightPlayable);
+    }
+    else {
+        PD::drawBitmap(10, 153, this->cookie->getHighlightPlayable() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
+        PD::drawBitmap(19, 153, Images::HighlightPlayable_Selected);
+    }
+
+    if (this->dialogCursor != 8) {  
         PD::drawBitmap(10, 166, this->cookie->getShowHands() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
         PD::drawBitmap(19, 166, Images::ShowAll);
     }

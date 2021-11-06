@@ -13,9 +13,10 @@ void Game::game_Init() {
 
     this->gameState = GameState::Game_NewHand_Init;
     this->nextState = GameState::None;
-//SJH    this->gameStatus.setDealer(3);
-    this->gameStatus.setDealer(2);
-    this->gameStatus.setPlayerView(2);
+    this->gameStatus.init();
+    this->gameStatus.setDealer(3);
+//    this->gameStatus.setDealer(2);
+//    this->gameStatus.setPlayerView(2);
 
 }   
 
@@ -25,13 +26,8 @@ void Game::game_Init() {
 //
 void Game::game() {
 
-// printf("%i\n", (uint16_t)this->gameState);
-    // Handle player actions ..
 
-    // if (PC::buttons.pressed(BTN_C)) { 
-    //     this->gameState = GameState::Title_Init;
-    //     // printf("Exit\n");
-    // }
+    // Handle player actions ..
 
     if (PC::buttons.released(BTN_C)) {
 
@@ -66,7 +62,6 @@ void Game::game() {
             this->dialogCursor = 0;
             this->gameState = GameState::Game_NewHand_00;
             this->gameStatus.init();
-            // this->dealer = 3; ///SJH remove
             [[fallthrough]]
 
         case GameState::Game_NewHand_00 ... GameState::Game_NewHand_07:
@@ -102,31 +97,31 @@ print();
 
                 this->dealerCard = this->deck.dealCard();
 
-this->dealerCard.init(CardSuit::Clubs, Cards::Nine);
-this->dealerCard.init(CardSuit::Diamonds, Cards::Nine);
-this->hands[0].getCard(0).init(CardSuit::Spades, Cards::Nine);
-this->hands[0].getCard(1).init(CardSuit::Spades, Cards::Jack);
-this->hands[0].getCard(2).init(CardSuit::Clubs, Cards::Ace);
+this->dealerCard.init(CardSuit::Hearts, Cards::Nine);
+
+this->hands[0].getCard(0).init(CardSuit::Spades, Cards::Jack);
+this->hands[0].getCard(1).init(CardSuit::Diamonds, Cards::Ten);
+this->hands[0].getCard(2).init(CardSuit::Diamonds, Cards::King);
 this->hands[0].getCard(3).init(CardSuit::Hearts, Cards::Jack);
-this->hands[0].getCard(4).init(CardSuit::Hearts, Cards::Queen);
+this->hands[0].getCard(4).init(CardSuit::Hearts, Cards::King);
 
-this->hands[1].getCard(0).init(CardSuit::Spades, Cards::Queen);
-this->hands[1].getCard(1).init(CardSuit::Hearts, Cards::Ten);
-this->hands[1].getCard(2).init(CardSuit::Diamonds, Cards::Ten);
-this->hands[1].getCard(3).init(CardSuit::Diamonds, Cards::Jack);
-this->hands[1].getCard(4).init(CardSuit::Diamonds, Cards::King);
+this->hands[1].getCard(0).init(CardSuit::Spades, Cards::Nine);
+this->hands[1].getCard(1).init(CardSuit::Spades, Cards::King);
+this->hands[1].getCard(2).init(CardSuit::Clubs, Cards::Jack);
+this->hands[1].getCard(3).init(CardSuit::Clubs, Cards::Queen);
+this->hands[1].getCard(4).init(CardSuit::Clubs, Cards::King);
 
-this->hands[2].getCard(0).init(CardSuit::Hearts, Cards::Ace);
-this->hands[2].getCard(1).init(CardSuit::Diamonds, Cards::Queen);
-this->hands[2].getCard(2).init(CardSuit::Clubs, Cards::King);
-this->hands[2].getCard(3).init(CardSuit::Clubs, Cards::Jack);
-this->hands[2].getCard(4).init(CardSuit::Clubs, Cards::Queen);
+this->hands[2].getCard(0).init(CardSuit::Spades, Cards::Ten);
+this->hands[2].getCard(2).init(CardSuit::Spades, Cards::Ace);
+this->hands[2].getCard(1).init(CardSuit::Clubs, Cards::Ace);
+this->hands[2].getCard(3).init(CardSuit::Diamonds, Cards::Jack);
+this->hands[2].getCard(4).init(CardSuit::Diamonds, Cards::Ace);
 
-this->hands[3].getCard(0).init(CardSuit::Spades, Cards::Ten);
-this->hands[3].getCard(1).init(CardSuit::Spades, Cards::King);
-this->hands[3].getCard(2).init(CardSuit::Clubs, Cards::Ten);
-this->hands[3].getCard(3).init(CardSuit::Diamonds, Cards::Nine);
-this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
+this->hands[3].getCard(0).init(CardSuit::Spades, Cards::Queen);
+this->hands[3].getCard(1).init(CardSuit::Diamonds, Cards::Nine);
+this->hands[3].getCard(2).init(CardSuit::Diamonds, Cards::Queen);
+this->hands[3].getCard(3).init(CardSuit::Hearts, Cards::Queen);
+this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::Ace);
 
 
                 // printf("Hands -----------------------\n");
@@ -247,7 +242,7 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
                         else {
                             
                             if (this->gameState == GameState::Game_Open_Bid_03) {
-                                
+                                                                
                                 this->nextState = GameState::Game_NewHand_Init;
 
                             }
@@ -286,6 +281,7 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
                 if (card != Cards::NoCard) {;
 
                     this->hands[this->gameStatus.getDealer() % 4].removeCard(this->dialogCursor);
+                    this->firstValidCard(this->gameStatus.getCurrentPlayer());
                     this->gameState = GameState::Game_StartPlay;
 
                 }
@@ -299,15 +295,15 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
 
                 }
 
+                this->nextState = GameState::None;
                 this->incMode();
-
+printf("Dealer selects cards\n");
             }
 
             break;
 
 
         case GameState::Game_StartPlay:
-//SJH will fli[p to lead player?
 
             this->gameState++;
             this->gameStatus.initHand((this->gameStatus.getDealer() + 1) % 4);
@@ -315,41 +311,49 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
             this->dealerCard.init(Cards::NoCard);
             this->counter = 0;
 
+
+            // If the player clockwise of the dealer is not playing then skip to the next player ..
+
             if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
 
-                this->gameState++;
-                this->gameStatus.incCurrentPlayer();
+                this->nextState = GameState::None;
+                this->incMode(true, false);
 
             }
 
-            if (this->cookie->getNumberOfPlayers() > 1) {
 
-                if (this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
-// printf("Game_StartPlay Swap\n");
-                    this->savedState = this->gameState;
-                    this->gameState = GameState::Swap_Init;
-                    this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
-                    this->getSwapCaption(this->savedState);
-                    break;
-                }
+            // If two players and the other player is the dealer then swap to their view to allow them to discard a card ..
+
+            else if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
+
+                this->savedState = this->gameState; 
+                this->gameState = GameState::Swap_Init;
+                this->nextState = GameState::None;
+                this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                this->getSwapCaption(this->savedState);
+                break;
 
             }
-
             [[fallthrough]]       
-
 
         case GameState::Game_LeadCard:
 
+            #ifdef DEBUG
+            
+                // Render out the cards before play ..
 
-// printf("Start of Play --------------------------------------------------------\n");
-// this->hands[0].print();
-// this->hands[1].print();
-// this->hands[2].print();
-// this->hands[3].print();
-// printf("Current player %i\n", this->gameStatus.getCurrentPlayer());
-// printf("----------------------------------------------------------------------\n");
-// printf("Lead GameState: %i\n", (uint16_t)this->gameState);
+                printf("Start of Play --------------------------------------------------------\n");
+                this->hands[0].print();
+                this->hands[1].print();
+                this->hands[2].print();
+                this->hands[3].print();
+                printf("Current player %i\n", this->gameStatus.getCurrentPlayer());
+                printf("----------------------------------------------------------------------\n");
 
+            #endif
+
+
+            // If the current player is a human then handle their card choice ..
 
             if (this->isHuman(this->gameStatus.getCurrentPlayer())) {
 
@@ -359,32 +363,17 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
 
                     Card card = this->hands[this->gameStatus.getCurrentPlayer()].getCard(selectedCard);
                     this->hands[this->gameStatus.getCurrentPlayer()].removeCard(selectedCard);
-
+                    this->firstValidCard(this->gameStatus.getCurrentPlayer());
                     this->gameStatus.playCard(card);
 
-                    // printf("Player %i leads a ", this->gameStatus.getCurrentPlayer());
-                    // card.print();
-                    // printf(".\n");
+                    #ifdef DEBUG
+                        printf("Player %i leads a ", this->gameStatus.getCurrentPlayer());
+                        card.print();
+                        printf(".\n");
+                    #endif
 
                     this->gameStatus.setFirstPlayer(this->gameStatus.getCurrentPlayer());
-                    // this->gameStatus.incCurrentPlayer();
-                    // this->bidCursor = 0;
-                    // this->counter = 0;
                     this->incMode(true);
-
-                    // if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
-// printf("aaaaaa\n");
-//                         this->gameState = GameState::Game_Follow_02;
-//                         this->gameStatus.incCurrentPlayer();
-                        
-//                     }
-//                     else {
-
-// printf("bbbbbb\n");
-//                         this->gameState = GameState::Game_Follow_01;
-
-//                     }
-
 
                 }
 
@@ -398,14 +387,14 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
 
                     this->hands[this->gameStatus.getCurrentPlayer()].removeCard(i);
                     this->gameStatus.setFirstPlayer(this->gameStatus.getCurrentPlayer());
-    // printf("...3a\n");
-
+                    this->firstValidCard(this->gameStatus.getCurrentPlayer());
                     this->gameStatus.playCard(card);
-    // printf("...3b\n");
 
-                    // printf("Player %i leads a ", this->gameStatus.getCurrentPlayer());
-                    // card.print();
-                    // printf(".\n");
+                    #ifdef DEBUG
+                        printf("Player %i leads a ", this->gameStatus.getCurrentPlayer());
+                        card.print();
+                        printf(".\n");
+                    #endif
 
                 }
 
@@ -419,6 +408,8 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
         case GameState::Game_Follow_02:
         case GameState::Game_Follow_03:
 
+            // If the current player is a human then handle their card choice ..
+            
             if (this->isHuman(this->gameStatus.getCurrentPlayer())) {
 
                 switch (this->counter) {
@@ -431,17 +422,15 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
 
                                 Card card = this->hands[this->gameStatus.getCurrentPlayer()].getCard(selectedCard);
                                 this->hands[this->gameStatus.getCurrentPlayer()].removeCard(selectedCard);
-            // printf("....1A\n");
                                 this->gameStatus.playCard(card);
-            // printf("....1B\n");
+                                this->firstValidCard(this->gameStatus.getCurrentPlayer());
 
-                                // printf("Player %i follows with a ", this->gameStatus.getCurrentPlayer());
-                                // card.print();
-                                // printf(".\n");
-                                // printf("GameState: %i\n", (uint16_t)this->gameState);
+                                #ifdef DEBUG
+                                    printf("Player %i follows with a ", this->gameStatus.getCurrentPlayer());
+                                    card.print();
+                                    printf(".\n");
+                                #endif
 
-                                // this->gameStatus.incCurrentPlayer();
-                                this->bidCursor = 0;
 
 ///SJH but what if the thrid person isn't playing?
                                 if (this->gameState == GameState::Game_Follow_03) {
@@ -451,14 +440,9 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
                                     this->gameStatus.incTricks(winner);
                                     
                                     if (this->hands[0].getCardsInHand() > 0) {
-
-                                        // this->counter = 0;
-                                        // printf("this->nextState = GameState::Game_EndOfTrick;\n");
                                         this->nextState = GameState::Game_EndOfTrick;
-
                                     }
                                     else {
-                                        // printf("this->nextState = GameState::Game_EndOfHand;\n");
                                         this->nextState = GameState::Game_EndOfHand;
                                         this->eog = 0;
                                     }
@@ -494,15 +478,14 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
                     uint8_t i = this->hands[this->gameStatus.getCurrentPlayer()].followACard(this->gameStatus);
                     Card card = this->hands[this->gameStatus.getCurrentPlayer()].getCard(i);
                     this->hands[this->gameStatus.getCurrentPlayer()].removeCard(i);
-    // printf("...2A\n");
+                    this->firstValidCard(this->gameStatus.getCurrentPlayer());
                     this->gameStatus.playCard(card);
-    // printf("...2B\n");
 
-                    // printf("Player %i follows with a ", this->gameStatus.getCurrentPlayer());
-                    // card.print();
-                    // printf(".\n");
-                    // printf("GameState: %i\n ", (uint16_t)this->gameState);     
-
+                    #ifdef DEBUG
+                        printf("Player %i follows with a ", this->gameStatus.getCurrentPlayer());
+                        card.print();
+                        printf(".\n");
+                    #endif
 
 // SJH what if the last person isn't playing?
                     if (this->gameState == GameState::Game_Follow_03) {
@@ -524,13 +507,9 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
                     else {
                         this->nextState = GameState::None;
                     }
-                    // else { SJH
-                    //     this->gameState++;
-                    // }
 
                 }
 
-// printf("this->counter %i\n", this->counter);
                 this->incMode();
 
             }
@@ -579,21 +558,17 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
 
                             case 0 ... 2:
                                 this->gameStatus.incHands((this->bidWinner() + 1) % 4, 2);
-// printf("A Euchre +2\n");                                
                                 break;
 
                             case 3 ... 4:
                                 this->gameStatus.incHands(this->bidWinner(), 1);
-// printf("A Normal +1\n");                                
                                 break;
 
                             case 5:
                                 if (!this->gameStatus.getPlayAlone()) {
-// printf("A Team +2\n");                                
                                     this->gameStatus.incHands(this->bidWinner(), 2);
                                 }
                                 else {
-// printf("A Alone +4\n");                                
                                     this->gameStatus.incHands(this->bidWinner(), 4);
                                 }
                                 break;
@@ -608,21 +583,17 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
 
                             case 0 ... 2:
                                 this->gameStatus.incHands((this->bidWinner() + 1) % 4, 2);
-// printf("B Euchre +2\n");                                       
                                 break;
 
                             case 3 ... 4:
-//  printf("B Normal +1\n"); 
                                 this->gameStatus.incHands(this->bidWinner(), 1);
                                 break;
 
                             case 5:
                                 if (!this->gameStatus.getPlayAlone()) {
-// printf("B Team +2\n"); 
                                     this->gameStatus.incHands(this->bidWinner(), 2);
                                 }
                                 else {
-// printf("B Alone +4\n");                                       
                                     this->gameStatus.incHands(this->bidWinner(), 4);
                                 }
                                 break;
@@ -635,11 +606,10 @@ this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
 
 
                 if (PC::buttons.pressed(BTN_A)) { 
-   
+// SJH if over 10??   
                     this->gameStatus.setDealer((this->gameStatus.getDealer() + 1) % 4);
                     this->text = nullptr;
                     this->gameState = GameState::Game_NewHand_Init;
-                    // printf("Change to init\n");
 
                 }
 

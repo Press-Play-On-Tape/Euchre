@@ -704,7 +704,8 @@ struct Hand {
 
             CardSuit suitLed = gameStatus.getSuitLed();
 
-            if (gameStatus.isPartnerWinning((this->handNumber + 2) % 4, suitLed)) {
+//            if (gameStatus.isHandWinning((this->handNumber + 2) % 4, suitLed)) {
+            if (gameStatus.isPlayerWinning((this->handNumber + 2) % 4)) {
 
                 if (this->hasSuit(suitLed, gameStatus.getTrumps())) {
 //LEAD printf("followACard 1 - partner wining. Play smallest of suit led\n");

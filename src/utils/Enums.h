@@ -2,7 +2,7 @@
 
 #define _DEBUG
 #define SOUNDS
-#define COOKIE_INITIALISED 62
+#define COOKIE_INITIALISED 59
 
 namespace Cards {
 
@@ -184,13 +184,43 @@ enum class Orientation : uint8_t {
 
 enum class Speech : uint8_t {
     Pass = 0,           
+    Pass_01,
+    Pass_02,
+    Pass_03,
     TakeIt = 4,
+    TakeIt_01,
+    TakeIt_02,
+    TakeIt_03,
     TakeItAlone = 8,
+    TakeItAlone_01,
+    TakeItAlone_02,
+    TakeItAlone_03,
     Winner = 12,
+    Winner_01,
+    Winner_02,
+    Winner_03,
     Mine = 16,
+    Mine_01,
+    Mine_02,
+    Mine_03,
     Sorry = 20,
+    Sorry_01,
+    Sorry_02,
+    Sorry_03,
     Trumped = 24,
-    WooHoo = 28
+    Trumped_01,
+    Trumped_02,
+    Trumped_03,
+    WooHoo = 28,
+    WooHoo_01,
+    WooHoo_02,
+    WooHoo_03,
+    TeamAlphaPlus1,
+    TeamAlphaPlus2,
+    TeamAlphaPlus4,
+    TeamBetaPlus1,
+    TeamBetaPlus2,
+    TeamBetaPlus4,
 };
 
 enum class SwapCaption : uint8_t {
@@ -198,5 +228,6 @@ enum class SwapCaption : uint8_t {
     DiscardACard,
     LeadACard,
     FollowALead,
-    YourBid
+    YourBid,
+    Redeal
 };           

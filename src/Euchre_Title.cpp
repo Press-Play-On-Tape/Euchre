@@ -20,8 +20,27 @@ void Game::title_Init() {
 // ----------------------------------------------------------------------------
 //  Handle state updates .. 
 //
+uint8_t sounds = 0;
+
 void Game::title() {
 
+    if (PC::buttons.pressed(BTN_B)) { 
+
+        this->playSpeech(static_cast<Speech>(sounds));
+
+    }         
+
+    if (PC::buttons.pressed(BTN_LEFT)) { 
+
+        if (sounds > 0) sounds--;
+
+    }         
+
+    if (PC::buttons.pressed(BTN_RIGHT)) { 
+
+        if (sounds < 31) sounds++;
+
+    }         
     // Handle player actions ..
 
     if (PC::buttons.pressed(BTN_A)) { 
@@ -68,7 +87,7 @@ void Game::title() {
 
     // Render page ..
 
-    PD::drawBitmap(0, 0, Images::Title);
+    PD::drawBitmap(32, 30, Images::Title);
 
 
 
@@ -94,6 +113,9 @@ void Game::title() {
 
     }
 
-
+PD::setCursor(0,0);
+PD::setColor(6);
+PD::fontSize = 2;
+PD::print((uint16_t)sounds);
 
 }

@@ -6,7 +6,7 @@ using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 
 
-void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool highlight, bool raise, bool showCards) {
+void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool highlight, bool raise, bool showCards, bool highlightAbleToPlay, bool ableToPlay) {
 
     uint8_t highlight_offset = (raise ? 6 : 0);
 
@@ -16,24 +16,62 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
 
             if (!highlight) {
 
-                PD::drawBitmap(x, y, Images::Card_Front);
-                PD::drawBitmap(x + 5, y + 15, Images::Suits_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
-                PD::drawBitmap(x + 29, y + 36, Images::Suits_Top[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
+                if (ableToPlay) {
 
-                switch (card.getSuit(CardSuit::None)) {
+//                    if (this->cookie)
+                    if (highlightAbleToPlay) {
+                        PD::drawBitmap(x, y, Images::Card_Front_Highlight);
+                    }
+                    else {
+                        PD::drawBitmap(x, y, Images::Card_Front);
+                    }
+                    PD::drawBitmap(x + 5, y + 15, Images::Suits_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
+                    PD::drawBitmap(x + 29, y + 36, Images::Suits_Top[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
+//
+                    switch (card.getSuit(CardSuit::None)) {
 
-                    case CardSuit::Spades:
-                    case CardSuit::Clubs:
-                        PD::drawBitmap(x + 3, y + 6, Images::Numbers_Bot_Blk[card.getNumber() - 7]);
-                        PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Blk[card.getNumber() - 7]);
-                        break;
+                        case CardSuit::Spades:
+                        case CardSuit::Clubs:
+                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Blk[card.getNumber() - 7]);
+                            PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Blk[card.getNumber() - 7]);
+                            break;
 
-                    case CardSuit::Diamonds:
-                    case CardSuit::Hearts:
-                        PD::drawBitmap(x + 3, y + 6, Images::Numbers_Bot_Red[card.getNumber() - 7]);
-                        PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Red[card.getNumber() - 7]);
-                        break;
-                                    
+                        case CardSuit::Diamonds:
+                        case CardSuit::Hearts:
+                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Red[card.getNumber() - 7]);
+                            PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Red[card.getNumber() - 7]);
+                            break;
+                                        
+                    }
+
+                }
+                else {
+
+                    // PD::drawBitmap(x, y, Images::Card_Front_Disabled);
+                    // PD::drawBitmap(x + 5, y + 15, Images::Suits_Disabled_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
+                    PD::drawBitmap(x, y, Images::Card_Front);
+                    PD::drawBitmap(x + 5, y + 15, Images::Suits_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
+
+                    switch (card.getSuit(CardSuit::None)) {
+
+                        case CardSuit::Spades:
+                        case CardSuit::Clubs:
+//                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Blk_Disabled[card.getNumber() - 7]);
+//                            // PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Blk_Disabled[card.getNumber() - 7]);
+                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Blk[card.getNumber() - 7]);
+                            PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Blk[card.getNumber() - 7]);
+                            break;
+
+                        case CardSuit::Diamonds:
+                        case CardSuit::Hearts:
+//                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Red_Disabled[card.getNumber() - 7]);
+//                            // PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Red_Disabled[card.getNumber() - 7]);
+                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Red[card.getNumber() - 7]);
+                            PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Red[card.getNumber() - 7]);
+                            break;
+                                        
+                    }
+
                 }
 
             }
@@ -47,13 +85,13 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
 
                     case CardSuit::Spades:
                     case CardSuit::Clubs:
-                        PD::drawBitmap(x + 3, y + 6 - highlight_offset, Images::Numbers_Bot_Blk[card.getNumber() - 7]);
+                        PD::drawBitmap(x + 4, y + 6 - highlight_offset, Images::Numbers_Bot_Blk[card.getNumber() - 7]);
                         PD::drawBitmap(x + 28, y + 45 - highlight_offset, Images::Numbers_Top_Blk[card.getNumber() - 7]);
                         break;
 
                     case CardSuit::Diamonds:
                     case CardSuit::Hearts:
-                        PD::drawBitmap(x + 3, y + 6 - highlight_offset, Images::Numbers_Bot_Red[card.getNumber() - 7]);
+                        PD::drawBitmap(x + 4, y + 6 - highlight_offset, Images::Numbers_Bot_Red[card.getNumber() - 7]);
                         PD::drawBitmap(x + 28, y + 45 - highlight_offset, Images::Numbers_Top_Red[card.getNumber() - 7]);
                         break;
                                     
@@ -74,12 +112,12 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
 
                     case CardSuit::Spades:
                     case CardSuit::Clubs:
-                        PD::drawBitmap(x + 45, y + 4, Images::Numbers_Left_Blk[card.getNumber() - 7]);
+                        PD::drawBitmap(x + 46, y + 4, Images::Numbers_Left_Blk[card.getNumber() - 7]);
                         break;
 
                     case CardSuit::Diamonds:
                     case CardSuit::Hearts:
-                        PD::drawBitmap(x + 45, y + 4, Images::Numbers_Left_Red[card.getNumber() - 7]);
+                        PD::drawBitmap(x + 46, y + 4, Images::Numbers_Left_Red[card.getNumber() - 7]);
                         break;
                     
                 }
@@ -218,7 +256,34 @@ void Game::renderGame(bool pause) {
 
             for (uint8_t i = 0; i < this->hands[position_00].getCardsInHand(); i++) {
 
-                this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, this->bidCursor == i && highlightCard, false);
+                switch (this->gameState) {
+
+                    case GameState::Game_Follow_01 ... GameState::Game_Follow_03:
+
+                        if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->counter == 0) {
+
+                            CardSuit suitLed = this->gameStatus.getSuitLed();
+                            uint8_t canPlay = !this->cookie->getHighlightPlayable() ? true : this->gameStatus.getFirstPlayer() != position_00 && !(this->hands[position_00].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[position_00].hasSuit(suitLed, this->gameStatus.getTrumps()));
+                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, 
+                                /*this->cookie->getHighlightPlayable() &&*/ this->bidCursor == i && highlightCard, this->bidCursor == i && highlightCard, 
+                                false, this->cookie->getHighlightPlayable(), canPlay);
+
+                            // printf("Render1 card: %i, highlightCard %i, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard %i, %i %i\n", i, highlightCard, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard, this->cookie->getHighlightPlayable(), canPlay);
+                        }
+                        else {
+
+                            // printf("Render2 card: %i, %i \n", i, this->cookie->getHighlightPlayable());
+                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, false, false, false, false, false);
+                        }
+                        break;
+                    
+                    default: 
+                        this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, this->bidCursor == i && highlightCard, false, false);
+                        // printf("Render3 card: %i, highlightCard %i, 0 1\n",i, highlightCard);
+                        break;
+
+                }
+
 
             }
 
@@ -298,7 +363,7 @@ void Game::renderGame(bool pause) {
 
         if (this->dealerCard.getCardIndex() != Cards::NoCard) {
 
-            this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, true);
+            this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, true, false, false);
         
         }
 
@@ -310,28 +375,28 @@ void Game::renderGame(bool pause) {
             if (i % 4 == position_00) {
                 if (this->gameStatus.getCurrentHand(position_00).getNumber() != Cards::NoCard) {
     // printf("1) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_00), 95, 80, this->gameStatus.isPlayerWinning(position_00) && this->cookie->getShowWinner(), false, true);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_00), 95, 80, this->gameStatus.isPlayerWinning(position_00) && this->cookie->getShowWinner(), false, true, false, false);
                 }
             }
 
             if (i % 4 == position_01) {
                 if (this->gameStatus.getCurrentHand(position_01).getNumber() != Cards::NoCard) {
     // printf("2) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_01), 70, 65, this->gameStatus.isPlayerWinning(position_01) && this->cookie->getShowWinner(), false, this->cookie->getShowHands());
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_01), 70, 65, this->gameStatus.isPlayerWinning(position_01) && this->cookie->getShowWinner(), false, true, false, false);//this->cookie->getShowHands()), false, false;
                 }
             }
 
             if (i % 4 == position_02) {
                 if (this->gameStatus.getCurrentHand(position_02).getNumber() != Cards::NoCard) {
     // printf("3) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_02), 85, 40, this->gameStatus.isPlayerWinning(position_02) && this->cookie->getShowWinner(), false, this->cookie->getShowHands());
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_02), 85, 40, this->gameStatus.isPlayerWinning(position_02) && this->cookie->getShowWinner(), false, true, false, false);//this->cookie->getShowHands(), false, false);
                 }
             }
 
             if (i % 4 == position_03) {
                 if (this->gameStatus.getCurrentHand(position_03).getNumber() != Cards::NoCard) {
     // printf("4) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_03), 110, 55, this->gameStatus.isPlayerWinning(position_03) && this->cookie->getShowWinner(), false, this->cookie->getShowHands());
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_03), 110, 55, this->gameStatus.isPlayerWinning(position_03) && this->cookie->getShowWinner(), false, true, false, false);//this->cookie->getShowHands(), false, false);
                 }
             }
 
@@ -704,6 +769,10 @@ void Game::renderHandOver(uint8_t winner) {
                                    Images::MinusTwo[index]);
                 }
 
+                if (this->eog == 0) {
+                    this->playSpeech(Speech::TeamBetaPlus2);
+                }
+
                 break;
 
             case 3 ... 4:
@@ -715,6 +784,10 @@ void Game::renderHandOver(uint8_t winner) {
                     PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
                                    Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
                                    Images::PlusOne[index]);
+                }
+
+                if (this->eog == 0) {
+                    this->playSpeech(Speech::TeamAlphaPlus1);
                 }
 
                 break;
@@ -732,6 +805,10 @@ void Game::renderHandOver(uint8_t winner) {
                                        Images::PlusTwo[index]);
                     }
 
+                    if (this->eog == 0) {
+                        this->playSpeech(Speech::TeamAlphaPlus2);
+                    }
+
                 }
                 else {
 
@@ -744,6 +821,10 @@ void Game::renderHandOver(uint8_t winner) {
                         PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
                                        Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
                                        Images::PlusFour[index]);
+                    }
+
+                    if (this->eog == 0) {
+                        this->playSpeech(Speech::TeamAlphaPlus4);
                     }
 
                 }
@@ -769,6 +850,10 @@ void Game::renderHandOver(uint8_t winner) {
                                    Images::MinusTwo[index]);
                 }
 
+                if (this->eog == 0) {
+                    this->playSpeech(Speech::TeamAlphaPlus2);
+                }
+
                 break;
 
             case 3 ... 4:
@@ -780,6 +865,10 @@ void Game::renderHandOver(uint8_t winner) {
                     PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
                                    Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
                                    Images::PlusOne[index]);
+                }
+
+                if (this->eog == 0) {
+                    this->playSpeech(Speech::TeamBetaPlus1);
                 }
 
                 break;
@@ -798,6 +887,10 @@ void Game::renderHandOver(uint8_t winner) {
                                        Images::PlusTwo[index]);
                     }
 
+                    if (this->eog == 2) {
+                        this->playSpeech(Speech::TeamBetaPlus1);
+                    }
+
                 }
                 else {
 
@@ -810,6 +903,10 @@ void Game::renderHandOver(uint8_t winner) {
                         PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
                                        Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
                                        Images::PlusFour[index]);
+                    }
+
+                    if (this->eog == 0) {
+                        this->playSpeech(Speech::TeamBetaPlus4);
                     }
 
                 }

@@ -12,7 +12,7 @@ struct GameStatus {
         HasSuit hasSuit[4][4];
         bool hasBeenPlayed[4][13];
         Card currentHand[4];
-        CardSuit suitLed;
+        CardSuit suitLed = CardSuit::None;
         CardSuit trumps = CardSuit::None;
 
         uint8_t firstPlayer;
@@ -123,68 +123,63 @@ struct GameStatus {
 
 
         void playCard(Card &card) {
-// printf("PlayCard A\n");
+
             this->setHasSuit(this->getCurrentPlayer(), card.getSuit(this->getTrumps()), card.getSuit(this->getTrumps()) != trumps ? HasSuit::False : HasSuit::True);
-// printf("PlayCard B\n");
             this->setHasBeenPlayed(card.getSuit(this->getTrumps()), card.getNumber(), true);
-// printf("PlayCard C\n");
             this->setCurrentHand(this->getCurrentPlayer(), card);
 
-// printf("PlayCard D.  SuitLed %i ", (uint16_t)suitLed);
             if (this->suitLed == CardSuit::None) this->suitLed = card.getSuit(this->getTrumps());
-// printf(" updated to %i.", (uint16_t)suitLed);            
-// printf("PlayCard E\n");
 
         }
 
-        bool isPartnerWinning(uint8_t playerIdx, CardSuit suitLed) {
+        // bool isHandWinning(uint8_t playerIdx, CardSuit suitLed) {
 
-            if (this->currentHand[playerIdx].getNumber() == Cards::NoCard) return false;
+        //     if (this->currentHand[playerIdx].getNumber() == Cards::NoCard) return false;
 
-            uint8_t partnerCardValue = 0;
+        //     uint8_t partnerCardValue = 0;
 
-            if (this->currentHand[playerIdx].isTrump(trumps)) {
+        //     if (this->currentHand[playerIdx].isTrump(trumps)) {
 
-                partnerCardValue = this->currentHand[playerIdx].getCardValue(trumps);
+        //         partnerCardValue = this->currentHand[playerIdx].getCardValue(trumps);
 
-            }
-            else if (this->currentHand[playerIdx].getSuit(this->getTrumps()) == suitLed) {
+        //     }
+        //     else if (this->currentHand[playerIdx].getSuit(this->getTrumps()) == suitLed) {
 
-                partnerCardValue = this->currentHand[playerIdx].getNumber();
+        //         partnerCardValue = this->currentHand[playerIdx].getNumber();
 
-            }
+        //     }
 
-            if (partnerCardValue == 0) return false;
+        //     if (partnerCardValue == 0) return false;
 
 
-            // Other hands ..
+        //     // Other hands ..
 
-            for (uint8_t i = playerIdx + 1; i < playerIdx + 4; i++) {
+        //     for (uint8_t i = playerIdx + 1; i < playerIdx + 4; i++) {
 
-                uint8_t otherCardValue = 0;
+        //         uint8_t otherCardValue = 0;
 
-                if (this->currentHand[i].getNumber() != Cards::NoCard) {
+        //         if (this->currentHand[i % 4].getNumber() != Cards::NoCard) {
 
-                    if (this->currentHand[i].isTrump(trumps)) {
+        //             if (this->currentHand[i % 4].isTrump(trumps)) {
 
-                        otherCardValue = this->currentHand[i].getCardValue(trumps);
+        //                 otherCardValue = this->currentHand[i % 4].getCardValue(trumps);
 
-                    }
-                    else if (this->currentHand[i].getSuit(this->getTrumps()) == suitLed) {
+        //             }
+        //             else if (this->currentHand[i % 4].getSuit(this->getTrumps()) == suitLed) {
 
-                        otherCardValue = this->currentHand[i].getNumber();
+        //                 otherCardValue = this->currentHand[i % 4].getNumber();
 
-                    }
+        //             }
 
-                }
+        //         }
 
-                if (otherCardValue > partnerCardValue) return false;
+        //         if (otherCardValue > partnerCardValue) return false;
 
-            }
+        //     }
 
-            return true;
+        //     return true;
 
-        }
+        // }
 
 
         uint8_t whoWon() {

@@ -26,6 +26,7 @@ void Game::swap() {
     if (PC::buttons.pressed(BTN_A)) { 
 
         this->gameState = this->savedState;
+        this->firstValidCard(this->gameStatus.getCurrentPlayer());
 
     }         
 
@@ -75,6 +76,10 @@ void Game::swap() {
                 case SwapCaption::YourBid:
                     PD::print("Player 1: Your bid..");
                     break;
+ 
+                case SwapCaption::Redeal:
+                    PD::print("Player 1: Deal again..");
+                    break;
 
                 default: break;
                     
@@ -100,6 +105,10 @@ void Game::swap() {
  
                 case SwapCaption::YourBid:
                     PD::print("Player 2: Your bid..");
+                    break;
+ 
+                case SwapCaption::Redeal:
+                    PD::print("Player 2: Deal again..");
                     break;
 
                 default: break;
