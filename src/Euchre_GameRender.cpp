@@ -264,9 +264,7 @@ void Game::renderGame(bool pause) {
 
                             CardSuit suitLed = this->gameStatus.getSuitLed();
                             uint8_t canPlay = !this->cookie->getHighlightPlayable() ? true : this->gameStatus.getFirstPlayer() != position_00 && !(this->hands[position_00].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[position_00].hasSuit(suitLed, this->gameStatus.getTrumps()));
-                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, 
-                                /*this->cookie->getHighlightPlayable() &&*/ this->bidCursor == i && highlightCard, this->bidCursor == i && highlightCard, 
-                                false, this->cookie->getHighlightPlayable(), canPlay);
+                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, this->bidCursor == i && highlightCard, false, this->cookie->getHighlightPlayable(), canPlay);
 
                             // printf("Render1 card: %i, highlightCard %i, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard %i, %i %i\n", i, highlightCard, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard, this->cookie->getHighlightPlayable(), canPlay);
                         }
@@ -363,7 +361,17 @@ void Game::renderGame(bool pause) {
 
         if (this->dealerCard.getCardIndex() != Cards::NoCard) {
 
-            this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, true, false, false);
+            switch (this->gameState) {
+
+                case GameState::Game_DealerCard ... GameState::Game_Bid_03:
+                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, true, false, false);
+                    break;
+
+                case GameState::Game_Open_Bid_00 ... GameState::Game_StartPlay:
+                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, false, false, false);
+                    break;
+
+            }
         
         }
 

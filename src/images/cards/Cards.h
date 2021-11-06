@@ -3,7 +3,6 @@
 namespace Images {
 
     #include "Card_Front.h"
-    #include "Card_Front_Disabled.h"
     #include "Card_Front_Highlight.h"
     #include "Card_Front_Rot.h"
     #include "Card_Back.h"
@@ -14,10 +13,10 @@ namespace Images {
     #include "suits/top/Suit_02_Top.h"
     #include "suits/top/Suit_03_Top.h"
 
-    #include "suits/bottom/normal/Suit_00_Bot.h"
-    #include "suits/bottom/normal/Suit_01_Bot.h"
-    #include "suits/bottom/normal/Suit_02_Bot.h"
-    #include "suits/bottom/normal/Suit_03_Bot.h"
+    #include "suits/bottom/Suit_00_Bot.h"
+    #include "suits/bottom/Suit_01_Bot.h"
+    #include "suits/bottom/Suit_02_Bot.h"
+    #include "suits/bottom/Suit_03_Bot.h"
 
     #include "suits/left/Suit_00_Left.h"
     #include "suits/left/Suit_01_Left.h"
@@ -29,39 +28,20 @@ namespace Images {
     #include "suits/right/Suit_02_Right.h"
     #include "suits/right/Suit_03_Right.h"
 
-    #include "suits/bottom/disabled/Suit_00_Disabled_Bot.h"
-    #include "suits/bottom/disabled/Suit_01_Disabled_Bot.h"
-    #include "suits/bottom/disabled/Suit_02_Disabled_Bot.h"
-    #include "suits/bottom/disabled/Suit_03_Disabled_Bot.h"
+    #include "numbers/bottom/Numbers_Blk_09_Bot.h"
+    #include "numbers/bottom/Numbers_Blk_10_Bot.h"
+    #include "numbers/bottom/Numbers_Blk_0J_Bot.h"
+    #include "numbers/bottom/Numbers_Blk_0Q_Bot.h"
+    #include "numbers/bottom/Numbers_Blk_0K_Bot.h"
+    #include "numbers/bottom/Numbers_Blk_0A_Bot.h"
 
-    #include "numbers/bottom/normal/Numbers_Blk_09_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Blk_10_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Blk_0J_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Blk_0Q_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Blk_0K_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Blk_0A_Bot.h"
+    #include "numbers/bottom/Numbers_Red_09_Bot.h"
+    #include "numbers/bottom/Numbers_Red_10_Bot.h"
+    #include "numbers/bottom/Numbers_Red_0J_Bot.h"
+    #include "numbers/bottom/Numbers_Red_0Q_Bot.h"
+    #include "numbers/bottom/Numbers_Red_0K_Bot.h"
+    #include "numbers/bottom/Numbers_Red_0A_Bot.h"
 
-    #include "numbers/bottom/normal/Numbers_Red_09_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Red_10_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Red_0J_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Red_0Q_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Red_0K_Bot.h"
-    #include "numbers/bottom/normal/Numbers_Red_0A_Bot.h"
-
-    #include "numbers/bottom/disabled/Numbers_Blk_09_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Blk_10_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Blk_0J_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Blk_0Q_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Blk_0K_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Blk_0A_Disabled_Bot.h"
-
-    #include "numbers/bottom/disabled/Numbers_Red_09_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Red_10_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Red_0J_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Red_0Q_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Red_0K_Disabled_Bot.h"
-    #include "numbers/bottom/disabled/Numbers_Red_0A_Disabled_Bot.h"
-    
     #include "numbers/top/Numbers_Blk_09_Top.h"
     #include "numbers/top/Numbers_Blk_10_Top.h"
     #include "numbers/top/Numbers_Blk_0J_Top.h"
@@ -132,13 +112,6 @@ namespace Images {
         Suit_03_Right,
     };
 
-    const uint8_t * const Suits_Disabled_Bot[] = { 
-        Suit_00_Disabled_Bot,
-        Suit_01_Disabled_Bot,
-        Suit_02_Disabled_Bot,
-        Suit_03_Disabled_Bot,
-    };
-
     const uint8_t * const Numbers_Bot_Blk[] = { 
         Numbers_Blk_09_Bot,
         Numbers_Blk_10_Bot,
@@ -148,15 +121,6 @@ namespace Images {
         Numbers_Blk_0A_Bot,
     };
 
-    const uint8_t * const Numbers_Bot_Blk_Disabled[] = { 
-        Numbers_Blk_09_Disabled_Bot,
-        Numbers_Blk_10_Disabled_Bot,
-        Numbers_Blk_0J_Disabled_Bot,
-        Numbers_Blk_0Q_Disabled_Bot,
-        Numbers_Blk_0K_Disabled_Bot,
-        Numbers_Blk_0A_Disabled_Bot,
-    };
-
     const uint8_t * const Numbers_Bot_Red[] = { 
         Numbers_Red_09_Bot,
         Numbers_Red_10_Bot,
@@ -164,15 +128,6 @@ namespace Images {
         Numbers_Red_0Q_Bot,
         Numbers_Red_0K_Bot,
         Numbers_Red_0A_Bot,
-    };
-
-    const uint8_t * const Numbers_Bot_Red_Disabled[] = { 
-        Numbers_Red_09_Disabled_Bot,
-        Numbers_Red_10_Disabled_Bot,
-        Numbers_Red_0J_Disabled_Bot,
-        Numbers_Red_0Q_Disabled_Bot,
-        Numbers_Red_0K_Disabled_Bot,
-        Numbers_Red_0A_Disabled_Bot,
     };
 
     const uint8_t * const Numbers_Top_Blk[] = { 
