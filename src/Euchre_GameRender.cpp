@@ -6,7 +6,7 @@ using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 
 
-void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, bool highlightAbleToPlay, bool ableToPlay) {
+void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, bool ableToPlay) {
 
     uint8_t highlight_offset = (raise ? 6 : 0);
 
@@ -14,89 +14,34 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
 
         case Orientation::Bottom:
 
-            if (!raise) {
+            if (raise || ableToPlay) {
 
-                if (ableToPlay) {
-
-//                    if (this->cookie)
-                    if (highlightAbleToPlay) {
-                        PD::drawBitmap(x, y, Images::Card_Front_Highlight);
-                    }
-                    else {
-                        PD::drawBitmap(x, y, Images::Card_Front);
-                    }
-                    PD::drawBitmap(x + 5, y + 15, Images::Suits_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
-                    PD::drawBitmap(x + 29, y + 36, Images::Suits_Top[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
-//
-                    switch (card.getSuit(CardSuit::None)) {
-
-                        case CardSuit::Spades:
-                        case CardSuit::Clubs:
-                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Blk[card.getNumber() - 7]);
-                            PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Blk[card.getNumber() - 7]);
-                            break;
-
-                        case CardSuit::Diamonds:
-                        case CardSuit::Hearts:
-                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Red[card.getNumber() - 7]);
-                            PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Red[card.getNumber() - 7]);
-                            break;
-                                        
-                    }
-
-                }
-                else {
-
-                    // PD::drawBitmap(x, y, Images::Card_Front_Disabled);
-                    // PD::drawBitmap(x + 5, y + 15, Images::Suits_Disabled_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
-                    PD::drawBitmap(x, y, Images::Card_Front);
-                    PD::drawBitmap(x + 5, y + 15, Images::Suits_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
-
-                    switch (card.getSuit(CardSuit::None)) {
-
-                        case CardSuit::Spades:
-                        case CardSuit::Clubs:
-//                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Blk_Disabled[card.getNumber() - 7]);
-//                            // PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Blk_Disabled[card.getNumber() - 7]);
-                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Blk[card.getNumber() - 7]);
-                            PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Blk[card.getNumber() - 7]);
-                            break;
-
-                        case CardSuit::Diamonds:
-                        case CardSuit::Hearts:
-//                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Red_Disabled[card.getNumber() - 7]);
-//                            // PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Red_Disabled[card.getNumber() - 7]);
-                            PD::drawBitmap(x + 4, y + 6, Images::Numbers_Bot_Red[card.getNumber() - 7]);
-                            PD::drawBitmap(x + 28, y + 45, Images::Numbers_Top_Red[card.getNumber() - 7]);
-                            break;
-                                        
-                    }
-
-                }
+                PD::drawBitmap(x, y - highlight_offset, Images::Card_Front_Highlight);
 
             }
             else {
 
-                PD::drawBitmap(x, y - highlight_offset, Images::Card_Front_Highlight);
-                PD::drawBitmap(x + 5, y + 15 - highlight_offset, Images::Suits_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
-                PD::drawBitmap(x + 29, y + 36 - highlight_offset, Images::Suits_Top[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
+                PD::drawBitmap(x, y, Images::Card_Front);
 
-                switch (card.getSuit(CardSuit::None)) {
+            }
 
-                    case CardSuit::Spades:
-                    case CardSuit::Clubs:
-                        PD::drawBitmap(x + 4, y + 6 - highlight_offset, Images::Numbers_Bot_Blk[card.getNumber() - 7]);
-                        PD::drawBitmap(x + 28, y + 45 - highlight_offset, Images::Numbers_Top_Blk[card.getNumber() - 7]);
-                        break;
+            PD::drawBitmap(x + 5, y + 15 - highlight_offset, Images::Suits_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
+            PD::drawBitmap(x + 29, y + 36 - highlight_offset, Images::Suits_Top[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
 
-                    case CardSuit::Diamonds:
-                    case CardSuit::Hearts:
-                        PD::drawBitmap(x + 4, y + 6 - highlight_offset, Images::Numbers_Bot_Red[card.getNumber() - 7]);
-                        PD::drawBitmap(x + 28, y + 45 - highlight_offset, Images::Numbers_Top_Red[card.getNumber() - 7]);
-                        break;
-                                    
-                }
+            switch (card.getSuit(CardSuit::None)) {
 
+                case CardSuit::Spades:
+                case CardSuit::Clubs:
+                    PD::drawBitmap(x + 4, y + 6 - highlight_offset, Images::Numbers_Bot_Blk[card.getNumber() - 7]);
+                    PD::drawBitmap(x + 28, y + 45 - highlight_offset, Images::Numbers_Top_Blk[card.getNumber() - 7]);
+                    break;
+
+                case CardSuit::Diamonds:
+                case CardSuit::Hearts:
+                    PD::drawBitmap(x + 4, y + 6 - highlight_offset, Images::Numbers_Bot_Red[card.getNumber() - 7]);
+                    PD::drawBitmap(x + 28, y + 45 - highlight_offset, Images::Numbers_Top_Red[card.getNumber() - 7]);
+                    break;
+                                
             }
 
             break;
@@ -264,14 +209,14 @@ void Game::renderGame(bool pause) {
 
                             CardSuit suitLed = this->gameStatus.getSuitLed();
                             uint8_t canPlay = !this->cookie->getHighlightPlayable() ? true : this->gameStatus.getFirstPlayer() != position_00 && !(this->hands[position_00].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[position_00].hasSuit(suitLed, this->gameStatus.getTrumps()));
-                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, false, this->cookie->getHighlightPlayable(), canPlay);
+                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, false, this->cookie->getHighlightPlayable() && canPlay);
 
                             // printf("Render1 card: %i, highlightCard %i, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard %i, %i %i\n", i, highlightCard, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard, this->cookie->getHighlightPlayable(), canPlay);
                         }
                         else {
 
                             // printf("Render2 card: %i, %i \n", i, this->cookie->getHighlightPlayable());
-                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, false, false, false, false);
+                            this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, false, false, false);
                         }
                         break;
                     
@@ -294,7 +239,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t i = 0; i < this->hands[position_01].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Left, this->hands[position_01].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, this->cookie->getShowHands());
+                    this->renderCard(Orientation::Left, this->hands[position_01].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, this->cookie->getShowHands(), true);
 
                 }
 
@@ -309,7 +254,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t i = 0; i < this->hands[position_02].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Top, this->hands[position_02].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, this->cookie->getShowHands());
+                    this->renderCard(Orientation::Top, this->hands[position_02].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, this->cookie->getShowHands(), true);
 
                 }
 
@@ -324,7 +269,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t i = 0; i < this->hands[position_03].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Right, this->hands[position_03].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, this->cookie->getShowHands());
+                    this->renderCard(Orientation::Right, this->hands[position_03].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, this->cookie->getShowHands(), true);
 
                 }
 
@@ -364,11 +309,11 @@ void Game::renderGame(bool pause) {
             switch (this->gameState) {
 
                 case GameState::Game_DealerCard ... GameState::Game_Bid_03:
-                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, true, false, false);
+                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, true, false);
                     break;
 
                 case GameState::Game_Open_Bid_00 ... GameState::Game_StartPlay:
-                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, false, false);
+                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, false);
                     break;
 
             }
@@ -382,29 +327,25 @@ void Game::renderGame(bool pause) {
 
             if (i % 4 == position_00) {
                 if (this->gameStatus.getCurrentHand(position_00).getNumber() != Cards::NoCard) {
-    // printf("1) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_00), 95, 80, this->gameStatus.isPlayerWinning(position_00) && this->cookie->getShowWinner(), true, false, false);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_00), 95, 80, this->gameStatus.isPlayerWinning(position_00) && this->cookie->getShowWinner(), true, false);
                 }
             }
 
             if (i % 4 == position_01) {
                 if (this->gameStatus.getCurrentHand(position_01).getNumber() != Cards::NoCard) {
-    // printf("2) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_01), 70, 65, this->gameStatus.isPlayerWinning(position_01) && this->cookie->getShowWinner(), true, false, false);//this->cookie->getShowHands()), false, false;
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_01), 70, 65, this->gameStatus.isPlayerWinning(position_01) && this->cookie->getShowWinner(), true, false);
                 }
             }
 
             if (i % 4 == position_02) {
                 if (this->gameStatus.getCurrentHand(position_02).getNumber() != Cards::NoCard) {
-    // printf("3) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_02), 85, 40, this->gameStatus.isPlayerWinning(position_02) && this->cookie->getShowWinner(), true, false, false);//this->cookie->getShowHands(), false, false);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_02), 85, 40, this->gameStatus.isPlayerWinning(position_02) && this->cookie->getShowWinner(), true, false);
                 }
             }
 
             if (i % 4 == position_03) {
                 if (this->gameStatus.getCurrentHand(position_03).getNumber() != Cards::NoCard) {
-    // printf("4) %i - %i %i %i %i \n", i, position_00, position_01, position_02, position_03);
-                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_03), 110, 55, this->gameStatus.isPlayerWinning(position_03) && this->cookie->getShowWinner(), true, false, false);//this->cookie->getShowHands(), false, false);
+                    this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position_03), 110, 55, this->gameStatus.isPlayerWinning(position_03) && this->cookie->getShowWinner(), true, false);
                 }
             }
 
@@ -925,29 +866,5 @@ void Game::renderHandOver(uint8_t winner) {
     }
 
     if (this->eog < 44) this->eog++;
-
-}
-
-void Game::renderSuit(CardSuit suit) {
-
-    switch (suit) {
-
-        case CardSuit::Hearts:
-            PD::print("H");
-            break;
-
-        case CardSuit::Diamonds:
-            PD::print("D");
-            break;
-
-        case CardSuit::Clubs:
-            PD::print("C");
-            break;
-
-        case CardSuit::Spades:
-            PD::print("S");
-            break;
-            
-    }
 
 }

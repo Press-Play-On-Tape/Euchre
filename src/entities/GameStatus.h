@@ -132,55 +132,6 @@ struct GameStatus {
 
         }
 
-        // bool isHandWinning(uint8_t playerIdx, CardSuit suitLed) {
-
-        //     if (this->currentHand[playerIdx].getNumber() == Cards::NoCard) return false;
-
-        //     uint8_t partnerCardValue = 0;
-
-        //     if (this->currentHand[playerIdx].isTrump(trumps)) {
-
-        //         partnerCardValue = this->currentHand[playerIdx].getCardValue(trumps);
-
-        //     }
-        //     else if (this->currentHand[playerIdx].getSuit(this->getTrumps()) == suitLed) {
-
-        //         partnerCardValue = this->currentHand[playerIdx].getNumber();
-
-        //     }
-
-        //     if (partnerCardValue == 0) return false;
-
-
-        //     // Other hands ..
-
-        //     for (uint8_t i = playerIdx + 1; i < playerIdx + 4; i++) {
-
-        //         uint8_t otherCardValue = 0;
-
-        //         if (this->currentHand[i % 4].getNumber() != Cards::NoCard) {
-
-        //             if (this->currentHand[i % 4].isTrump(trumps)) {
-
-        //                 otherCardValue = this->currentHand[i % 4].getCardValue(trumps);
-
-        //             }
-        //             else if (this->currentHand[i % 4].getSuit(this->getTrumps()) == suitLed) {
-
-        //                 otherCardValue = this->currentHand[i % 4].getNumber();
-
-        //             }
-
-        //         }
-
-        //         if (otherCardValue > partnerCardValue) return false;
-
-        //     }
-
-        //     return true;
-
-        // }
-
 
         uint8_t whoWon() {
 
