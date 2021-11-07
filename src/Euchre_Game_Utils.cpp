@@ -485,22 +485,19 @@ uint8_t Game::handleDiscardACard(uint8_t playerIdx) {
 }
 
 uint8_t Game::handlePlayACard(uint8_t playerIdx, CardSuit suitLed) {
-bool t = false;
+
     if (PC::buttons.pressed(BTN_LEFT) && this->bidCursor > 0) { 
 
         if (this->cookie->getHighlightPlayable()) {
 
             for (uint8_t i = this->bidCursor - 1; i >= 0; i++) {
 
-printf("Left Check %i \n");
                 if (!(this->hands[playerIdx].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[playerIdx].hasSuit(suitLed, this->gameStatus.getTrumps()))) {
                     this->bidCursor = i;
-printf("- OK\n");t=true;
                     break;
                 }
 
             }
-if (!t) printf("- None\n");
 
         }
         else {
@@ -514,15 +511,14 @@ if (!t) printf("- None\n");
         if (this->cookie->getHighlightPlayable()) {
 
             for (uint8_t i = this->bidCursor + 1; i < this->hands[playerIdx].getCardsInHand(); i++) {
-printf("Right Check %i ");
+
                 if (!(this->hands[playerIdx].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[playerIdx].hasSuit(suitLed, this->gameStatus.getTrumps()))) {
-printf("- OK\n");t=true;
                     this->bidCursor = i;
                     break;
                 }
 
             }
-if (!t) printf("- None\n");
+
         }
         else {
 
