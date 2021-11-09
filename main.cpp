@@ -25,8 +25,6 @@ int main() {
     PC::setFrameRate(30);
 
     PD::setFont(fontTight);
-    // PD::adjustCharStep = 1;
-
     PD::textWrap = false;
 
 

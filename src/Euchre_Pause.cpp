@@ -66,29 +66,6 @@ void Game::pause() {
     this->renderGame(true);
     this->gameState = GameState::Pause;
 
-    // switch (this->gameState) {
-
-    //     case GameState::Pause_Hexon:
-    //         this->renderBackground_Common();
-    //         this->renderScreen_Common();
-    //         this->renderSideBlocks_Hexon();
-    //         break;
-
-    //     case GameState::Pause_Hexer:
-    //         this->renderBackground_Common();
-    //         this->renderScreen_Common();
-    //         this->renderSidePanel_Hexer();
-    //         break;
-
-    //     case GameState::Pause_Hexic:
-    //         this->renderBackground_Common();
-    //         this->renderScreen_Hexic();
-    //         this->renderSidePanel_Hexic();
-    //         break;
-
-    // }
-
-
     if (xCass == 0 && pathCounter == 0) {
 
         if (PC::buttons.pressed(BTN_LEFT)) {
