@@ -41,7 +41,10 @@ void Game::game() {
     switch (this->gameState) {
 
         case GameState::Game_NewHand_Init:
-// printf("Game_NewHand_Init -------------------\n");
+
+            #ifdef DEBUG_PLAY
+                printf("Game_NewHand_Init -------------------\n");
+            #endif
 
             this->deck.init();
 
@@ -220,7 +223,7 @@ void Game::game() {
 
                     if (counter == 0) {
 
-                        #ifdef DEBUG
+                        #ifdef DEBUG_BID
                             printf("Round Two of Bidding --------------------------------------------------------\n");                    
                         #endif
 
@@ -341,7 +344,7 @@ void Game::game() {
 
         case GameState::Game_LeadCard:
 
-            #ifdef DEBUG
+            #ifdef DEBUG_PLAY
             
                 // Render out the cards before play ..
 
@@ -369,7 +372,7 @@ void Game::game() {
                     this->firstValidCard(this->gameStatus.getCurrentPlayer());
                     this->gameStatus.playCard(card);
 
-                    #ifdef DEBUG
+                    #ifdef DEBUG_PLAY
                         printf("Player %i leads a ", this->gameStatus.getCurrentPlayer());
                         card.print();
                         printf(".\n");
@@ -393,7 +396,7 @@ void Game::game() {
                     this->firstValidCard(this->gameStatus.getCurrentPlayer());
                     this->gameStatus.playCard(card);
 
-                    #ifdef DEBUG
+                    #ifdef DEBUG_PLAY
                         printf("Player %i leads a ", this->gameStatus.getCurrentPlayer());
                         card.print();
                         printf(".\n");
@@ -428,7 +431,7 @@ void Game::game() {
                                 this->gameStatus.playCard(card);
                                 this->firstValidCard(this->gameStatus.getCurrentPlayer());
 
-                                #ifdef DEBUG
+                                #ifdef DEBUG_PLAY
                                     printf("Player %i follows with a ", this->gameStatus.getCurrentPlayer());
                                     card.print();
                                     printf(".\n");
@@ -439,7 +442,7 @@ void Game::game() {
                                     uint8_t winner = this->gameStatus.whoWon();
                                     this->gameStatus.incTricks(winner);
 
-                                    #ifdef DEBUG
+                                    #ifdef DEBUG_PLAY
                                         printf("Player %i wins.\n", winner);
                                     #endif
                                     
@@ -483,7 +486,7 @@ void Game::game() {
                     this->firstValidCard(this->gameStatus.getCurrentPlayer());
                     this->gameStatus.playCard(card);
 
-                    #ifdef DEBUG
+                    #ifdef DEBUG_PLAY
                         printf("Player %i follows with a ", this->gameStatus.getCurrentPlayer());
                         card.print();
                         printf(".\n");
@@ -495,7 +498,7 @@ void Game::game() {
                         uint8_t winner = this->gameStatus.whoWon();
                         this->gameStatus.incTricks(winner);
                                     
-                        #ifdef DEBUG
+                        #ifdef DEBUG_PLAY
                             printf("Player %i wins.\n", winner);
                         #endif
 

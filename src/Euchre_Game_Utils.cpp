@@ -7,8 +7,6 @@ using PD = Pokitto::Display;
 
 void Game::incMode(bool ignoreCounter, bool increasePlayer) {
 
-    uint8_t prevPlayer = this->gameStatus.getCurrentPlayer();
-
     uint8_t delay[] = { 0, 0, 0, 0, 0, 0, 
                         2, 5, 2, 5, 2, 5, 2, 5,                     // NewHand_00 ... NewHand_07
                         2, 2, 5, 2, 2, 5, 2, 2, 5, 2, 2, 5,         // NewHand_08 ... NewHand_19
@@ -34,7 +32,10 @@ void Game::incMode(bool ignoreCounter, bool increasePlayer) {
             switch (this->gameState) {
 
                 case GameState::Game_StartPlay ... GameState::Game_Follow_02:
-// printf(" ..this->gameStatus.incCurrentPlayer()\n");                
+
+                    #ifdef DEBUG_STATE
+                        printf("incMode() ..this->gameStatus.incCurrentPlayer()\n");                
+                    #endif
                     this->gameStatus.incCurrentPlayer();
                     break;
 
@@ -45,7 +46,10 @@ void Game::incMode(bool ignoreCounter, bool increasePlayer) {
         }
 
         if (this->nextState != GameState::None) {
-printf(" ..this->nextState != GameState::None\n");
+            
+            #ifdef DEBUG_STATE
+                printf(" ..this->nextState != GameState::None\n");
+            #endif
 
             if (this->cookie->getNumberOfPlayers() == 2) {
                     
@@ -54,17 +58,29 @@ printf(" ..this->nextState != GameState::None\n");
                     case GameState::Game_DealerExtraCard:
 
                         if (this->isHuman(this->gameStatus.getDealer())) {
-printf("dealer is human\n");
+
+                            #ifdef DEBUG_STATE
+                            printf("dealer is human\n");
+                            #endif
+
+
                             // If the dealer is now not playing then skip this state ..
 
                             if (!this->isPlayingThisHand(this->gameStatus.getDealer())) {
 
                                 this->nextState++;
 
-                printf("1 isHuman() %i %i %i\n", this->isHuman(this->gameStatus.getCurrentPlayer()) , this->gameStatus.getPlayerView() , this->gameStatus.getCurrentPlayer());
+                                #ifdef DEBUG_STATE
+                                    printf("1 isHuman() %i %i %i\n", this->isHuman(this->gameStatus.getCurrentPlayer()) , this->gameStatus.getPlayerView() , this->gameStatus.getCurrentPlayer());
+                                #endif
+
                                 if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
-                printf("1 incMode() Transition from state %i", (uint16_t)this->gameState);
-                printf("1 Swap\n");  
+
+                                    #ifdef DEBUG_STATE                                    
+                                        printf("1 incMode() Transition from state %i", (uint16_t)this->gameState);
+                                        printf("1 Swap\n");  
+                                    #endif
+
                                     this->savedState = this->nextState; 
                                     this->gameState = GameState::Swap_Init;
                                     this->nextState = GameState::None;
@@ -73,7 +89,11 @@ printf("dealer is human\n");
 
                                 }
                                 else {
-                printf("2 incMode() Transition from state %i", (uint16_t)this->gameState);
+
+                                    #ifdef DEBUG_STATE                                    
+                                        printf("2 incMode() Transition from state %i", (uint16_t)this->gameState);
+                                    #endif
+
                                     this->gameState = this->nextState;
                                     this->nextState = GameState::None;  
 
@@ -83,8 +103,12 @@ printf("dealer is human\n");
                             else {
                                 
                                 if  (this->gameStatus.getPlayerView() != this->gameStatus.getDealer()) {
-                printf("3 incMode() Transition from state %i", (uint16_t)this->gameState);
-                printf("3 Swap 1\n");  
+
+                                    #ifdef DEBUG_STATE                                    
+                                        printf("3 incMode() Transition from state %i", (uint16_t)this->gameState);
+                                        printf("3 Swap 1\n");  
+                                    #endif
+
                                     this->savedState = this->nextState; 
                                     this->gameState = GameState::Swap_Init;
                                     this->nextState = GameState::None;
@@ -93,10 +117,17 @@ printf("dealer is human\n");
 
                                 }
                                 else {
-                printf("4 incMode() Transition from state %i", (uint16_t)this->gameState);
+
+                                    #ifdef DEBUG_STATE                                    
+                                        printf("4 incMode() Transition from state %i", (uint16_t)this->gameState);
+                                    #endif
+
                                     this->gameState = this->nextState;
                                     this->nextState = GameState::None;  
-                printf(" to state %i\n", (uint16_t)this->gameState);
+
+                                    #ifdef DEBUG_STATE                                    
+                                        printf(" to state %i\n", (uint16_t)this->gameState);
+                                    #endif
 
                                 }
 
@@ -107,10 +138,16 @@ printf("dealer is human\n");
 
                             // The dealer is not human so move to the state and the code will automatically select a card and continue ..                                                        
 
-            printf("4a incMode() Transition from state %i", (uint16_t)this->gameState);
+                            #ifdef DEBUG_STATE                                    
+                                printf("4a incMode() Transition from state %i", (uint16_t)this->gameState);
+                            #endif
+
                             this->gameState = this->nextState;
                             this->nextState = GameState::None;  
-            printf(" to state %i\n", (uint16_t)this->gameState);
+
+                            #ifdef DEBUG_STATE                                    
+                                printf(" to state %i\n", (uint16_t)this->gameState);
+                            #endif
 
                         }
 
@@ -118,10 +155,17 @@ printf("dealer is human\n");
 
                     default:
 
-        printf("5 isHuman() %i %i %i\n", this->isHuman(this->gameStatus.getCurrentPlayer()) , this->gameStatus.getPlayerView() , this->gameStatus.getCurrentPlayer());
+                        #ifdef DEBUG_STATE                                    
+                            printf("5 isHuman() %i %i %i\n", this->isHuman(this->gameStatus.getCurrentPlayer()) , this->gameStatus.getPlayerView() , this->gameStatus.getCurrentPlayer());
+                        #endif
+
                         if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
-        printf("5 incMode() Transition from state %i", (uint16_t)this->gameState);
-        printf("5 Swap\n");  
+
+                            #ifdef DEBUG_STATE                                    
+                                printf("5 incMode() Transition from state %i", (uint16_t)this->gameState);
+                                printf("5 Swap\n");  
+                            #endif
+
                             this->savedState = this->nextState; 
                             this->gameState = GameState::Swap_Init;
                             this->nextState = GameState::None;
@@ -130,7 +174,11 @@ printf("dealer is human\n");
 
                         }
                         else {
-        // printf("6 incMode() Transition from state %i", (uint16_t)this->gameState);
+
+                            #ifdef DEBUG_STATE                                    
+                                printf("6 incMode() Transition from state %i", (uint16_t)this->gameState);
+                            #endif
+
                             this->gameState = this->nextState;
                             this->nextState = GameState::None;  
 
@@ -142,34 +190,43 @@ printf("dealer is human\n");
 
             }
             else {
-                // printf("7 incMode() Transition from state %i", (uint16_t)this->gameState);
+
+                #ifdef DEBUG_STATE                                    
+                    printf("7 incMode() Transition from state %i", (uint16_t)this->gameState);
+                #endif
+
                 this->gameState = this->nextState;
                 this->nextState = GameState::None;
-                // printf("7 to state %i\n", (uint16_t)this->gameState);
+
+                #ifdef DEBUG_STATE                                    
+                    printf("7 to state %i\n", (uint16_t)this->gameState);
+                #endif
 
             }
 
         }
         else {
-printf("8 ..this->nextState == GameState::None\n");
 
-printf(" incMode() Transition from state %i", (uint16_t)this->gameState);
+            #ifdef DEBUG_STATE                                    
+                printf("8 ..this->nextState == GameState::None\n");
+                printf(" incMode() Transition from state %i", (uint16_t)this->gameState);
+            #endif
+
             this->gameState++;
 
             switch (this->gameState) {
 
-                // case GameState::Game_Bid_00 ... GameState::Game_Bid_03:
-
-                //     if (this->nextState == GameState::Game_DealerExtraCard) {
-
-                //     }
-
-                //     break;
-
                 case GameState::Game_Follow_01 ... GameState::Game_Follow_02:
-// printf("9 test case GameState::Game_Follow_01 ... GameState::Game_Follow_02 ");
+
+                    #ifdef DEBUG_STATE                                    
+                        printf("9 test case GameState::Game_Follow_01 ... GameState::Game_Follow_02 ");
+                    #endif
+
                     if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
-// printf("9  player not playing so skip ");
+
+                        #ifdef DEBUG_STATE                                    
+                            printf("9  player not playing so skip ");
+                        #endif
 
                         this->gameState++;
                         this->gameStatus.incCurrentPlayer();
@@ -178,23 +235,40 @@ printf(" incMode() Transition from state %i", (uint16_t)this->gameState);
                     break;
 
                 case GameState::Game_Follow_03:
-// printf("10 test case GameState::Game_Follow_03 ");
+
+                    #ifdef DEBUG_STATE                                    
+                        printf("10 test case GameState::Game_Follow_03 ");
+                    #endif
 
                     if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
-// printf("10  player not playing so skip ");
+
+                        #ifdef DEBUG_STATE                                    
+                            printf("10  player not playing so skip ");
+                        #endif
+
                         uint8_t winner = this->gameStatus.whoWon();
-                        // printf("Player %i wins.\n", winner);
+
+                        #ifdef DEBUG_STATE                                    
+                            printf("Player %i wins.\n", winner);
+                        #endif
+
                         this->gameStatus.incTricks(winner);
                         
                         if (this->hands[0].getCardsInHand() > 0) {
 
-                            // this->counter = 0;
-                            // printf("11 this->nextState = GameState::Game_EndOfTrick;\n");
+                            #ifdef DEBUG_STATE                                    
+                                printf("11 this->nextState = GameState::Game_EndOfTrick;\n");
+                            #endif
+
                             this->gameState = GameState::Game_EndOfTrick;
 
                         }
                         else {
-                            // printf("12 this->nextState = GameState::Game_EndOfHand;\n");
+
+                            #ifdef DEBUG_STATE                                    
+                                printf("12 this->nextState = GameState::Game_EndOfHand;\n");
+                            #endif
+
                             this->gameState = GameState::Game_EndOfHand;
                             this->eog = 0;
                         }
@@ -207,7 +281,10 @@ printf(" incMode() Transition from state %i", (uint16_t)this->gameState);
                 default: break;
 
             }
-printf(" to state %i\n", (uint16_t)this->gameState);
+
+            #ifdef DEBUG_STATE                                    
+                printf(" to state %i\n", (uint16_t)this->gameState);
+            #endif
 
 
             // Should we swap hands?
@@ -221,7 +298,10 @@ printf(" to state %i\n", (uint16_t)this->gameState);
                         uint8_t offset = (static_cast<uint8_t>(this->gameState) - static_cast<uint8_t>(GameState::Game_Bid_00) + 1) % 4;
 
                         if (this->isHuman((this->gameStatus.getDealer() + offset) % 4)) {
-        // printf("14 Swap \n", prevPlayer, this->gameStatus.getCurrentPlayer());                    
+
+                            #ifdef DEBUG_STATE                                    
+                                printf("14 Swap currentPlayer \n", this->gameStatus.getCurrentPlayer());                    
+                            #endif
 
                             this->savedState = this->gameState;
                             this->gameState = GameState::Swap_Init;
@@ -235,22 +315,25 @@ printf(" to state %i\n", (uint16_t)this->gameState);
                     break;
 
                 case GameState::Game_LeadCard ... GameState::Game_Follow_03:
-printf("15 State %i \n", this->gameState);
+
+                    #ifdef DEBUG_STATE                                    
+                        printf("15 State %i \n", this->gameState);
+                    #endif
+
                     if (this->cookie->getNumberOfPlayers() == 2) {
 
-                        //if (this->gameStatus.getCurrentPlayer() != prevPlayer) {
+                        #ifdef DEBUG_STATE                                    
+                            printf("15 currentPlayer %i, getPlayerView %i, Swap 3\n", this->gameStatus.getCurrentPlayer(), this->gameStatus.getPlayerView());                    
+                        #endif
 
-        // printf("15 prefVplayer %i, currentPlayer %i, getPlayerView %i, Swap 3\n", prevPlayer, this->gameStatus.getCurrentPlayer(), this->gameStatus.getPlayerView());                    
-                            if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
+                        if (this->isHuman(this->gameStatus.getCurrentPlayer()) && this->gameStatus.getPlayerView() != this->gameStatus.getCurrentPlayer()) {
 
-                                this->savedState = this->gameState;
-                                this->gameState = GameState::Swap_Init;
-                                this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
-                                this->getSwapCaption(this->savedState);
+                            this->savedState = this->gameState;
+                            this->gameState = GameState::Swap_Init;
+                            this->gameStatus.flipPlayerView(this->cookie->getPlayer2Pos());
+                            this->getSwapCaption(this->savedState);
 
-                            }
-
-                        //}
+                        }
 
                     }
 
@@ -559,7 +642,10 @@ bool Game::doSecondBid(uint8_t handNumber) {
     uint16_t clubs =     this->hands[handNumber].bid(CardSuit::Clubs);
     uint16_t spades =    this->hands[handNumber].bid(CardSuit::Spades);
 
-    // printf("Hand %i, H: %i, D: %i, S: %i, C: %i\n", handNumber, hearts, diamonds, spades, clubs);
+
+    #ifdef DEBUG_BID
+        printf("Hand %i, H: %i, D: %i, S: %i, C: %i\n", handNumber, hearts, diamonds, spades, clubs);
+    #endif
 
     CardSuit highSuit = CardSuit::Hearts;
     uint16_t highScore = hearts;
@@ -645,22 +731,19 @@ void Game::firstValidCard(uint8_t playerIdx) {
     if (this->cookie->getHighlightPlayable()) {
 
         CardSuit suitLed = this->gameStatus.getSuitLed();
-// printf("firstValidCard playerIdx: %i, suitLed %i ", (uint16_t)playerIdx, (uint16_t)suitLed);
+
         for (uint8_t i = 0; i < this->hands[playerIdx].getCardsInHand(); i++) {
-// printf(" Card: %i ", i);
 
             if (!(this->hands[playerIdx].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[playerIdx].hasSuit(suitLed, this->gameStatus.getTrumps()))) {
-// printf(" Match ");
                 this->bidCursor = i;
                 break;
             }
 
         }
-// printf("\n");
+
     }
 
     if (this->bidCursor == 255) {
-        // printf("255 255 255 255 255\n");
         this->bidCursor = 0;
     }
 

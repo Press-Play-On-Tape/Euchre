@@ -226,18 +226,16 @@ void Game::renderGame(bool pause) {
                             uint8_t canPlay = !this->cookie->getHighlightPlayable() ? true : this->gameStatus.getFirstPlayer() != position_00 && !(this->hands[position_00].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[position_00].hasSuit(suitLed, this->gameStatus.getTrumps()));
                             this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, true, this->cookie->getHighlightPlayable() && canPlay);
 
-                            // printf("Render1 card: %i, highlightCard %i, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard %i, %i %i\n", i, highlightCard, this->cookie->getHighlightPlayable() && this->bidCursor == i && highlightCard, this->cookie->getHighlightPlayable(), canPlay);
                         }
                         else {
 
-                            // printf("Render2 card: %i, %i \n", i, this->cookie->getHighlightPlayable());
                             this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, false, true, false);
                         }
                         break;
                     
                     default: 
+
                         this->renderCard(Orientation::Bottom, this->hands[position_00].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, true, false);
-                        // printf("Render3 card: %i, highlightCard %i, 0 1\n",i, highlightCard);
                         break;
 
                 }
@@ -478,8 +476,10 @@ void Game::renderGame(bool pause) {
     }
 
 
-    PD::setCursor(200, 160);
-    PD::print(static_cast<uint16_t>(this->gameState));
+    #ifdef DEBUG_STATE
+        PD::setCursor(200, 160);
+        PD::print(static_cast<uint16_t>(this->gameState));
+    #endif
 
 }
 

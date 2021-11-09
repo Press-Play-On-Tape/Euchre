@@ -62,9 +62,7 @@ void Game::selection() {
                 break;
 
             case 7:
-printf("toggle from %i ", this->cookie->getHighlightPlayable());            
                 this->cookie->setHighlightPlayable(!this->cookie->getHighlightPlayable());
-printf("to %i\n", this->cookie->getHighlightPlayable());            
                 break;
 
             case 8:

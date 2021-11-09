@@ -4,6 +4,9 @@
 #define _DEBUG_BID
 #define _DEBUG_LEAD
 #define _DEBUG_FOLLOW
+#define _DEBUG_PLAY
+#define _DEBUG_STATE
+#define _DEBUG_SOUNDS
 #define SOUNDS
 #define COOKIE_INITIALISED 59
 

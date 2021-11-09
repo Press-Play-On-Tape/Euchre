@@ -161,12 +161,11 @@ struct GameStatus {
             uint8_t highestScore = 0;
             uint8_t highestScoreIdx = Constants::NoPlayer;
             uint8_t test = 0;
-// printf("isPlayerWinning ");  
 
             for (uint8_t i = 0; i < 4; i++) {
 
                 if (i != ignorePlayerIdx && this->currentHand[i].getCardIndex() != Cards::NoCard) {
-// printf("%i %i ", i, test);
+
                     uint8_t test = this->currentHand[i].isTrump(this->getTrumps()) 
                                    ? this->currentHand[i].getCardValue(this->getTrumps()) 
                                    : (this->currentHand[i].getSuit(this->getTrumps()) == this->suitLed ? this->currentHand[i].getNumber() : 0);
@@ -180,7 +179,6 @@ struct GameStatus {
 
             }
             
-// printf(" >> playerIdx %i == highestScoreIdx %i\n", playerIdx , highestScoreIdx );
             return playerIdx == highestScoreIdx;
 
         }

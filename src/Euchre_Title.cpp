@@ -24,23 +24,29 @@ uint8_t sounds = 0;
 
 void Game::title() {
 
-    if (PC::buttons.pressed(BTN_B)) { 
+    #ifdef DEBUG_SOUNDS
 
-        this->playSpeech(static_cast<Speech>(sounds));
+        if (PC::buttons.pressed(BTN_B)) { 
 
-    }         
+            this->playSpeech(static_cast<Speech>(sounds));
 
-    if (PC::buttons.pressed(BTN_LEFT)) { 
+        }         
 
-        if (sounds > 0) sounds--;
+        if (PC::buttons.pressed(BTN_LEFT)) { 
 
-    }         
+            if (sounds > 0) sounds--;
 
-    if (PC::buttons.pressed(BTN_RIGHT)) { 
+        }         
 
-        if (sounds < 31) sounds++;
+        if (PC::buttons.pressed(BTN_RIGHT)) { 
 
-    }         
+            if (sounds < 31) sounds++;
+
+        }         
+
+    #endif
+    
+
     // Handle player actions ..
 
     if (PC::buttons.pressed(BTN_A)) { 
@@ -113,9 +119,11 @@ void Game::title() {
 
     }
 
-PD::setCursor(0,0);
-PD::setColor(6);
-PD::fontSize = 2;
-PD::print((uint16_t)sounds);
+    #ifdef DEBUG_SOUNDS
+        PD::setCursor(0,0);
+        PD::setColor(6);
+        PD::fontSize = 2;
+        PD::print((uint16_t)sounds);
+    #endif
 
 }
