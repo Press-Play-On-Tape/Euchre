@@ -151,19 +151,15 @@ struct Hand {
         }
 
         void removeCard(uint8_t index) {
-//printf("remove card %i\n", index);//SJH overflow
+
             for (uint8_t i = index; i < this->cardsInHand - 1; i++) {
-//printf(">> move card %i < %i\n", i, i + 1);//SJH overflow
 
                 this->hand[i].init(this->hand[i + 1].getCardIndex());
 
             }
 
-//printf(">> init %i \n", this->cardsInHand - 1);//SJH overflow
             this->hand[this->cardsInHand - 1].init(Cards::NoCard);
-//printf(">> init done\n");//SJH overflow
             this->cardsInHand--;
-//printf(">> cardsInHand %i \n", this->cardsInHand);//SJH overflow
 
         }
 
@@ -210,10 +206,12 @@ struct Hand {
                 this->sortHand(this->cardsInHand, true, suit);
             }
 
-            //HAND this->print(false);
-            //HAND if (isDealer) printf(" (D)");
-            //HAND if (!isDealer) printf(" (d)");
-            //HAND printf(" >> ");
+            #ifdef DEBUG_BID
+                this->print(false);
+                if (isDealer) printf(" (D)");
+                if (!isDealer) printf(" (d)");
+                printf(" >> ");
+            #endif
 
             uint8_t handScore = 0;
             bool hasRightBower = false;
@@ -232,13 +230,21 @@ struct Hand {
                     case Cards::RightBower:
                         handScore = handScore + 100;
                         hasRightBower = true;
-                        //HAND printf("100 Right Bower, ");
+
+                        #ifdef DEBUG_BID
+                            printf("100 Right Bower, ");
+                        #endif
+
                         break;
 
                     case Cards::LeftBower:
                         handScore = handScore + (hasRightBower ? 100 : 80);
-                        //HAND printf(hasRightBower ? "100 Left Bower (inc RB), " : "80 Left Bower only, ");
-                        hasRightBower = true;
+                        hasLeftBower = true;
+
+                        #ifdef DEBUG_BID
+                            printf(hasRightBower ? "100 Left Bower (inc RB), " : "80 Left Bower only, ");
+                        #endif
+
                         break;
 
                     default:
@@ -250,23 +256,31 @@ struct Hand {
                                 if (matchingSuit) {
 
                                     if (hasRightBower && hasLeftBower) {
-                                        //HAND printf("100 Trumps (inc RB, LB), ");
                                         handScore = handScore + 100;
+                                        #ifdef DEBUG_BID
+                                            printf("100 Trumps (inc RB, LB), ");
+                                        #endif
                                     }
                                     else if (hasRightBower && !hasLeftBower) {
-                                        //HAND printf("70 Trumps (inc RB), ");
                                         handScore = handScore + 70;
+                                        #ifdef DEBUG_BID
+                                            printf("70 Trumps (inc RB), ");
+                                        #endif
                                     }
                                     else if (!hasRightBower && hasLeftBower) {
-                                        //HAND printf("60 Trumps (inc LB), ");
                                         handScore = handScore + 60;
+                                        #ifdef DEBUG_BID
+                                            printf("60 Trumps (inc LB), ");
+                                        #endif
                                     }
 
                                 }
                                 else {
 
-                                    //HAND printf("40 Non-Trump, ");
                                     handScore = handScore + 40;
+                                    #ifdef DEBUG_BID
+                                        printf("40 Non-Trump, ");
+                                    #endif
 
                                 }
 
@@ -279,28 +293,35 @@ struct Hand {
                                     switch (i) {
 
                                         case 0:
-
-                                            //HAND printf("20 Trump, ");
                                             handScore = handScore + 20;
+                                            #ifdef DEBUG_BID
+                                                printf("20 Trump, ");
+                                            #endif
                                             break;
 
                                         case 1:
-                                            //HAND printf("*K %i %i*", i, this->hand[i - 1].getCardValue(dealerCard.getSuit(CardSuit::None)));
+
                                             switch (this->hand[i - 1].getCardValue(dealerCard.getSuit(CardSuit::None))) {
                                                 
                                                 case Cards::RightBower:
-                                                    //HAND printf("30 Trump (inc RB), ");
                                                     handScore = handScore + 30;
+                                                    #ifdef DEBUG_BID
+                                                        printf("30 Trump (inc RB), ");
+                                                    #endif
                                                     break;
                                                 
                                                 case Cards::LeftBower:
-                                                    //HAND printf("25 Trump (inc LB), ");
                                                     handScore = handScore + 25;
+                                                    #ifdef DEBUG_BID
+                                                        printf("25 Trump (inc LB), ");
+                                                    #endif
                                                     break;
                                                 
                                                 case Cards::Ace:
-                                                    //HAND printf("20 Trump (inc Ace), ");
                                                     handScore = handScore + 20;
+                                                    #ifdef DEBUG_BID
+                                                        printf("20 Trump (inc Ace), ");
+                                                    #endif
                                                     break;
 
                                             }
@@ -312,13 +333,17 @@ struct Hand {
                                             switch (this->hand[i - 1].getCardValue(dealerCard.getSuit(CardSuit::None))) {
                                                 
                                                 case Cards::LeftBower:
-                                                    //HAND printf("40 Trump (inc RB, LB), ");
                                                     handScore = handScore + 40;
+                                                    #ifdef DEBUG_BID
+                                                        printf("40 Trump (inc RB, LB), ");
+                                                    #endif
                                                     break;
                                                 
                                                 case Cards::Ace:
-                                                    //HAND printf("30 Trump (inc Ace), ");
                                                     handScore = handScore + 30;
+                                                    #ifdef DEBUG_BID
+                                                        printf("30 Trump (inc Ace), ");
+                                                    #endif
                                                     break;
 
                                             }
@@ -326,9 +351,10 @@ struct Hand {
                                             break;
 
                                         case 3:
-                                        
-                                            //HAND printf("100 Trumps (inc RB, LB, A), ");
                                             handScore = handScore + 100; 
+                                            #ifdef DEBUG_BID
+                                                printf("100 Trumps (inc RB, LB, A), ");
+                                            #endif
                                             break;
 
 
@@ -340,24 +366,25 @@ struct Hand {
                                     switch (i) {
 
                                         case 0:
-
-                                            //HAND printf("20 Non-Trumps (no-Ace), ");
                                             handScore = handScore + 20;
+                                            #ifdef DEBUG_BID
+                                                printf("20 Non-Trumps (no-Ace), ");
+                                            #endif
                                             break;
 
                                         default:
 
                                             if (this->hand[i - 1].getSuit(dealerCard.getSuit(CardSuit::None)) == card.getSuit(dealerCard.getSuit(CardSuit::None))) {
-
-                                                //HAND printf("30 Non-Trumps (inc Ace), ");
                                                 handScore = handScore + 30;
-
+                                                #ifdef DEBUG_BID
+                                                    printf("30 Non-Trumps (inc Ace), ");
+                                                #endif
                                             }
                                             else {
-
-                                                //HAND printf("20 Non-Trumps (no-Ace), ");
                                                 handScore = handScore + 20;
-
+                                                #ifdef DEBUG_BID
+                                                    printf("20 Non-Trumps (no-Ace), ");
+                                                #endif
                                             }
 
                                     }
@@ -373,28 +400,38 @@ struct Hand {
                                     switch (i) {
 
                                         case 0:
-                                            //HAND printf("10 Trumps, ");
                                             handScore = handScore + 10; 
+                                            #ifdef DEBUG_BID
+                                                printf("10 Trumps, ");
+                                            #endif
                                             break;
 
                                         case 1:
-                                            //HAND printf("15 Trumps, ");
                                             handScore = handScore + 15; 
+                                            #ifdef DEBUG_BID
+                                                printf("15 Trumps, ");
+                                            #endif
                                             break;
 
                                         case 2:
-                                            //HAND printf("30 Trumps, ");
                                             handScore = handScore + 30; 
+                                            #ifdef DEBUG_BID
+                                                printf("30 Trumps, ");
+                                            #endif
                                             break;
 
                                         case 3:
-                                            //HAND printf("45 Trumps, ");
                                             handScore = handScore + 45; 
+                                            #ifdef DEBUG_BID
+                                                printf("45 Trumps, ");
+                                            #endif
                                             break;
 
                                         case 4:
-                                            //HAND printf("100 Trumps (inc RB, LB, A), ");
                                             handScore = handScore + 100; 
+                                            #ifdef DEBUG_BID
+                                                printf("100 Trumps (inc RB, LB, A), ");
+                                            #endif
                                             break;
 
                                     }
@@ -407,7 +444,9 @@ struct Hand {
                                 if (matchingSuit) {
 
                                     handScore = handScore + 5;
-                                    //HAND printf("5 Trump, ");
+                                    #ifdef DEBUG_BID
+                                        printf("5 Trump, ");
+                                    #endif
                                 
                                 }
 
@@ -418,7 +457,9 @@ struct Hand {
                                 if (matchingSuit) {
 
                                     handScore = handScore + 10;
-                                    //HAND printf("10 Trump, ");
+                                    #ifdef DEBUG_BID
+                                        printf("10 Trump, ");
+                                    #endif
                                 
                                 }
 
@@ -433,7 +474,9 @@ struct Hand {
             }
 
             this->restoreHand();
-            //HAND printf(" = %i\n", handScore);
+            #ifdef DEBUG_BID
+                printf(" = %i\n", handScore);
+            #endif            
             return handScore;
 
         }
@@ -452,7 +495,9 @@ struct Hand {
 
                     if (this->hand[i].getCardValue(trumps) == Cards::RightBower) {
 
-//LEAD printf("leadACard 1 - bid winner, lead a right Bower\n");
+                        #ifdef DEBUG_LEAD
+                            printf("leadACard 1 - bid winner, lead a right Bower\n");
+                        #endif
                         return i;
 
                     }
@@ -471,7 +516,9 @@ struct Hand {
 
                         if (this->hand[i].getCardValue(trumps) == Cards::RightBower) {
 
-//LEAD printf("leadACard 2 - bid winner, lead a left Bower\n");
+                            #ifdef DEBUG_LEAD
+                                printf("leadACard 2 - bid winner, lead a left Bower\n");
+                            #endif
                             return i;
 
                         }
@@ -489,7 +536,9 @@ struct Hand {
 
                         if (this->evaluatePlay(gameStatus, trumps, i, maybeScore, maybeIndex, 10, 25) != Cards::NoCard) {
 
-//LEAD printf("leadACard 3 - bid winner, off-suit A\n");
+                            #ifdef DEBUG_LEAD
+                                printf("leadACard 3 - bid winner, off-suit A\n");
+                            #endif
                             return i;
 
                         }
@@ -509,7 +558,9 @@ struct Hand {
 
                             if (this->hand[i].getSuit(trumps) == trumps && this->hand[i].getNumber() == cardValue) {
 
-//LEAD printf("leadACard 3 - bid winner, off-suit K\n");
+                                #ifdef DEBUG_LEAD
+                                    printf("leadACard 3 - bid winner, off-suit K\n");
+                                #endif
                                 return i;
 
                             }
@@ -533,7 +584,9 @@ struct Hand {
 
                                 if (gameStatus.getHasSuit((this->handNumber + 2) % 4, this->hand[i].getSuit(trumps)) != HasSuit::False) {
 
-    //LEAD printf("leadACard 4 - bid winner, small non-trump\n");
+                                    #ifdef DEBUG_LEAD
+                                        printf("leadACard 4 - bid winner, small non-trump\n");
+                                    #endif
                                     return i;
 
                                 }
@@ -549,7 +602,9 @@ struct Hand {
 
                 // Random card?
 
-//LEAD printf("leadACard 5 - bid winner, random\n");
+                #ifdef DEBUG_LEAD
+                    printf("leadACard 5 - bid winner, random\n");
+                #endif
                 return random(0, this->cardsInHand);
 
             }
@@ -564,7 +619,9 @@ struct Hand {
 
                         if (this->evaluatePlay(gameStatus, trumps, i, maybeScore, maybeIndex, 10, 25) != Cards::NoCard) {
 
-//LEAD printf("leadACard 6 - non-bid winner, off suit A\n");
+                            #ifdef DEBUG_LEAD
+                                printf("leadACard 6 - non-bid winner, off suit A\n");
+                            #endif
                             return i;
 
                         }
@@ -589,7 +646,9 @@ struct Hand {
 
                                 if (this->evaluatePlay(gameStatus, trumps, i, maybeScore, maybeIndex, 8, 15) != Cards::NoCard) {
 
-    //LEAD printf("leadACard 6 - non-bid winner, off suit K\n");
+                                    #ifdef DEBUG_LEAD
+                                        printf("leadACard 6 - non-bid winner, off suit K\n");
+                                    #endif
                                     return i;
 
                                 }
@@ -618,7 +677,9 @@ struct Hand {
 
                                 if (this->evaluatePlay(gameStatus, trumps, i, maybeScore, maybeIndex, 8, 15) != Cards::NoCard) {
 
-    //LEAD printf("leadACard 6 - non-bid winner, off suit K\n");
+                                    #ifdef DEBUG_LEAD
+                                        printf("leadACard 6 - non-bid winner, off suit K\n");
+                                    #endif
                                     return i;
 
                                 }
@@ -635,7 +696,9 @@ struct Hand {
 
                 if (maybeScore > 0) {
 
-//LEAD printf("leadACard 7 - non-bid winner, off suit K 2\n");
+                    #ifdef DEBUG_LEAD
+                        printf("leadACard 7 - non-bid winner, off suit K 2\n");
+                    #endif
                     return maybeIndex;
 
                 }
@@ -644,13 +707,23 @@ struct Hand {
                 // Otherwise do we have a small card ?
 
                 for (uint8_t j = Cards::Nine; j <= Cards::Queen; j++) {
-//LEAD printf("leadACard 8 - test card %i\n", j);
+
+                    #ifdef DEBUG_LEAD
+                        printf("leadACard 8 - test card %i\n", j);
+                    #endif
 
                     for (uint8_t i = 0; i < this->cardsInHand; i++) {
-//LEAD printf("leadACard 8 - test suit %i\n", i);
+
+                        #ifdef DEBUG_LEAD
+                            printf("leadACard 8 - test suit %i\n", i);
+                        #endif
 
                         if (this->hand[i].getSuit(trumps) != trumps && this->hand[i].getNumber() == j) {
-//LEAD printf("leadACard 8 - non trumps!! \n");
+
+                            #ifdef DEBUG_LEAD
+                                printf("leadACard 8 - non trumps!! \n");
+                            #endif
+
 
                             // Does our partner have any of this suit ?
 
@@ -658,15 +731,14 @@ struct Hand {
                                   
                                 if (this->evaluatePlay(gameStatus, trumps, i, maybeScore, maybeIndex, 4, 10) != Cards::NoCard) {
 
-//LEAD printf("leadACard 8 - non-bid winner, small non-trump\n");
+                                    #ifdef DEBUG_LEAD
+                                        printf("leadACard 8 - non-bid winner, small non-trump\n");
+                                    #endif
                                     return i;
 
                                 }
 
                             } 
-                            else {
-//LEAD printf("leadACard 8 - other play has none of these. \n");
-                            }
 
                         }
 
@@ -676,7 +748,10 @@ struct Hand {
                     // Did we find a playable card?
 
                     if (maybeScore > 0) {
-//LEAD printf("leadACard 9 - non-bid winner, small non-trump 2\n");
+
+                        #ifdef DEBUG_LEAD
+                            printf("leadACard 9 - non-bid winner, small non-trump 2\n");
+                        #endif
 
                         return maybeIndex;
 
@@ -686,8 +761,10 @@ struct Hand {
 
 
                 // Nothing? A random card ..
-//LEAD printf("leadACard 10 - random\n");
 
+                #ifdef DEBUG_LEAD
+                    printf("leadACard 10 - random\n");
+                #endif
                 return random(0, this->cardsInHand);
 
             }
@@ -704,11 +781,14 @@ struct Hand {
 
             CardSuit suitLed = gameStatus.getSuitLed();
 
-//            if (gameStatus.isHandWinning((this->handNumber + 2) % 4, suitLed)) {
             if (gameStatus.isPlayerWinning((this->handNumber + 2) % 4)) {
 
                 if (this->hasSuit(suitLed, gameStatus.getTrumps())) {
-//LEAD printf("followACard 1 - partner wining. Play smallest of suit led\n");
+
+                    #ifdef DEBUG_FOLLOW
+                        printf("followACard 1 - partner wining. Play smallest of suit led\n");
+                    #endif
+
                     cardIndex = this->throwSmallestOfSuit(suitLed, gameStatus.getTrumps());
                     if (cardIndex != Cards::NoCard) return cardIndex;
 
@@ -716,7 +796,10 @@ struct Hand {
                 else {
                         
                     if (lastPlayerIdx == this->handNumber) {
-//LEAD printf("followACard 2 - partner winning but no led suit.  Play smallest non-trump followed by smallest non-trump\n");
+
+                        #ifdef DEBUG_FOLLOW
+                             printf("followACard 2 - partner winning but no led suit.  Play smallest non-trump followed by smallest non-trump\n");
+                        #endif
                         
                         cardIndex = this->throwSmallestNonTrump(gameStatus.getTrumps());
                         if (cardIndex != Cards::NoCard) return cardIndex;
@@ -727,7 +810,10 @@ struct Hand {
                     else {
 
                         if (gameStatus.getHasSuit(lastPlayerIdx, suitLed) == HasSuit::False && gameStatus.getHasSuit(lastPlayerIdx, gameStatus.getTrumps()) != HasSuit::False) {
-//LEAD printf("followACard 3 - partner winning but no led suit and not last player.  Throw largest trump followed by smallest non-trump. \n");
+
+                            #ifdef DEBUG_FOLLOW
+                                printf("followACard 3 - partner winning but no led suit and not last player.  Throw largest trump followed by smallest non-trump. \n");
+                            #endif
 
                             cardIndex = this->throwLargestTrump(gameStatus.getTrumps());
                             if (cardIndex != Cards::NoCard) return cardIndex;
@@ -736,7 +822,10 @@ struct Hand {
                            
                         }
                         else {
-//LEAD printf("followACard 4 - partner winning but no led suit and not last player.  Throw smallest trump followed by smallest non-trump\n");
+
+                            #ifdef DEBUG_FOLLOW
+                                printf("followACard 4 - partner winning but no led suit and not last player.  Throw smallest trump followed by smallest non-trump\n");
+                            #endif
 
                             cardIndex = this->throwSmallestTrump(gameStatus.getTrumps());
                             if (cardIndex != Cards::NoCard) return cardIndex;
@@ -760,7 +849,10 @@ struct Hand {
                     if (suitLed != gameStatus.getTrumps()) {
 
                         if (trumpToBeat != Cards::NoCard) {
-//LEAD printf("followACard 5a - have suit, non-trumps but hand trumped. Play the smallest of the led suit\n");
+
+                            #ifdef DEBUG_FOLLOW
+                                printf("followACard 5a - have suit, non-trumps but hand trumped. Play the smallest of the led suit\n");
+                            #endif
                          
                             cardIndex = this->throwSmallestOfSuit(suitLed, gameStatus.getTrumps());
                             if (cardIndex != Cards::NoCard) return cardIndex;
@@ -770,7 +862,9 @@ struct Hand {
                             
                             if (gameStatus.isPlayerWinning((this->handNumber + 2) % 4)) {
 
-//LEAD printf("followACard 5b1 - partner Winning, have suit, non-trumps and hand not trumped. Play the lowestof the suit led\n");
+                                #ifdef DEBUG_FOLLOW
+                                    printf("followACard 5b1 - partner Winning, have suit, non-trumps and hand not trumped. Play the lowestof the suit led\n");
+                                #endif
 
                                 cardIndex = this->throwSmallestOfSuit(suitLed, gameStatus.getTrumps());
                                 if (cardIndex != Cards::NoCard) return cardIndex;
@@ -778,7 +872,9 @@ struct Hand {
                             }
                             else {
 
-//LEAD printf("followACard 5b2 - partner not Winning, have suit, non-trumps and hand not trumped. Play the next biggest of the led suit followed by small of the suit\n");
+                                #ifdef DEBUG_FOLLOW
+                                    printf("followACard 5b2 - partner not Winning, have suit, non-trumps and hand not trumped. Play the next biggest of the led suit followed by small of the suit\n");
+                                #endif
 
                                 cardIndex = this->throwSmallestOfSuit(suitLed, gameStatus.getTrumps(), suitLedToBeat);
                                 if (cardIndex != Cards::NoCard) return cardIndex;
@@ -793,14 +889,20 @@ struct Hand {
                     else {
 
                         if (this->haveHigherTrump(gameStatus.getTrumps(), trumpToBeat)) {
-//LEAD printf("followACard 5c - have a larger trump. Play the next biggest trump\n");
 
+                            #ifdef DEBUG_FOLLOW
+                                printf("followACard 5c - have a larger trump. Play the next biggest trump\n");
+                            #endif
+                            
                             cardIndex = this->throwSmallestOfSuit(suitLed, gameStatus.getTrumps(), trumpToBeat);
                             if (cardIndex != Cards::NoCard) return cardIndex;
 
                         }
 
-//LEAD printf("followACard 5d - do not have a larger trump. Play the smallest trump\n");
+                        #ifdef DEBUG_FOLLOW
+                            printf("followACard 5d - do not have a larger trump. Play the smallest trump\n");
+                        #endif
+
                         cardIndex = this->throwSmallestOfSuit(suitLed, gameStatus.getTrumps());
                         if (cardIndex != Cards::NoCard) return cardIndex;
 
@@ -810,7 +912,10 @@ struct Hand {
                 else {
 
                     if (lastPlayerIdx == this->handNumber) {
-//LEAD printf("followACard 6 - last player, none of the led suit.  Try a small trump followed by small non-trumps\n");
+
+                        #ifdef DEBUG_FOLLOW
+                            printf("followACard 6 - last player, none of the led suit.  Try a small trump followed by small non-trumps\n");
+                        #endif
 
                         cardIndex = this->throwSmallestTrump(gameStatus.getTrumps());
                         if (cardIndex != Cards::NoCard) return cardIndex;
@@ -821,7 +926,10 @@ struct Hand {
                     else {
                             
                         if (gameStatus.getHasSuit(lastPlayerIdx, suitLed) == HasSuit::False && gameStatus.getHasSuit(lastPlayerIdx, gameStatus.getTrumps()) != HasSuit::False) {
-//LEAD printf("followACard 7 - not last player, none of the led suit. Play large trump followed by small non-trump\n");
+
+                            #ifdef DEBUG_FOLLOW
+                                printf("followACard 7 - not last player, none of the led suit. Play large trump followed by small non-trump\n");
+                            #endif
 
                             cardIndex = this->throwLargestTrump(gameStatus.getTrumps());
                             if (cardIndex != Cards::NoCard) return cardIndex;
@@ -834,14 +942,20 @@ struct Hand {
                             uint8_t highestTrump = gameStatus.getHighestTrumpInHand();
 
                             if (highestTrump != Cards::NoCard) {
-//LEAD printf("followACard 8 - not last player, none of the led suit. Hand already trumped / is trumps. Play small trump nigger than %i followed by small non-trump\n", highestTrump);
+
+                                #ifdef DEBUG_FOLLOW
+                                    printf("followACard 8 - not last player, none of the led suit. Hand already trumped / is trumps. Play small trump nigger than %i followed by small non-trump\n", highestTrump);
+                                #endif
 
                                 cardIndex = this->throwSmallestTrump(gameStatus.getTrumps(), highestTrump);
                                 if (cardIndex != Cards::NoCard) return cardIndex;
 
                             }
                             else {
-//LEAD printf("followACard 9 - not last player, none of the led suit. Hand not already trumped / is trumps. Play small trump followed by small non-trump\n");
+
+                                #ifdef DEBUG_FOLLOW
+                                    printf("followACard 9 - not last player, none of the led suit. Hand not already trumped / is trumps. Play small trump followed by small non-trump\n");
+                                #endif
 
                                 cardIndex = this->throwSmallestTrump(gameStatus.getTrumps());
                                 if (cardIndex != Cards::NoCard) return cardIndex;
@@ -935,18 +1049,13 @@ struct Hand {
 
         uint8_t getSmallestOfNonTrump(CardSuit cardSuit, CardSuit trumps, uint8_t largerThan = Cards::Two) {
 
-// printf("smallest of suit %i %i > %i\n", (uint16_t)cardSuit, (uint16_t)trumps, (uint16_t)largerThan);
             uint8_t cardVal = Cards::NoCard;
             uint8_t cardIdx = Cards::NoCard;
 
             for (uint8_t i = 0; i < this->cardsInHand; i++) {
 
                 if (!this->hand[i].isTrump(trumps) && this->hand[i].getSuit(trumps) == cardSuit && cardVal > this->hand[i].getNumber() && (largerThan > Cards::Two ? this->hand[i].getNumber() > largerThan : true)) {
-// printf(">  smallest of suit .. card ");
-// this->hand[i].print();                    
-// if (this->hand[i].isTrump(trumps)) printf("is a trump\n");
-// if (!this->hand[i].isTrump(trumps)) printf("is not a trump\n");
-// printf(">  LargerThan %i, this->hand[i].getNumber() % i\n", largerThan, this->hand[i].getNumber());
+
                     cardVal = this->hand[i].getNumber();
                     cardIdx = i;
 
@@ -959,20 +1068,15 @@ struct Hand {
         }
 
         uint8_t throwSmallestOfSuit(CardSuit cardSuit, CardSuit trumps, uint8_t largerThan = Cards::Two) {
-// printf("smallest of suit %i %i > %i\n", (uint16_t)cardSuit, (uint16_t)trumps, (uint16_t)largerThan);
+
             uint8_t cardVal = Cards::NoCard;
             uint8_t cardIdx = Cards::NoCard;
 
             for (uint8_t i = 0; i < this->cardsInHand; i++) {
 
-//                if (cardSuit == trumps && this->hand[i].isTrump()) {
                 if (cardSuit == trumps) {
 
                     if (this->hand[i].isTrump(trumps) && cardVal > this->hand[i].getCardValue(trumps) && (largerThan > Cards::Two ? this->hand[i].getNumber() > largerThan : true)) {
-// printf(">  smallest of suit .. card ");
-// this->hand[i].print();
-// if (this->hand[i].isTrump(trumps)) printf("is a trump\n");
-// if (!this->hand[i].isTrump(trumps)) printf("is not a trump\n");
 
                         cardVal = this->hand[i].getCardValue(trumps);
                         cardIdx = i;
@@ -983,11 +1087,7 @@ struct Hand {
                 else {
 
                     if (!this->hand[i].isTrump(trumps) && this->hand[i].getSuit(trumps) == cardSuit && cardVal > this->hand[i].getCardValue(trumps) && (largerThan > Cards::Two ? this->hand[i].getNumber() > largerThan : true)) {
-// printf(">  smallest of suit .. card ");
-// this->hand[i].print();                    
-// if (this->hand[i].isTrump(trumps)) printf("is a trump\n");
-// if (!this->hand[i].isTrump(trumps)) printf("is not a trump\n");
-// printf(">  LargerThan %i, this->hand[i].getNumber() % i\n", largerThan, this->hand[i].getCardValue(trumps));
+
                         cardVal = this->hand[i].getCardValue(trumps);
                         cardIdx = i;
 

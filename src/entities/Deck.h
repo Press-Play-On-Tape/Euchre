@@ -64,13 +64,6 @@ struct Deck {
 
         } 
 
-        void playCard(Card &card) {
-
-//            if (card.getCardIndex() > 8)
-  //          this->seen[static_cast<uint8_t>(card.getSuit())][card.getCardIndex()] = true;
-
-        }
-
         Card dealCard() {
 
             this->index--;
