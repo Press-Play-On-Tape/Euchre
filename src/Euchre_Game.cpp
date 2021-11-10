@@ -25,6 +25,11 @@ void Game::game_Init() {
 void Game::game() {
 
 
+    #ifdef DEBUG
+        printf("GameState: %i, deal: %i, currentPlayer: %i, getPlayerView(): %i\n", (uint16_t)this->gameState, this->deal, this->gameStatus.getCurrentPlayer(), this->gameStatus.getPlayerView());
+    #endif
+
+
     // Handle player actions ..
 
     if (PC::buttons.released(BTN_C)) {

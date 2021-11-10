@@ -296,8 +296,8 @@ void Game::incMode(bool ignoreCounter, bool increasePlayer) {
                     if (this->cookie->getNumberOfPlayers() == 2) {
 
                         uint8_t offset = (static_cast<uint8_t>(this->gameState) - static_cast<uint8_t>(GameState::Game_Bid_00) + 1) % 4;
-
-                        if (this->isHuman((this->gameStatus.getDealer() + offset) % 4)) {
+//printf("Offset %i, getDealer() %i\n", offset, this->gameStatus.getDealer());
+                        if (this->isHuman((this->gameStatus.getDealer() + offset) % 4) && this->gameStatus.getPlayerView() != (this->gameStatus.getDealer() + offset) % 4) {
 
                             #ifdef DEBUG_STATE                                    
                                 printf("14 Swap currentPlayer \n", this->gameStatus.getCurrentPlayer());                    
