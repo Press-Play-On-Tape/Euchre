@@ -2,7 +2,7 @@
 
 #pragma once
 
-inline constexpr uint8_t EOG_01[] = {
+inline constexpr uint8_t Points_01[] = {
 4, 6,
 0xe0,0xee,
 0x00,0xee,

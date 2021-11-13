@@ -58,7 +58,7 @@ void Game::loop() {
             this->game_Init();
             [[fallthrough]]
 
-        case GameState::Game_NewHand_Init ... GameState::Game_Xxx:
+        case GameState::Game_NewHand_Init ... GameState::GameOver:
             this->game();
             break;
 

@@ -26,6 +26,7 @@ class Game {
         Hand hands[4];
         GameStatus gameStatus;
         SwapCaption swapCaption;
+        uint8_t imageBuffer[5000];
 
 
         uint8_t counter;
@@ -74,17 +75,21 @@ class Game {
         bool isHuman(uint8_t playerIdx);
 
         void renderGame(bool pause);
-        void renderBids(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03);
+        void renderPlayedCard(uint8_t x, uint8_t y, uint8_t position);
+        void renderBids(uint8_t positions[4]);
         void renderPlayerBid();
         void renderPlayerSecondBid();
         void renderDiscardACard();
         void renderPlayACard();
         void renderSoreboard(uint8_t tricksWinner, uint8_t pointsWinner, bool showTrick, bool showHand);
         void renderTrumps(CardSuit trumps);
+        void renderGameOver_Alpha();
+        void renderGameOver_Beta();
+
         bool doSecondBid(uint8_t handNumber);
-        void renderTrickOver(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03, uint8_t winner);
-        void renderHandOver(uint8_t winner);
-        void renderFinalBid(uint8_t position_00, uint8_t position_01, uint8_t position_02, uint8_t position_03);
+        void renderTrickOver(uint8_t positions[4], uint8_t winner);
+        void renderHandOrGameOver(uint8_t winner);
+        void renderFinalBid(uint8_t positions[4]);
         void renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, bool ableToPlay);
         void playSpeech(Speech speech);
         void playTheme(uint8_t themeNumber);

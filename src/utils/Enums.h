@@ -10,6 +10,17 @@
 #define SOUNDS
 #define COOKIE_INITIALISED 59
 
+enum Debug {
+    None = 0,
+    Bid = 1,
+    Lead = 2,
+    Follow = 4,
+    Play = 8,
+    State = 16,
+    Sounds = 32
+};           
+
+
 namespace Cards {
 
     constexpr uint8_t Two = 0;
@@ -42,8 +53,18 @@ namespace Constants {
     constexpr uint8_t Dialogue_00_Y = 134;
     constexpr uint8_t NoPlayer = 4;
 
-    constexpr uint8_t EOGText_X = 32;
-    constexpr uint8_t EOGText_Y = 40;   
+    constexpr uint8_t WinningPoints = 10;
+
+    constexpr uint8_t EOHText_X = 32;
+    constexpr uint8_t EOHText_Y = 40;   
+
+    constexpr uint8_t EOGText_X1 = 2;
+    constexpr uint8_t EOGText_X2 = 72;
+    constexpr uint8_t EOGText_X3 = 140;
+    constexpr uint8_t EOGText_Y1 = 110;   
+    constexpr uint8_t EOGText_Y2 = 70;   
+    constexpr uint8_t EOGText_Y3 = 40;   
+
     constexpr uint8_t EOGPoints_X = 120;
     constexpr uint8_t EOGPoints_Y = 60;   
 
@@ -93,14 +114,15 @@ enum class GameState : uint8_t {
     Game_Follow_03,         // 40
     Game_EndOfTrick,        // 41
     Game_EndOfHand,         // 42
-    Game_Xxx,               // 43
-    Selection_Init,         // 44
-    Selection,              // 45
-    Swap_Init,              // 46
-    Swap,                   // 47
-    Pause_Init,             // 48
-    Pause,                  // 49
-    None,                   // 50
+    GameOver_Init,          // 43
+    GameOver,               // 44
+    Selection_Init,         // 45
+    Selection,              // 46
+    Swap_Init,              // 47
+    Swap,                   // 48
+    Pause_Init,             // 49
+    Pause,                  // 50
+    None,                   // 51
 };
 
 

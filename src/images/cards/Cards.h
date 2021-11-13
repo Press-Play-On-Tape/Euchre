@@ -84,6 +84,7 @@ namespace Images {
     #include "numbers/right/Numbers_Red_0K_Right.h"
     #include "numbers/right/Numbers_Red_0A_Right.h"
 
+
     const uint8_t * const Suits_Bot[] = { 
         Suit_00_Bot,
         Suit_01_Bot,
@@ -106,6 +107,25 @@ namespace Images {
     };
 
     const uint8_t * const Suits_Right[] = { 
+        Suit_00_Right,
+        Suit_01_Right,
+        Suit_02_Right,
+        Suit_03_Right,
+    };
+
+    const uint8_t * const Suits_All[] = { 
+        Suit_00_Bot,
+        Suit_01_Bot,
+        Suit_02_Bot,
+        Suit_03_Bot,
+        Suit_00_Left,
+        Suit_01_Left,
+        Suit_02_Left,
+        Suit_03_Left,
+        Suit_00_Top,
+        Suit_01_Top,
+        Suit_02_Top,
+        Suit_03_Top,
         Suit_00_Right,
         Suit_01_Right,
         Suit_02_Right,

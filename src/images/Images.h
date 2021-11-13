@@ -3,6 +3,7 @@
 #include "banners/Banners.h"
 #include "cards/Cards.h"
 #include "dialogues/Dialogues.h"
+#include "endOfHand/EndOfHand.h"
 #include "endOfGame/EndOfGame.h"
 #include "ppot/PPOT.h"
 #include "selection/Selections.h"

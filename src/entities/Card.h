@@ -106,7 +106,7 @@ struct Card {
 
                 if (this->cardIndex == Cards::NoCard) {
                     
-                    printf("-- ");
+                    Utils::print(Debug::None, "-- ");
 
                 }
                 else {
@@ -114,27 +114,27 @@ struct Card {
                     switch (this->cardIndex % 13) {
 
                         case 0 ... 7:    
-                            printf("%i", (this->cardIndex % 13) + 2);
+                            Utils::print(Debug::None, "%i", (this->cardIndex % 13) + 2);
                             break;
 
                         case 8:    
-                            printf("T");
+                            Utils::print(Debug::None, "T");
                             break;
 
                         case 9:    
-                            printf("J");
+                            Utils::print(Debug::None, "J");
                             break;
 
                         case 10:    
-                            printf("Q");
+                            Utils::print(Debug::None, "Q");
                             break;
 
                         case 11:    
-                            printf("K");
+                            Utils::print(Debug::None, "K");
                             break;
 
                         case 12:    
-                            printf("A");
+                            Utils::print(Debug::None, "A");
                             break;
                     
                     }
@@ -142,24 +142,24 @@ struct Card {
                     switch (this->cardIndex / 13) {
 
                         case 0:    
-                            printf("S");
+                            Utils::print(Debug::None, "S");
                             break;
 
                         case 1:    
-                            printf("C");
+                            Utils::print(Debug::None, "C");
                             break;
 
                         case 2:    
-                            printf("D");
+                            Utils::print(Debug::None, "D");
                             break;
 
                         case 3:    
-                            printf("H");
+                            Utils::print(Debug::None, "H");
                             break;
                     
                     }
                     
-                    printf(" ");
+                    Utils::print(Debug::None, " ");
 
                 }
                 

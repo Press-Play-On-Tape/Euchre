@@ -20,12 +20,14 @@ int main() {
     PC::begin();
     PD::loadRGBPalette(palettePico);  
     PD::persistence = true;
-    PD::setColor(5);
-    PD::setInvisibleColor(14);
     PC::setFrameRate(30);
+    PD::setInvisibleColor(14);
 
-    PD::setFont(fontTight);
-    PD::textWrap = false;
+    // #ifdef DEBUG
+        PD::setColor(5);
+        PD::setFont(fontTight);
+        PD::textWrap = false;
+    // #endif
 
 
     // Has the cookie been initialised?

@@ -1,62 +1,130 @@
 #pragma once
 
+#include <stdarg.h>
 
-// Extract individual digits of a uint8_t -------------------------------------
+namespace Utils {
 
-template< size_t size > void extractDigits(uint8_t (&buffer)[size], uint8_t value) {
+	// Extract individual digits of a uint8_t -------------------------------------
 
-	for(uint8_t i = 0; i < size; ++i) {
-		buffer[i] = value % 10;
-		value /= 10;
+	template< size_t size > void extractDigits(uint8_t (&buffer)[size], uint8_t value) {
+
+		for(uint8_t i = 0; i < size; ++i) {
+			buffer[i] = value % 10;
+			value /= 10;
+		}
+
 	}
 
-}
+	// Extract individual digits of a uint16_t
+	template< size_t size > void extractDigits(uint8_t (&buffer)[size], uint16_t value) {
 
-// Extract individual digits of a uint16_t
-template< size_t size > void extractDigits(uint8_t (&buffer)[size], uint16_t value) {
-
-	for(uint8_t i = 0; i < size; ++i) {
-		buffer[i] = value % 10;
-		value /= 10;
+		for(uint8_t i = 0; i < size; ++i) {
+			buffer[i] = value % 10;
+			value /= 10;
+		}
+	
 	}
-  
-}
 
 
-// ----------------------------------------------------------------------------
-//  Swap two elements .. 
-//
-template <typename T> void swap(T& x,T& y) {
-	T temp;
-	temp = x;
-	x = y;
-	y = temp;
-}
+	// ----------------------------------------------------------------------------
+	//  Swap two elements .. 
+	//
+	template <typename T> void swap(T& x,T& y) {
+		T temp;
+		temp = x;
+		x = y;
+		y = temp;
+	}
 
 
-// ----------------------------------------------------------------------------
-//  A better absolute as it uses less memory than the standard one .. 
-//
-template<typename T> T absT(const T & v) {
-  
-	return (v < 0) ? -v : v;
+	// ----------------------------------------------------------------------------
+	//  A better absolute as it uses less memory than the standard one .. 
+	//
+	template<typename T> T absT(const T & v) {
+	
+		return (v < 0) ? -v : v;
 
-}
-
-
-// ----------------------------------------------------------------------------
-//  Clamp the value within the range .. 
-//
-template <typename T> inline T clamp(const T& value, const T& low, const T& high) {
-
-	return (value < low) ? low : (value > high) ? high : value; 
-
-}
+	}
 
 
-// This gets the length of an array at compile time
-template< typename T, size_t N > constexpr size_t ArrayLength(T (&)[N]) {
+	// ----------------------------------------------------------------------------
+	//  Clamp the value within the range .. 
+	//
+	template <typename T> inline T clamp(const T& value, const T& low, const T& high) {
 
-	return N;
+		return (value < low) ? low : (value > high) ? high : value; 
+
+	}
+
+
+	// This gets the length of an array at compile time
+	template< typename T, size_t N > constexpr size_t ArrayLength(T (&)[N]) {
+
+		return N;
+
+	}
+
+	static inline void print(Debug mode, __const char *__restrict __format, ...) {
+
+		#ifdef DEBUG
+
+			bool printIt = false;
+
+			switch (mode) {
+
+				case Debug::None:
+					printIt = true;
+					break;
+
+				case Debug::Bid:
+					#ifdef DEBUG_BID
+						printtIt = true;
+					#endif
+					break;
+
+				case Debug::Lead:
+					#ifdef DEBUG_LEAD
+						printtIt = true;
+					#endif
+					break;
+
+				case Debug::Follow:
+					#ifdef DEBUG_FOLLOW
+						printtIt = true;
+					#endif
+					break;
+
+				case Debug::Play:
+					#ifdef DEBUG_PLAY
+						printtIt = true;
+					#endif
+					break;
+
+				case Debug::State:
+					#ifdef DEBUG_STATE
+						printtIt = true;
+					#endif
+					break;
+
+				case Debug::Sounds:
+					#ifdef DEBUG_SOUNDS
+						printtIt = true;
+					#endif
+					break;
+					
+			}
+
+			if (printIt) {
+
+				va_list args;
+				va_start(args, __format);
+				vfprintf(stdout, __format, args);
+				va_end(args);
+
+			}
+
+		#endif
+
+	}
 
 }

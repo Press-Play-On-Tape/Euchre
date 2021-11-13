@@ -45,6 +45,13 @@ namespace Images {
     #include "Dialogue_Small_Background.h"
     #include "Dialogue_Large_Background.h"
 
+    const uint8_t * const Empty_Dialogue[] = { 
+        Empty_Bottom,
+        Empty_Left,
+        Empty_Top,
+        Empty_Right,
+    };
+
     const uint8_t * const Text_Suits_Team[] = { 
         Text_Spades_Team,
         Text_Clubs_Team,

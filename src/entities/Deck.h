@@ -84,15 +84,15 @@ struct Deck {
         void print() {
 
             #ifdef DEBUG
-            printf("Deck : ");
+            Utils::print(Debug::None, "Deck : ");
             
             for (uint8_t i = 0; i <= this->getIndex(); i++) {
-                if (i < 10) printf("0");
-                printf("%i", i);
-                printf(" ");
+                if (i < 10) Utils::print(Debug::None, "0");
+                Utils::print(Debug::None, "%i", i);
+                Utils::print(Debug::None, " ");
             }
 
-            printf("\n       ");
+            Utils::print(Debug::None, "\n       ");
 
             for (uint8_t i = 0; i <= this->getIndex(); i++) {
 
@@ -100,7 +100,7 @@ struct Deck {
 
             }
             
-            printf("\n");
+            Utils::print(Debug::None, "\n");
             #endif
 
         }
