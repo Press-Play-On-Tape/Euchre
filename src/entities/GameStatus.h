@@ -125,6 +125,11 @@ struct GameStatus {
 
         }
 
+        void incDealer() {
+
+            this->dealer = (this->dealer + 1) % 4;
+
+        }
 
         void playCard(Card &card) {
 

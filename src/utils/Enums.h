@@ -70,6 +70,7 @@ namespace Constants {
 
 }
 
+
 enum class GameState : uint8_t {
     Splash_Init,            // 0
     Splash,                 // 1    

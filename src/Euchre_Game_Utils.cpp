@@ -193,6 +193,12 @@ void Game::incMode(bool ignoreCounter, bool increasePlayer) {
                         this->gameStatus.incCurrentPlayer();
 
                     }
+                    else {
+
+                        this->firstValidCard(this->gameStatus.getCurrentPlayer());
+
+                    }
+
                     break;
 
                 case GameState::Game_Follow_03:
@@ -223,6 +229,11 @@ void Game::incMode(bool ignoreCounter, bool increasePlayer) {
                         }
 
                     }
+                    else {
+
+                        this->firstValidCard(this->gameStatus.getCurrentPlayer());
+
+                    }
 
                     break;
 
@@ -238,7 +249,7 @@ void Game::incMode(bool ignoreCounter, bool increasePlayer) {
 
             switch (this->gameState) {
 
-                case GameState::Game_Bid_01 ... GameState::Game_Open_Bid_03:
+                case GameState::Game_Bid_00 ... GameState::Game_Open_Bid_03:
 
                     if (this->cookie->getNumberOfPlayers() == 2) {
 
@@ -664,6 +675,8 @@ bool Game::isHuman(uint8_t playerIdx) {
 }
 
 void Game::firstValidCard(uint8_t playerIdx) {
+
+    if (!this->isHuman(playerIdx)) return;
 
     this->bidCursor = 255;
 

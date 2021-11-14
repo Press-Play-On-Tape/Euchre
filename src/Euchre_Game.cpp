@@ -25,7 +25,7 @@ void Game::game_Init() {
 void Game::game() {
 
 
-    Utils::print(Debug::None, "GameState: %i, deal: %i, currentPlayer: %i, getPlayerView(): %i, counter: %i\n", (uint16_t)this->gameState, this->deal, this->gameStatus.getCurrentPlayer(), this->gameStatus.getPlayerView(),this->counter);
+    Utils::print(Debug::None, "GameState: %i, deal: %i, dealer(): % i, currentPlayer: %i, getPlayerView(): %i, counter: %i\n", (uint16_t)this->gameState, this->deal, this->gameStatus.getDealer(), this->gameStatus.getCurrentPlayer(), this->gameStatus.getPlayerView(),this->counter);
 
 
     // Handle player actions ..
@@ -56,6 +56,7 @@ void Game::game() {
             this->counter = 0;
             this->deal = 0;
             this->dealerCard.init(Cards::NoCard);
+            this->gameStatus.initHand((this->gameStatus.getDealer() + 1) % 4);
 
             this->print();
 
@@ -310,7 +311,7 @@ void Game::game() {
         case GameState::Game_StartPlay:
 
             this->gameState++;
-            this->gameStatus.initHand((this->gameStatus.getDealer() + 1) % 4);
+            // this->gameStatus.initHand((this->gameStatus.getDealer() + 1) % 4);
             this->dialogCursor = 0;
             this->dealerCard.init(Cards::NoCard);
             this->counter = 0;
@@ -605,6 +606,7 @@ void Game::game() {
                 else if (PC::buttons.pressed(BTN_A)) { 
 
                     this->gameState = GameState::Game_NewHand_Init;
+                    this->gameStatus.incDealer();
 
                 }
 
