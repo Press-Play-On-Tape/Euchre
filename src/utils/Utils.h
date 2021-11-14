@@ -78,37 +78,37 @@ namespace Utils {
 
 				case Debug::Bid:
 					#ifdef DEBUG_BID
-						printtIt = true;
+						printIt = true;
 					#endif
 					break;
 
 				case Debug::Lead:
 					#ifdef DEBUG_LEAD
-						printtIt = true;
+						printIt = true;
 					#endif
 					break;
 
 				case Debug::Follow:
 					#ifdef DEBUG_FOLLOW
-						printtIt = true;
+						printIt = true;
 					#endif
 					break;
 
 				case Debug::Play:
 					#ifdef DEBUG_PLAY
-						printtIt = true;
+						printIt = true;
 					#endif
 					break;
 
 				case Debug::State:
 					#ifdef DEBUG_STATE
-						printtIt = true;
+						printIt = true;
 					#endif
 					break;
 
 				case Debug::Sounds:
 					#ifdef DEBUG_SOUNDS
-						printtIt = true;
+						printIt = true;
 					#endif
 					break;
 					

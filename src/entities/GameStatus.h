@@ -12,6 +12,7 @@ struct GameStatus {
         HasSuit hasSuit[4][4];
         bool hasBeenPlayed[4][13];
         Card currentHand[4];
+        Card lastHand[4];
         CardSuit suitLed = CardSuit::None;
         CardSuit trumps = CardSuit::None;
 
@@ -48,6 +49,7 @@ struct GameStatus {
         bool getHasBeenPlayed(CardSuit suit, uint8_t cardNumber)                { return this->hasBeenPlayed[static_cast<uint8_t>(suit)][cardNumber]; }
         bool getHasBeenPlayed(Card card)                                        { return this->hasBeenPlayed[static_cast<uint8_t>(card.getSuit(CardSuit::None))][card.getNumber()]; }
         Card getCurrentHand(uint8_t playerIdx)                                  { return this->currentHand[playerIdx]; }
+        Card getLastHand(uint8_t playerIdx)                                     { return this->lastHand[playerIdx]; }
 
         void setFirstPlayer(uint8_t val)                                        { this->firstPlayer = val; }
         void setCurrentPlayer(uint8_t val)                                      { this->currentPlayer = val; }
@@ -80,6 +82,7 @@ struct GameStatus {
                 }
 
                 this->currentHand[i].init(Cards::NoCard);
+                this->lastHand[i].init(Cards::NoCard);
                 this->tricks[i] = 0;
             	this->playAlone = false;
 
@@ -94,6 +97,7 @@ struct GameStatus {
 
             for (uint8_t i = 0; i < 4; i++) {
 
+                this->lastHand[i].init(this->currentHand[i].getCardIndex());
                 this->currentHand[i].init(Cards::NoCard);
 
             }

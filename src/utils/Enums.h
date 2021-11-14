@@ -1,11 +1,11 @@
 #pragma once
 
-#define DEBUG
+#define _DEBUG
 #define _DEBUG_BID
 #define _DEBUG_LEAD
 #define _DEBUG_FOLLOW
 #define _DEBUG_PLAY
-#define DEBUG_STATE
+#define _DEBUG_STATE
 #define _DEBUG_SOUNDS
 #define SOUNDS
 #define COOKIE_INITIALISED 59
@@ -252,10 +252,10 @@ enum class Speech : uint8_t {
 };
 
 enum class SwapCaption : uint8_t {
-    None,
-    DiscardACard,
+    DiscardCard,
     LeadACard,
     FollowALead,
     YourBid,
-    Redeal
+    Redeal,
+    None,
 };           

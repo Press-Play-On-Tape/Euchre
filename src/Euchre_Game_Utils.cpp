@@ -308,7 +308,7 @@ void Game::getSwapCaption(GameState gameState) {
             break;
 
         case GameState::Game_DealerExtraCard:
-            this->swapCaption = SwapCaption::DiscardACard;
+            this->swapCaption = SwapCaption::DiscardCard;
             break;
 
         case GameState::Game_NewHand_Init:

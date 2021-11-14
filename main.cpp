@@ -23,11 +23,11 @@ int main() {
     PC::setFrameRate(30);
     PD::setInvisibleColor(14);
 
-    // #ifdef DEBUG
+    #ifdef DEBUG
         PD::setColor(5);
         PD::setFont(fontTight);
         PD::textWrap = false;
-    // #endif
+    #endif
 
 
     // Has the cookie been initialised?
