@@ -15,6 +15,7 @@ void Game::game_Init() {
     this->nextState = GameState::None;
     this->gameStatus.init();
     this->gameStatus.setDealer(3);
+//    this->gameStatus.setDealer(0);
 
 }   
 
@@ -131,6 +132,34 @@ void Game::game() {
 
 // this->print();
 
+
+// this->dealerCard.init(CardSuit::Clubs, Cards::Queen);
+
+// this->hands[0].getCard(0).init(CardSuit::Hearts, Cards::Ten);
+// this->hands[0].getCard(1).init(CardSuit::Hearts, Cards::Jack);
+// this->hands[0].getCard(2).init(CardSuit::Clubs, Cards::Queen);
+// this->hands[0].getCard(3).init(CardSuit::Clubs, Cards::King);
+// this->hands[0].getCard(4).init(CardSuit::Clubs, Cards::Jack);
+
+// this->hands[1].getCard(0).init(CardSuit::Spades, Cards::Nine);
+// this->hands[1].getCard(1).init(CardSuit::Diamonds, Cards::Nine);
+// this->hands[1].getCard(2).init(CardSuit::Diamonds, Cards::Ten);
+// this->hands[1].getCard(3).init(CardSuit::Diamonds, Cards::Ace);
+// this->hands[1].getCard(4).init(CardSuit::Clubs, Cards::Nine);
+
+// this->hands[2].getCard(0).init(CardSuit::Spades, Cards::Queen);
+// this->hands[2].getCard(2).init(CardSuit::Diamonds, Cards::Jack);
+// this->hands[2].getCard(1).init(CardSuit::Hearts, Cards::Nine);
+// this->hands[2].getCard(3).init(CardSuit::Hearts, Cards::Ace);
+// this->hands[2].getCard(4).init(CardSuit::Clubs, Cards::Ten);
+
+// this->hands[3].getCard(0).init(CardSuit::Spades, Cards::King);
+// this->hands[3].getCard(1).init(CardSuit::Spades, Cards::Ace);
+// this->hands[3].getCard(2).init(CardSuit::Hearts, Cards::Queen);
+// this->hands[3].getCard(3).init(CardSuit::Clubs, Cards::Ace);
+// this->hands[3].getCard(4).init(CardSuit::Spades, Cards::Jack);
+
+// this->print();
             }
 
             this->incMode();
@@ -322,7 +351,8 @@ void Game::game() {
             if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
 
                 this->nextState = GameState::None;
-                this->incMode(true, false);
+                //this->incMode(true, false);
+                this->gameStatus.incCurrentPlayer();
 
             }
 

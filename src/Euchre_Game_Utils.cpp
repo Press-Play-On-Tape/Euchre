@@ -175,15 +175,17 @@ void Game::incMode(bool ignoreCounter, bool increasePlayer) {
         else {
 
             Utils::print(Debug::State, "8 ..this->nextState == GameState::None\n");
-            Utils::print(Debug::State, " incMode() Transition from state %i", (uint16_t)this->gameState);
+            Utils::print(Debug::State, " incMode() Transition from state %i ", (uint16_t)this->gameState);
 
             this->gameState++;
+
+            Utils::print(Debug::State, " to state %i ", (uint16_t)this->gameState);
 
             switch (this->gameState) {
 
                 case GameState::Game_Follow_01 ... GameState::Game_Follow_02:
 
-                    Utils::print(Debug::State, "9 test case GameState::Game_Follow_01 ... GameState::Game_Follow_02 ");
+                    Utils::print(Debug::State, "9 test case GameState::Game_Follow_01 ... GameState::Game_Follow_02 \n");
 
                     if (!this->isPlayingThisHand(this->gameStatus.getCurrentPlayer())) {
 

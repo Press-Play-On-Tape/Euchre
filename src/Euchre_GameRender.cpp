@@ -602,6 +602,8 @@ void Game::renderTrickOver(uint8_t positions[4], uint8_t winner) {
 
 void Game::renderHandOrGameOver(uint8_t winner) {
 
+    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Euchre);
+
     if (this->bidWinner() == 0 || this->bidWinner() == 2) {
 
         switch (this->gameStatus.getTricks0and2()) {
@@ -647,12 +649,9 @@ void Game::renderHandOrGameOver(uint8_t winner) {
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                    // PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
-                    //                Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
-                    //                Images::PlusOne[index]);
-                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
-                                       Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
-                                       Images::PlusFour[index]);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
+                                   Images::PlusOne[index]);
                 }
 
                 if (this->eog == 0) {
@@ -774,12 +773,9 @@ void Game::renderHandOrGameOver(uint8_t winner) {
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                    // PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
-                    //                Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
-                    //                Images::PlusOne[index]);
-                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
-                                       Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
-                                       Images::PlusFour[index]);                           
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
+                                   Images::PlusOne[index]);
                 }
 
                 if (this->eog == 0) {
