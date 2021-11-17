@@ -8,7 +8,7 @@
 #define _DEBUG_STATE
 #define _DEBUG_SOUNDS
 #define SOUNDS
-#define COOKIE_INITIALISED 59
+#define COOKIE_INITIALISED 58
 
 enum Debug {
     None = 0,
@@ -244,12 +244,14 @@ enum class Speech : uint8_t {
     WooHoo_01,
     WooHoo_02,
     WooHoo_03,
-    TeamAlphaPlus1,
+    TeamAlphaPlus1 = 32,
     TeamAlphaPlus2,
     TeamAlphaPlus4,
-    TeamBetaPlus1,
+    TeamBetaPlus1 = 35,
     TeamBetaPlus2,
     TeamBetaPlus4,
+    TeamAlphaWins = 37,
+    TeamBetaWins,
 };
 
 enum class SwapCaption : uint8_t {

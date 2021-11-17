@@ -50,7 +50,7 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
             }
             else {
 
-                PD::drawBitmap(x, y, Images::Card_Back_Rot);
+                PD::drawBitmap(x, y, Images::Card_Back);
 
             }
 
@@ -626,7 +626,12 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 }
 
                 if (this->eog == 0) {
-                    this->playSpeech(Speech::TeamBetaPlus2);
+                    if (this->gameState == GameState::Game_EndOfHand) {
+                        this->playSpeech(Speech::TeamBetaPlus2);
+                    }
+                    else {
+                        this->playSpeech(Speech::TeamBetaWins);
+                    }
                 }
 
                 break;
@@ -642,13 +647,21 @@ void Game::renderHandOrGameOver(uint8_t winner) {
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                    PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
-                                   Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
-                                   Images::PlusOne[index]);
+                    // PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
+                    //                Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
+                    //                Images::PlusOne[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
+                                       Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
+                                       Images::PlusFour[index]);
                 }
 
                 if (this->eog == 0) {
-                    this->playSpeech(Speech::TeamAlphaPlus1);
+                    if (this->gameState == GameState::Game_EndOfHand) {
+                        this->playSpeech(Speech::TeamAlphaPlus1);
+                    }
+                    else {
+                        this->playSpeech(Speech::TeamAlphaWins);
+                    }
                 }
 
                 break;
@@ -672,7 +685,12 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                     }
 
                     if (this->eog == 0) {
-                        this->playSpeech(Speech::TeamAlphaPlus2);
+                        if (this->gameState == GameState::Game_EndOfHand) {
+                            this->playSpeech(Speech::TeamAlphaPlus2);
+                        }
+                        else {
+                            this->playSpeech(Speech::TeamAlphaWins);
+                        }
                     }
 
                 }
@@ -696,7 +714,12 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                     }
 
                     if (this->eog == 0) {
-                        this->playSpeech(Speech::TeamAlphaPlus4);
+                        if (this->gameState == GameState::Game_EndOfHand) {
+                            this->playSpeech(Speech::TeamAlphaPlus4);
+                        }
+                        else {
+                            this->playSpeech(Speech::TeamAlphaWins);
+                        }
                     }
 
                 }
@@ -730,7 +753,12 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 }
 
                 if (this->eog == 0) {
-                    this->playSpeech(Speech::TeamAlphaPlus2);
+                    if (this->gameState == GameState::Game_EndOfHand) {
+                        this->playSpeech(Speech::TeamAlphaPlus2);
+                    }
+                    else {
+                        this->playSpeech(Speech::TeamAlphaWins);
+                    }
                 }
 
                 break;
@@ -746,13 +774,21 @@ void Game::renderHandOrGameOver(uint8_t winner) {
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                    PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
-                                   Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
-                                   Images::PlusOne[index]);
+                    // PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
+                    //                Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
+                    //                Images::PlusOne[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
+                                       Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
+                                       Images::PlusFour[index]);                           
                 }
 
                 if (this->eog == 0) {
-                    this->playSpeech(Speech::TeamBetaPlus1);
+                    if (this->gameState == GameState::Game_EndOfHand) {
+                        this->playSpeech(Speech::TeamBetaPlus1);
+                    }
+                    else {
+                        this->playSpeech(Speech::TeamBetaWins);
+                    }
                 }
 
                 break;
@@ -775,8 +811,13 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                                        Images::PlusTwo[index]);
                     }
 
-                    if (this->eog == 2) {
-                        this->playSpeech(Speech::TeamBetaPlus1);
+                    if (this->eog == 0) {
+                        if (this->gameState == GameState::Game_EndOfHand) {
+                            this->playSpeech(Speech::TeamBetaPlus2);
+                        }
+                        else {
+                            this->playSpeech(Speech::TeamBetaWins);
+                        }
                     }
 
                 }
@@ -800,7 +841,12 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                     }
 
                     if (this->eog == 0) {
-                        this->playSpeech(Speech::TeamBetaPlus4);
+                        if (this->gameState == GameState::Game_EndOfHand) {
+                            this->playSpeech(Speech::TeamBetaPlus4);
+                        }
+                        else {
+                            this->playSpeech(Speech::TeamBetaWins);
+                        }                        
                     }
 
                 }

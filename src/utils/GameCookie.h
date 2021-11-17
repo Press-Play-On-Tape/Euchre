@@ -50,7 +50,7 @@ class GameCookie : public Pokitto::Cookie {
 
             this->initialised = COOKIE_INITIALISED;
             this->stickIt = false;
-            this->showHands = true;
+            this->showHands = false;
             this->showWinner = true;
             this->highlightPlayable = true;
             this->player2Pos = 1;
