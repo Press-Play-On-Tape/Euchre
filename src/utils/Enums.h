@@ -53,20 +53,27 @@ namespace Constants {
     constexpr uint8_t Dialogue_00_Y = 134;
     constexpr uint8_t NoPlayer = 4;
 
-    constexpr uint8_t WinningPoints = 10;
+    constexpr uint8_t WinningPoints = 1;
+    constexpr uint8_t EOG_Delay = 90;
 
     constexpr uint8_t EOHText_X = 32;
     constexpr uint8_t EOHText_Y = 40;   
 
-    constexpr uint8_t EOGText_X1 = 2;
-    constexpr uint8_t EOGText_X2 = 72;
-    constexpr uint8_t EOGText_X3 = 140;
-    constexpr uint8_t EOGText_Y1 = 110;   
+    constexpr uint8_t EOGText_X1 = 21;
+    constexpr uint8_t EOGText_X2 = 22;
+    constexpr uint8_t EOGText_X3 = 28;
+    constexpr uint8_t EOGText_Y1 = 40;   
     constexpr uint8_t EOGText_Y2 = 70;   
-    constexpr uint8_t EOGText_Y3 = 40;   
+    constexpr uint8_t EOGText_Y3 = 100;   
 
     constexpr uint8_t EOGPoints_X = 120;
     constexpr uint8_t EOGPoints_Y = 60;   
+
+
+    constexpr char instructions[5][19] = { 
+        "music/Euch_910.raw", "music/Euch_911.raw", "music/Euch_912.raw", "music/Euch_913.raw",
+        "music/Euch_914.raw", 
+    };
 
 }
 
@@ -124,6 +131,12 @@ enum class GameState : uint8_t {
     Pause_Init,             // 49
     Pause,                  // 50
     None,                   // 51
+    Instructions_Init,      // 52
+    Instructions_00,        // 53
+    Instructions_01,        // 54
+    Instructions_02,        // 55
+    Instructions_03,        // 56
+    Instructions_04,        // 57
 };
 
 
@@ -261,4 +274,10 @@ enum class SwapCaption : uint8_t {
     YourBid,
     Redeal,
     None,
+};           
+
+enum class TitleScreenMode : uint8_t {
+    Sounds,
+    StartGame,
+    Instructions,
 };           

@@ -109,7 +109,6 @@ void Game::selection() {
                 break;
 
             case 1:
-                // this->bidCursor = this->dialogCursor;
                 this->dialogCursor = 2;
                 break;
 

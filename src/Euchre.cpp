@@ -14,11 +14,11 @@ void Game::setup(GameCookie *cookie) {
 void Game::loop() {
 
     PC::buttons.pollButtons();
-    PD::clear();
 
     switch (this->gameState) {
 
         case GameState::Splash:
+            PD::clear();
             this->splashScreen();
             break;
 
@@ -27,6 +27,7 @@ void Game::loop() {
             [[fallthrough]]
 
         case GameState::Title:
+            PD::clear();
             this->title();
             break;
 
@@ -35,6 +36,7 @@ void Game::loop() {
             [[fallthrough]]
 
         case GameState::Selection:
+            PD::clear();
             this->selection();
             break;
 
@@ -43,6 +45,7 @@ void Game::loop() {
             [[fallthrough]]
 
         case GameState::Swap:
+            PD::clear();
             this->swap();
             break;
 
@@ -51,6 +54,7 @@ void Game::loop() {
             [[fallthrough]]
 
         case GameState::Pause:
+            PD::clear();
             this->pause();
             break;
 
@@ -59,7 +63,16 @@ void Game::loop() {
             [[fallthrough]]
 
         case GameState::Game_NewHand_Init ... GameState::GameOver:
+            PD::clear();
             this->game();
+            break;
+
+        case GameState::Instructions_Init:
+            this->instructions_Init();
+            [[fallthrough]]
+
+        case GameState::Instructions_00 ... GameState::Instructions_04:
+            this->instructions();
             break;
 
     }

@@ -9,3 +9,10 @@ struct SplashScreenVariables {
     uint8_t buttonCounter = 0;
 
 };
+
+
+struct TitleScreenVariables {
+
+    TitleScreenMode mode = TitleScreenMode::StartGame;
+
+};

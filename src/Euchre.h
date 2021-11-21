@@ -18,6 +18,8 @@ class Game {
     private:
 
         SplashScreenVariables splashScreenVariables;
+        TitleScreenVariables titleScreenVariables;
+        
         GameState gameState = GameState::Splash;
         GameState nextState = GameState::None;
         GameState savedState = GameState::None;
@@ -26,8 +28,6 @@ class Game {
         Hand hands[4];
         GameStatus gameStatus;
         SwapCaption swapCaption;
-        uint8_t imageBuffer[5000];
-
 
         uint8_t counter;
         uint8_t deal;
@@ -36,14 +36,14 @@ class Game {
         uint8_t bidCursor;
         uint8_t dialogCursor;
         uint8_t tapeCursor;
-        uint8_t eog;
+        uint16_t eog;
         Card dealerCard;
-        
 
         const uint8_t *text = nullptr;
 
         File mainThemeFile;
         File soundEffectFile;
+        File instructionFile;  
 
     public:
 
@@ -63,6 +63,8 @@ class Game {
         void swap();
         void pause_Init();
         void pause();
+        void instructions_Init();
+        void instructions();
         
         void incMode(bool ignoreCounter = false, bool increasePlayer = true);
         void print();

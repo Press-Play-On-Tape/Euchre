@@ -49,47 +49,95 @@ void Game::title() {
 
     // Handle player actions ..
 
-    if (PC::buttons.pressed(BTN_A)) { 
+    switch (this->titleScreenVariables.mode) {
 
-        this->gameState = GameState::Selection_Init;
+        case TitleScreenMode::Sounds:
 
-    }         
+            if (PC::buttons.pressed(BTN_UP)) {
 
-    if (PC::buttons.pressed(BTN_UP)) {
+                this->cookie->decSFX();
+                this->cookie->saveCookie();
 
-        this->cookie->decSFX();
-        this->cookie->saveCookie();
+                if (this->cookie->getSFX() != SoundEffects::Both && this->cookie->getSFX() != SoundEffects::Music) {
 
-        if (this->cookie->getSFX() != SoundEffects::Both && this->cookie->getSFX() != SoundEffects::Music) {
+                    this->muteTheme();
+                    
+                }
+                else {
 
-            this->muteTheme();
+                    this->playTheme(this->cookie->getTrack());
+
+                }
+
+            }
+
+            if (PC::buttons.pressed(BTN_DOWN)) {
+
+                this->cookie->incSFX();
+                this->cookie->saveCookie();
+
+                if (this->cookie->getSFX() != SoundEffects::Both && this->cookie->getSFX() != SoundEffects::Music) {
+
+                    this->muteTheme();
+                    
+                }
+                else {
+
+                    this->playTheme(this->cookie->getTrack());
+                    
+                }
+                
+            }
+
+            if (PC::buttons.pressed(BTN_RIGHT)) {
+
+                this->titleScreenVariables.mode = TitleScreenMode::StartGame;
+
+            }
+
+            break;
+
+        case TitleScreenMode::StartGame:
+
+            if (PC::buttons.pressed(BTN_A)) { 
+
+                this->gameState = GameState::Selection_Init;
+
+            }      
             
-        }
-        else {
+            if (PC::buttons.pressed(BTN_LEFT)) {
 
-            this->playTheme(this->cookie->getTrack());
+                this->titleScreenVariables.mode = TitleScreenMode::Sounds;
 
-        }
+            }
+            
+            if (PC::buttons.pressed(BTN_RIGHT)) {
+
+                this->titleScreenVariables.mode = TitleScreenMode::Instructions;
+
+            }
+
+            break;
+
+        case TitleScreenMode::Instructions:
+
+            if (PC::buttons.pressed(BTN_A)) { 
+
+                this->gameState = GameState::Instructions_Init;
+
+            }  
+            
+            if (PC::buttons.pressed(BTN_LEFT)) {
+
+                this->titleScreenVariables.mode = TitleScreenMode::StartGame;
+
+            }
+
+            break;
 
     }
 
-    if (PC::buttons.pressed(BTN_DOWN)) {
 
-        this->cookie->incSFX();
-        this->cookie->saveCookie();
-
-        if (this->cookie->getSFX() != SoundEffects::Both && this->cookie->getSFX() != SoundEffects::Music) {
-
-            this->muteTheme();
-            
-        }
-        else {
-
-            this->playTheme(this->cookie->getTrack());
-            
-        }
-        
-    }
 
     // Render page ..
 
@@ -99,22 +147,69 @@ void Game::title() {
 
     uint16_t frameCount = PC::frameCount % 96;
 
-    switch (this->cookie->getSFX()) {
+    if (this->titleScreenVariables.mode == TitleScreenMode::Sounds) {
+            
+        switch (this->cookie->getSFX()) {
 
-        case SoundEffects::Music:
-            PD::drawBitmap(4, 164, Images::Sound_Music_White);
+            case SoundEffects::Music:
+                PD::drawBitmap(4, 164, Images::Sound_Music_White);
+                break;
+
+            case SoundEffects::SFX:
+                PD::drawBitmap(4, 164, Images::Sound_SFX_White);
+                break;
+
+            case SoundEffects::Both:
+                PD::drawBitmap(4, 164, Images::Sound_Both_White);
+                break;
+
+            default:
+                PD::drawBitmap(4, 164, Images::Sound_None_White);
+                break;
+
+        }
+
+    }
+    else {
+         
+        switch (this->cookie->getSFX()) {
+
+            case SoundEffects::Music:
+                PD::drawBitmap(4, 164, Images::Sound_Music_Grey);
+                break;
+
+            case SoundEffects::SFX:
+                PD::drawBitmap(4, 164, Images::Sound_SFX_Grey);
+                break;
+
+            case SoundEffects::Both:
+                PD::drawBitmap(4, 164, Images::Sound_Both_Grey);
+                break;
+
+            default:
+                PD::drawBitmap(4, 164, Images::Sound_None_Grey);
+                break;
+
+        }
+
+    }
+
+
+    switch (this->titleScreenVariables.mode) {
+        
+        case TitleScreenMode::Sounds:
+            PD::drawBitmap(65, 164, Images::PlayGame_Grey);
+            PD::drawBitmap(145, 164, Images::Instructions_Grey);
+            break;
+        
+        case TitleScreenMode::StartGame:
+            PD::drawBitmap(65, 164, Images::PlayGame_White);
+            PD::drawBitmap(145, 164, Images::Instructions_Grey);
             break;
 
-        case SoundEffects::SFX:
-            PD::drawBitmap(4, 164, Images::Sound_SFX_White);
-            break;
-
-        case SoundEffects::Both:
-            PD::drawBitmap(4, 164, Images::Sound_Both_White);
-            break;
-
-        default:
-            PD::drawBitmap(4, 164, Images::Sound_None_White);
+        case TitleScreenMode::Instructions:
+            PD::drawBitmap(65, 164, Images::PlayGame_Grey);
+            PD::drawBitmap(145, 164, Images::Instructions_White);
             break;
 
     }

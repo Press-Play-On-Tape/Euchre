@@ -96,7 +96,103 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
 
 void Game::renderGame(bool pause) {
 
+    uint8_t xOffsetEOG = 0;
+
     PD::fillScreen(this->gameStatus.getPlayerView() == 0 ? 3 : 1);
+
+    
+    // EOG?
+
+    if (this->gameState == GameState::GameOver) {
+
+        if (this->bidWinner() == 0 || this->bidWinner() == 2) {
+
+            switch (this->gameStatus.getTricks0and2()) {
+
+                case 0 ... 2:
+                case 5:
+
+                    switch (this->eog) {
+
+                        case 0 ... 59:
+                            break;
+
+                        case 60 ... 90:
+                            xOffsetEOG = (this->eog - 60) * 3 / 2;
+                            break;
+
+                        default:
+                            xOffsetEOG = 45;
+                            break;
+                        
+                    }
+
+                    break;
+
+                case 3 ... 4:
+
+                    switch (this->eog) {
+
+                        case 0 ... 30:
+                            xOffsetEOG = this->eog * 3 / 2;
+                            break;
+
+                        default:
+                            xOffsetEOG = 45;
+                            break;
+                        
+                    }
+
+                    break;
+
+            }      
+
+        }
+        else {
+
+            switch (this->gameStatus.getTricks1and3()) {
+
+                case 0 ... 2:
+                case 5:
+
+                    switch (this->eog) {
+
+                        case 0 ... 59:
+                            break;
+
+                        case 60 ... 90:
+                            xOffsetEOG = (this->eog - 60) * 3 / 2;
+                            break;
+
+                        default:
+                            xOffsetEOG = 45;
+                            break;
+                        
+                    }
+
+                    break;
+
+                case 3 ... 4:
+
+                    switch (this->eog) {
+
+                        case 0 ... 30:
+                            xOffsetEOG = this->eog * 3 / 2;
+                            break;
+
+                        default:
+                            xOffsetEOG = 45;
+                            break;
+                        
+                    }
+
+                    break;
+
+            }  
+
+        }
+
+    }
 
 
 
@@ -284,7 +380,7 @@ void Game::renderGame(bool pause) {
                 for (uint8_t j = 0; j < 4; j++) {
 
                     if (i % 4 == positions[j]) {
-                        this->renderPlayedCard(playedX[j], playedY[j], positions[j]);
+                        this->renderPlayedCard(playedX[j] + xOffsetEOG, playedY[j], positions[j]);
                     }
 
                 }
@@ -602,7 +698,7 @@ void Game::renderTrickOver(uint8_t positions[4], uint8_t winner) {
 
 void Game::renderHandOrGameOver(uint8_t winner) {
 
-    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Euchre);
+    //PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Euchre);
 
     if (this->bidWinner() == 0 || this->bidWinner() == 2) {
 
@@ -613,7 +709,7 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 PD::drawBitmap(49, Constants::Dialogue_00_Y + 6, Images::TeamBeta);
                 PD::drawBitmap(126, Constants::Dialogue_00_Y + 8, Images::Points_02);
 
-                if (this->gameState == GameState::Game_EndOfHand || this->counter < 128) {
+                if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
                     PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Euchre);
                 }
                 else {
@@ -698,7 +794,7 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                     PD::drawBitmap(47, Constants::Dialogue_00_Y + 6, Images::TeamAlpha);
                     PD::drawBitmap(128, Constants::Dialogue_00_Y + 8, Images::Points_04);
 
-                    if (this->gameState == GameState::Game_EndOfHand || this->counter < 128) {
+                    if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
                         PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::March);
                     }
                     else {
@@ -737,7 +833,7 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 PD::drawBitmap(47, Constants::Dialogue_00_Y + 4, Images::TeamAlpha);
                 PD::drawBitmap(128, Constants::Dialogue_00_Y + 6, Images::Points_02);
                 
-                if (this->gameState == GameState::Game_EndOfHand || this->counter < 128) {
+                if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
                     PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Euchre);
                 }
                 else {
@@ -822,7 +918,7 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                     PD::drawBitmap(49, Constants::Dialogue_00_Y + 4, Images::TeamBeta);
                     PD::drawBitmap(126, Constants::Dialogue_00_Y + 6, Images::Points_04);
 
-                    if (this->gameState == GameState::Game_EndOfHand || this->counter < 128) {
+                    if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
                         PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::March);
                     }
                     else {
@@ -852,7 +948,7 @@ void Game::renderHandOrGameOver(uint8_t winner) {
 
     }
 
-    if (this->eog < 44) this->eog++;
+    if (this->eog < 500) this->eog++;
 
 }
 
@@ -860,14 +956,14 @@ void Game::renderGameOver_Alpha() {
 
     PD::drawBitmap(Constants::EOGText_X1, Constants::EOGText_Y1, Images::EOG_Team);
     PD::drawBitmap(Constants::EOGText_X2, Constants::EOGText_Y2, Images::EOG_Alpha);
-    PD::drawBitmap(Constants::EOGText_X3, Constants::EOGText_Y3, Images::EOG_Wins);
+    PD::drawBitmap(Constants::EOGText_X3, Constants::EOGText_Y3,  Images::EOG_Wins);
 
 }
 
 void Game::renderGameOver_Beta() {
 
     PD::drawBitmap(Constants::EOGText_X1, Constants::EOGText_Y1, Images::EOG_Team);
-    PD::drawBitmap(Constants::EOGText_X2, Constants::EOGText_Y2, Images::EOG_Beta);
-    PD::drawBitmap(Constants::EOGText_X3, Constants::EOGText_Y3, Images::EOG_Wins);
+    PD::drawBitmap(Constants::EOGText_X2 + 8, Constants::EOGText_Y2, Images::EOG_Beta);
+    PD::drawBitmap(Constants::EOGText_X3, Constants::EOGText_Y3,  Images::EOG_Wins);
 
 }
