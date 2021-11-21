@@ -11,6 +11,7 @@ using PD = Pokitto::Display;
 //
 void Game::splashScreen() { 
 
+
     // Decrease button counter that prevents you skipping straight over PPOT plash ..
 
     if (this->splashScreenVariables.buttonCounter > 0) this->splashScreenVariables.buttonCounter--;

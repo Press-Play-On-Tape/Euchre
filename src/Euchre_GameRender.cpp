@@ -334,7 +334,7 @@ void Game::renderGame(bool pause) {
                     PD::drawBitmap(110 + (x0 / 2) + 1, 165 - (this->gameStatus.getDealer() == positions[0] ? 10 : 0), Images::Tricks_Bot[this->gameStatus.getTricks(positions[0])]); 
                     PD::drawBitmap(2 + (this->gameStatus.getDealer() == positions[1] ? 10 : 0), (88 + (y1 / 2)) + 1, Images::Tricks_Left[this->gameStatus.getTricks(positions[1])]);
                     PD::drawBitmap(110 - (x2 / 2) - 12, 2 + (this->gameStatus.getDealer() == positions[2] ? 10 : 0), Images::Tricks_Top[this->gameStatus.getTricks(positions[2])]);
-                    PD::drawBitmap(209 - (this->gameStatus.getDealer() == positions[3] ? 10 : 0), (88 - (y3 / 2)) - 11, Images::Tricks_Right[this->gameStatus.getTricks(positions[3])]);
+                    PD::drawBitmap(209 - (this->gameStatus.getDealer() == positions[3] ? 11 : 0), (88 - (y3 / 2)) - 11, Images::Tricks_Right[this->gameStatus.getTricks(positions[3])]);
                     break;
 
                 default: break;
@@ -697,8 +697,6 @@ void Game::renderTrickOver(uint8_t positions[4], uint8_t winner) {
 }
 
 void Game::renderHandOrGameOver(uint8_t winner) {
-
-    //PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Euchre);
 
     if (this->bidWinner() == 0 || this->bidWinner() == 2) {
 

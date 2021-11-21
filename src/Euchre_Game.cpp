@@ -15,7 +15,7 @@ void Game::game_Init() {
     this->nextState = GameState::None;
     this->gameStatus.init();
     this->gameStatus.setDealer(3);
-//    this->gameStatus.setDealer(0);
+    this->gameStatus.setPlayerView(0);
 
 }   
 
@@ -656,7 +656,7 @@ void Game::game() {
 
             if (PC::buttons.pressed(BTN_A)) { 
 
-                this->gameState = GameState::Title_Init;
+                this->gameState = GameState::Title;
 
             } 
 

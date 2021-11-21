@@ -36,7 +36,6 @@ void Game::loop() {
             [[fallthrough]]
 
         case GameState::Selection:
-            PD::clear();
             this->selection();
             break;
 

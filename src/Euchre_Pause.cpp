@@ -99,7 +99,18 @@ void Game::pause() {
 
             this->cookie->setTrack(this->tapeCursor);
             this->cookie->saveCookie();
-            this->playTheme(this->cookie->getTrack());
+                        
+            switch (this->cookie->getSFX()) {
+
+                case SoundEffects::Music:
+                case SoundEffects::Both:
+                    this->playTheme(this->cookie->getTrack());
+                    break;
+
+                default:
+                    break;
+
+            }
 
             PC::buttons.pollButtons();
             this->gameState = this->savedState;
@@ -132,7 +143,18 @@ void Game::pause() {
 
             if (this->tapeCursor == 255) this->tapeCursor = 2;
             if (this->tapeCursor == 3) this->tapeCursor = 0;
-            this->playTheme(this->tapeCursor);
+            
+            switch (this->cookie->getSFX()) {
+
+                case SoundEffects::Music:
+                case SoundEffects::Both:
+                    this->playTheme(this->tapeCursor);
+                    break;
+
+                default:
+                    break;
+
+            }
             
         }
 

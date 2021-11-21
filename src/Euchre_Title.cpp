@@ -12,7 +12,18 @@ using PD = Pokitto::Display;
 void Game::title_Init() {
 
     this->gameState = GameState::Title;
-    this->playTheme(this->cookie->getTrack());
+                            
+    switch (this->cookie->getSFX()) {
+
+        case SoundEffects::Music:
+        case SoundEffects::Both:
+            this->playTheme(this->cookie->getTrack());
+            break;
+
+        default:
+            break;
+
+    }
 
 }   
 
@@ -141,8 +152,8 @@ void Game::title() {
 
     // Render page ..
 
-    PD::drawBitmap(32, 30, Images::Title);
-
+    PD::fillScreen(1);
+    PD::drawBitmap(31, 60, Images::Euchre);
 
 
     uint16_t frameCount = PC::frameCount % 96;

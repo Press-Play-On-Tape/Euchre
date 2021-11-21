@@ -48,7 +48,6 @@ void Game::playTheme(uint8_t themeNumber) {
 
 }
 
-
 void Game::muteTheme() {
 
     #ifdef SOUNDS
