@@ -2,6 +2,10 @@
 
 namespace Images {
 
+    #include "Title.h"
+    #include "Suits.h"
+    #include "Card_Blue.h"
+
     #include "PlayGame_White.h"
     #include "PlayGame_Grey.h"
     #include "Instructions_White.h"
