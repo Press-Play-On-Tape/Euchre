@@ -2,6 +2,7 @@
 #include <LibAudio>
 #include "src/utils/GameCookie.h"
 #include "src/utils/Enums.h"
+#include "src/utils/PicoCustom.h"
 #include "src/Euchre.h"
 
 using PC = Pokitto::Core;
@@ -18,7 +19,7 @@ int main() {
     cookie.begin("Euchre", sizeof(cookie), (char*)&cookie);
 
     PC::begin();
-    PD::loadRGBPalette(palettePico);  
+    PD::loadRGBPalette(palettePicoCustom);  
     PD::persistence = true;
     PC::setFrameRate(30);
     PD::setInvisibleColor(14);

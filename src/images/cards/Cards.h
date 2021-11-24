@@ -2,8 +2,8 @@
 
 namespace Images {
 
+    #include "Card_Front_Disabled.h"
     #include "Card_Front.h"
-    #include "Card_Front_Highlight.h"
     #include "Card_Front_Rot.h"
     #include "Card_Back.h"
     #include "Card_Back_Rot.h"

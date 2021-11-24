@@ -6,7 +6,7 @@ using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 
 
-void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, bool ableToPlay) {
+void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, bool disabled) {
 
     uint8_t highlight_offset = (raise ? 6 : 0);
 
@@ -17,14 +17,14 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
 
             if (showCards) {
 
-                if (raise || ableToPlay) {
+                if (disabled) {
 
-                    PD::drawBitmap(x, y - highlight_offset, Images::Card_Front_Highlight);
+                    PD::drawBitmap(x, y - highlight_offset, Images::Card_Front_Disabled);
 
                 }
                 else {
 
-                    PD::drawBitmap(x, y, Images::Card_Front);
+                    PD::drawBitmap(x, y - highlight_offset, Images::Card_Front);
 
                 }
 
@@ -259,16 +259,18 @@ void Game::renderGame(bool pause) {
 
                             CardSuit suitLed = this->gameStatus.getSuitLed();
                             uint8_t canPlay = !this->cookie->getHighlightPlayable() ? true : this->gameStatus.getFirstPlayer() != positions[0] && !(this->hands[positions[0]].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[positions[0]].hasSuit(suitLed, this->gameStatus.getTrumps()));
-                            this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, true, this->cookie->getHighlightPlayable() && canPlay);
-
+                            this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, true, !(this->cookie->getHighlightPlayable() && canPlay));
+// printf("1\n");
                         }
                         else {
+// printf("2\n");
 
                             this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, false, true, false);
                         }
                         break;
                     
                     default: 
+// printf("3\n");
 
                         this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, true, false);
                         break;
@@ -512,7 +514,7 @@ void Game::renderGame(bool pause) {
 void Game::renderPlayedCard(uint8_t x, uint8_t y, uint8_t position) {
 
     if (this->gameStatus.getCurrentHand(position).getNumber() != Cards::NoCard) {
-        this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position), x, y, false, true, this->gameStatus.isPlayerWinning(position) && this->cookie->getShowWinner());
+        this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position), x, y, false, true, !(this->gameStatus.isPlayerWinning(position) && this->cookie->getShowWinner()));
     }
 
 }
