@@ -16,6 +16,7 @@ void Game::game_Init() {
     this->gameStatus.init();
     this->gameStatus.setDealer(3);
     this->gameStatus.setPlayerView(0);
+    this->gameStatus.setDealer(0);
 
 }   
 
@@ -311,7 +312,7 @@ void Game::game() {
 
                 if (card != Cards::NoCard) {;
 
-                    this->hands[this->gameStatus.getDealer() % 4].removeCard(this->dialogCursor);
+                    this->hands[this->gameStatus.getDealer() % 4].removeCard(card);
                     this->firstValidCard(this->gameStatus.getCurrentPlayer());
                     this->gameState = GameState::Game_StartPlay;
 

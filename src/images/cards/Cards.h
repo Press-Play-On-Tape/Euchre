@@ -2,6 +2,7 @@
 
 namespace Images {
 
+    #include "Card_Front_Highlight.h"
     #include "Card_Front_Disabled.h"
     #include "Card_Front.h"
     #include "Card_Front_Rot.h"
@@ -202,6 +203,12 @@ namespace Images {
         Numbers_Red_0Q_Right,
         Numbers_Red_0K_Right,
         Numbers_Red_0A_Right,
+    };
+
+    const uint8_t * const CardFronts[] = { 
+        Card_Front,
+        Card_Front_Disabled,
+        Card_Front_Highlight,
     };
 
 };

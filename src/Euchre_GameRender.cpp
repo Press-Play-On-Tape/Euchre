@@ -6,7 +6,7 @@ using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 
 
-void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, bool disabled) {
+void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, CardMode cardMode) {
 
     uint8_t highlight_offset = (raise ? 6 : 0);
 
@@ -17,16 +17,7 @@ void Game::renderCard(Orientation orientation, Card card, int16_t x, int16_t y, 
 
             if (showCards) {
 
-                if (disabled) {
-
-                    PD::drawBitmap(x, y - highlight_offset, Images::Card_Front_Disabled);
-
-                }
-                else {
-
-                    PD::drawBitmap(x, y - highlight_offset, Images::Card_Front);
-
-                }
+                PD::drawBitmap(x, y - highlight_offset, Images::CardFronts[static_cast<uint8_t>(cardMode)]);
 
                 PD::drawBitmap(x + 5, y + 15 - highlight_offset, Images::Suits_Bot[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
                 PD::drawBitmap(x + 29, y + 36 - highlight_offset, Images::Suits_Top[static_cast<uint8_t>(card.getSuit(CardSuit::None))]);
@@ -259,20 +250,20 @@ void Game::renderGame(bool pause) {
 
                             CardSuit suitLed = this->gameStatus.getSuitLed();
                             uint8_t canPlay = !this->cookie->getHighlightPlayable() ? true : this->gameStatus.getFirstPlayer() != positions[0] && !(this->hands[positions[0]].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[positions[0]].hasSuit(suitLed, this->gameStatus.getTrumps()));
-                            this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, true, !(this->cookie->getHighlightPlayable() && canPlay));
+                            this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, true, !(this->cookie->getHighlightPlayable() && canPlay) ? CardMode::Disabled : CardMode::Normal);
 // printf("1\n");
                         }
                         else {
 // printf("2\n");
 
-                            this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, false, true, false);
+                            this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, false, true, CardMode::Normal);
                         }
                         break;
                     
                     default: 
 // printf("3\n");
 
-                        this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, true, false);
+                        this->renderCard(Orientation::Bottom, this->hands[positions[0]].getCard(i), (110 - (x0 / 2)) + (i * 16), 151, this->bidCursor == i && highlightCard, true, CardMode::Normal);
                         break;
 
                 }
@@ -289,7 +280,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t i = 0; i < this->hands[positions[1]].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Left, this->hands[positions[1]].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, this->cookie->getShowHands(), false);
+                    this->renderCard(Orientation::Left, this->hands[positions[1]].getCard(i), -33, (88 - (y1 / 2)) + (i * 16), false, this->cookie->getShowHands(), CardMode::Normal);
 
                 }
 
@@ -304,7 +295,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t i = 0; i < this->hands[positions[2]].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Top, this->hands[positions[2]].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, this->cookie->getShowHands(), false);
+                    this->renderCard(Orientation::Top, this->hands[positions[2]].getCard(i), (70 + (x2 / 2)) - (i * 16), -34, false, this->cookie->getShowHands(), CardMode::Normal);
 
                 }
 
@@ -319,7 +310,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t i = 0; i < this->hands[positions[3]].getCardsInHand(); i++) {
 
-                    this->renderCard(Orientation::Right, this->hands[positions[3]].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, this->cookie->getShowHands(), false);
+                    this->renderCard(Orientation::Right, this->hands[positions[3]].getCard(i), 194, (48 + (y3 / 2)) - (i * 16), false, this->cookie->getShowHands(), CardMode::Normal);
 
                 }
 
@@ -359,11 +350,11 @@ void Game::renderGame(bool pause) {
             switch (this->gameState) {
 
                 case GameState::Game_DealerCard ... GameState::Game_Bid_03:
-                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, true, false);
+                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, true, CardMode::Normal);
                     break;
 
                 case GameState::Game_Open_Bid_00 ... GameState::Game_StartPlay:
-                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, false);
+                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, CardMode::Normal);
                     break;
 
             }
@@ -427,20 +418,24 @@ void Game::renderGame(bool pause) {
                 break;
 
             case GameState::Game_DealerExtraCard:
-                this->renderFinalBid(positions);
                 this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
                 this->renderTrumps(this->gameStatus.getTrumps());
                 if (this->isHuman(this->gameStatus.getDealer() % 4)) { 
                     this->renderDiscardACard(); 
                 }
+                else {
+                    this->renderFinalBid(positions);
+                }
                 break;
 
             case GameState::Game_LeadCard ... GameState::Game_Follow_03:
-                this->renderFinalBid(positions);
                 this->renderSoreboard(Constants::AllWinners, Constants::AllWinners, true, true);
                 this->renderTrumps(this->gameStatus.getTrumps());
                 if (this->isHuman(this->gameStatus.getCurrentPlayer())) { 
                     this->renderPlayACard(); 
+                }
+                else {
+                    this->renderFinalBid(positions);
                 }
                 break;
 
@@ -514,7 +509,7 @@ void Game::renderGame(bool pause) {
 void Game::renderPlayedCard(uint8_t x, uint8_t y, uint8_t position) {
 
     if (this->gameStatus.getCurrentHand(position).getNumber() != Cards::NoCard) {
-        this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position), x, y, false, true, !(this->gameStatus.isPlayerWinning(position) && this->cookie->getShowWinner()));
+        this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(position), x, y, false, true, !(this->gameStatus.isPlayerWinning(position) && this->cookie->getShowWinner()) ? CardMode::Normal : CardMode::Highlighted);
     }
 
 }
@@ -555,10 +550,14 @@ void Game::renderBids(uint8_t positions[4]) {
 
 void Game::renderFinalBid(uint8_t positions[4]) {
     
+    // uint8_t render_BannerX[4] = { 90, 31, 90, 180 };
+    // uint8_t render_BannerY[4] = { 134, 68, 27, 68 };
+    // uint8_t render_SuitX[4] = { 94, 32, 120, 180 };
+    // uint8_t render_SuitY[4] = { 135, 73, 28, 98 };
     uint8_t render_BannerX[4] = { 90, 31, 90, 180 };
-    uint8_t render_BannerY[4] = { 134, 68, 27, 68 };
+    uint8_t render_BannerY[4] = { 139, 68, 27, 68 };
     uint8_t render_SuitX[4] = { 94, 32, 120, 180 };
-    uint8_t render_SuitY[4] = { 135, 73, 28, 98 };
+    uint8_t render_SuitY[4] = { 140, 73, 28, 98 };
     
     for (uint8_t i = 0; i < 4; i++) {
 
@@ -710,7 +709,7 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 PD::drawBitmap(126, Constants::Dialogue_00_Y + 8, Images::Points_02);
 
                 if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
-                    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Euchre);
+                    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Title);
                 }
                 else {
                     this->renderGameOver_Beta();
@@ -834,7 +833,7 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 PD::drawBitmap(128, Constants::Dialogue_00_Y + 6, Images::Points_02);
                 
                 if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
-                    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Euchre);
+                    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Title);
                 }
                 else {
                     this->renderGameOver_Alpha();

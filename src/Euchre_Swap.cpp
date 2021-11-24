@@ -116,7 +116,7 @@ void Game::swap() {
 
             if (this->gameStatus.getLastHand(i).getCardIndex() != Cards::NoCard) {
 
-                this->renderCard(Orientation::Bottom, this->gameStatus.getLastHand(i), xPrev + (spacing * 16), 151, false, true, false);
+                this->renderCard(Orientation::Bottom, this->gameStatus.getLastHand(i), xPrev + (spacing * 16), 151, false, true, CardMode::Normal);
                 spacing++;
                 
             }
@@ -135,7 +135,7 @@ void Game::swap() {
 
             if (this->gameStatus.getCurrentHand(i).getCardIndex() != Cards::NoCard) {
 
-                this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(i), xThis + (spacing * 16), 151, false, true, false);
+                this->renderCard(Orientation::Bottom, this->gameStatus.getCurrentHand(i), xThis + (spacing * 16), 151, false, true, CardMode::Normal);
                 spacing++;
                 
             }

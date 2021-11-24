@@ -4,11 +4,13 @@
 using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 
+void Game::splashScreen_Init() {
 
+    this->splashScreenVariables.buttonCounter = 16;
+    this->gameState = GameState::Splash;
+    
+}
 
-// ----------------------------------------------------------------------------
-//  Handle state updates .. 
-//
 void Game::splashScreen() { 
 
 

@@ -20,7 +20,7 @@ class Game {
         SplashScreenVariables splashScreenVariables;
         TitleScreenVariables titleScreenVariables;
         
-        GameState gameState = GameState::Splash;
+        GameState gameState = GameState::Splash_Init;
         GameState nextState = GameState::None;
         GameState savedState = GameState::None;
         GameCookie *cookie;
@@ -52,6 +52,7 @@ class Game {
 
     private:
 
+        void splashScreen_Init();
         void splashScreen();
         void title_Init();
         void title();
@@ -92,7 +93,7 @@ class Game {
         void renderTrickOver(uint8_t positions[4], uint8_t winner);
         void renderHandOrGameOver(uint8_t winner);
         void renderFinalBid(uint8_t positions[4]);
-        void renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, bool ableToPlay);
+        void renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, CardMode cardMode);
         void playSpeech(Speech speech);
         void playTheme(uint8_t themeNumber);
         void muteTheme();

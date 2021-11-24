@@ -15,4 +15,8 @@ struct TitleScreenVariables {
 
     TitleScreenMode mode = TitleScreenMode::StartGame;
 
+    uint8_t top = 0;
+    uint8_t bottom = 0;
+    uint8_t counter = 0;
+
 };

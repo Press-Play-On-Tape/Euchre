@@ -56,8 +56,8 @@ namespace Constants {
     constexpr uint8_t WinningPoints = 10;
     constexpr uint8_t EOG_Delay = 90;
 
-    constexpr uint8_t EOHText_X = 32;
-    constexpr uint8_t EOHText_Y = 40;   
+    constexpr uint8_t EOHText_X = 7;
+    constexpr uint8_t EOHText_Y = 52;   
 
     constexpr uint8_t EOGText_X1 = 21;
     constexpr uint8_t EOGText_X2 = 22;
@@ -280,4 +280,10 @@ enum class TitleScreenMode : uint8_t {
     Sounds,
     StartGame,
     Instructions,
+};           
+
+enum class CardMode : uint8_t {
+    Normal,
+    Disabled,
+    Highlighted,
 };           

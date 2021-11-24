@@ -149,6 +149,25 @@ void Game::title() {
     }
 
 
+    // Effects ..
+
+    if (this->titleScreenVariables.counter == 0) {
+
+        this->titleScreenVariables.top = random(0, 12);
+        this->titleScreenVariables.bottom = random(0, 12);
+        this->titleScreenVariables.counter = 8;
+
+    }
+    else {
+
+        if (PC::frameCount % 4 == 0) {
+     
+            this->titleScreenVariables.counter--;
+
+        }
+
+    }
+
 
     // Render page ..
 
@@ -241,6 +260,14 @@ void Game::title() {
             PD::drawBitmap(145, 160, Images::Instructions_White);
             break;
 
+    }
+
+
+    {
+        const uint8_t leftX[] = { 23, 39, 54, 68,    84, 100, 115, 129,    145, 161, 176, 188 };
+
+        PD::drawBitmap(leftX[this->titleScreenVariables.top], 24, Images::Suits_Rotate[((this->titleScreenVariables.top % 4) * 9) + this->titleScreenVariables.counter]);
+        PD::drawBitmap(leftX[this->titleScreenVariables.bottom], 125, Images::Suits_Rotate[((this->titleScreenVariables.bottom % 4) * 9) + this->titleScreenVariables.counter]);
     }
 
     #ifdef DEBUG_SOUNDS

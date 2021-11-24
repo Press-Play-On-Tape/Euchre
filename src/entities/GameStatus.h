@@ -84,9 +84,12 @@ struct GameStatus {
                 this->currentHand[i].init(Cards::NoCard);
                 this->lastHand[i].init(Cards::NoCard);
                 this->tricks[i] = 0;
-            	this->playAlone = false;
 
             }
+
+            this->playAlone = false;
+            this->points0and2 = 0;
+            this->points1and3 = 0;
 
         }
 

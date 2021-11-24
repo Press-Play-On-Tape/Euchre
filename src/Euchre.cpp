@@ -17,6 +17,10 @@ void Game::loop() {
 
     switch (this->gameState) {
 
+        case GameState::Splash_Init:
+            this->splashScreen_Init();
+            [[fallthrough]]
+
         case GameState::Splash:
             PD::clear();
             this->splashScreen();
