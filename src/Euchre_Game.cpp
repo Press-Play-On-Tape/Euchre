@@ -16,7 +16,7 @@ void Game::game_Init() {
     this->gameStatus.init();
     this->gameStatus.setDealer(3);
     this->gameStatus.setPlayerView(0);
-    this->gameStatus.setDealer(0);
+    // this->gameStatus.setDealer(0);
 
 }   
 
@@ -161,6 +161,14 @@ void Game::game() {
 // this->hands[3].getCard(4).init(CardSuit::Spades, Cards::Jack);
 
 // this->print();
+
+for(uint8_t i = 0; i < 4; i++) {
+for(uint8_t j = 0; j < 4; j++) {
+this->hands[i].removeCard(j);
+}
+}
+
+
             }
 
             this->incMode();

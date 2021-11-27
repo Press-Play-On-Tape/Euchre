@@ -160,7 +160,7 @@ void Game::title() {
     }
     else {
 
-        if (PC::frameCount % 4 == 0) {
+        if (PC::frameCount % 2 == 0) {
      
             this->titleScreenVariables.counter--;
 
@@ -264,7 +264,7 @@ void Game::title() {
 
 
     {
-        const uint8_t leftX[] = { 23, 39, 54, 68,    84, 100, 115, 129,    145, 161, 176, 188 };
+        const uint8_t leftX[] = { 23, 39, 54, 68,    84, 100, 115, 129,    145, 161, 176, 190 };
 
         PD::drawBitmap(leftX[this->titleScreenVariables.top], 24, Images::Suits_Rotate[((this->titleScreenVariables.top % 4) * 9) + this->titleScreenVariables.counter]);
         PD::drawBitmap(leftX[this->titleScreenVariables.bottom], 125, Images::Suits_Rotate[((this->titleScreenVariables.bottom % 4) * 9) + this->titleScreenVariables.counter]);

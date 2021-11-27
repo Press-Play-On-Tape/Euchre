@@ -53,17 +53,18 @@ namespace Constants {
     constexpr uint8_t Dialogue_00_Y = 134;
     constexpr uint8_t NoPlayer = 4;
 
-    constexpr uint8_t WinningPoints = 10;
+    constexpr uint8_t WinningPoints = 1;//SJH 10 
     constexpr uint8_t EOG_Delay = 90;
 
     constexpr uint8_t EOHText_X = 7;
     constexpr uint8_t EOHText_Y = 52;   
 
-    constexpr uint8_t EOGText_X1 = 21;
-    constexpr uint8_t EOGText_X2 = 22;
-    constexpr uint8_t EOGText_X3 = 28;
-    constexpr uint8_t EOGText_Y1 = 40;   
-    constexpr uint8_t EOGText_Y2 = 70;   
+    constexpr uint8_t EOGText_X1 = 39;
+    constexpr uint8_t EOGText_X21 = 23;
+    constexpr uint8_t EOGText_X22 = 38;
+    constexpr uint8_t EOGText_X3 = 38;
+    constexpr uint8_t EOGText_Y1 = 20;   
+    constexpr uint8_t EOGText_Y2 = 60;   
     constexpr uint8_t EOGText_Y3 = 100;   
 
     constexpr uint8_t EOGPoints_X = 120;
