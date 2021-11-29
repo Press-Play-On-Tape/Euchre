@@ -20,7 +20,7 @@ void Game::selection_Init() {
         this->instructionFile.read(PD::getBuffer(), (220 * 176 / 2));
     }
 
-    PD::setColor(0);
+    PD::setColor(3);
     PD::fillRect(32, 0, 186, 176);
 
 }   
@@ -186,101 +186,6 @@ void Game::selection() {
 
     }
         
-
-    // if (this->dialogCursor == 0)   PD::drawBitmap(37, 10, Images::OnePlayer_Selected);
-    // if (this->dialogCursor != 0)   PD::drawBitmap(37, 10, Images::OnePlayer);
-    // if (this->dialogCursor == 1)   PD::drawBitmap(97, 10, Images::TwoPlayer_Selected);
-    // if (this->dialogCursor != 1)   PD::drawBitmap(97, 10, Images::TwoPlayer);
-
-
-    // if (this->dialogCursor != 5) {  
-    //     PD::drawBitmap(37, 127, this->cookie->getStickIt() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-    //     PD::drawBitmap(46, 127, Images::StickIt);
-    // }
-    // else {
-    //     PD::drawBitmap(37, 127, this->cookie->getStickIt() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-    //     PD::drawBitmap(46, 127, Images::StickIt_Selected);
-    // }
-
-    // if (this->dialogCursor != 6) {  
-    //     PD::drawBitmap(37, 140, this->cookie->getShowWinner() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-    //     PD::drawBitmap(46, 140, Images::ShowWinner);
-    // }
-    // else {
-    //     PD::drawBitmap(37, 140, this->cookie->getShowWinner() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-    //     PD::drawBitmap(46, 140, Images::ShowWinner_Selected);
-    // }
-
-    // if (this->dialogCursor != 7) {  
-    //     PD::drawBitmap(37, 153, this->cookie->getHighlightPlayable() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-    //     PD::drawBitmap(46, 153, Images::HighlightPlayable);
-    // }
-    // else {
-    //     PD::drawBitmap(37, 153, this->cookie->getHighlightPlayable() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-    //     PD::drawBitmap(46, 153, Images::HighlightPlayable_Selected);
-    // }
-
-    // if (this->dialogCursor != 8) {  
-    //     PD::drawBitmap(37, 166, this->cookie->getShowHands() ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-    //     PD::drawBitmap(46, 166, Images::ShowAll);
-    // }
-    // else {
-    //     PD::drawBitmap(37, 166, this->cookie->getShowHands() ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-    //     PD::drawBitmap(46, 166, Images::ShowAll_Selected);
-    // }
-
-    // if (this->cookie->getNumberOfPlayers() == 2) {
-
-    //     PD::drawBitmap(77, 65, Images::Seat_Left);
-    //     PD::drawBitmap(103, 40, Images::Seat_Top);
-    //     PD::drawBitmap(143, 65, Images::Seat_Right);
-    //     PD::drawBitmap(103, 100, Images::Seat_Bot);
-
-    //     if (this->dialogCursor == 3) {
-    //         PD::drawBitmap(37, 75, this->cookie->getPlayer2Pos() == 1 ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-    //         PD::drawBitmap(46, 75, Images::Position1_Selected);
-    //     }
-    //     else {
-    //         PD::drawBitmap(37, 75, this->cookie->getPlayer2Pos() == 1 ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-    //         PD::drawBitmap(46, 75, Images::Position1);
-    //     }
-
-    //     if (this->dialogCursor == 2) {
-    //         PD::drawBitmap(102, 25, this->cookie->getPlayer2Pos() == 2 ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-    //         PD::drawBitmap(111, 25, Images::Position2_Selected);
-    //     }
-    //     else {
-    //         PD::drawBitmap(101, 25, this->cookie->getPlayer2Pos() == 2 ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-    //         PD::drawBitmap(111, 25, Images::Position2);
-    //     }
-
-    //     if (this->dialogCursor == 4) {
-    //         PD::drawBitmap(168, 75, this->cookie->getPlayer2Pos() == 3 ? Images::CheckBox_Checked_Selected : Images::CheckBox_Empty_Selected);
-    //         PD::drawBitmap(177, 75, Images::Position3_Selected);
-    //     }
-    //     else {
-    //         PD::drawBitmap(168, 75, this->cookie->getPlayer2Pos() == 3 ? Images::CheckBox_Checked : Images::CheckBox_Empty);
-    //         PD::drawBitmap(177, 75, Images::Position3);
-    //     }
-
-    // }
-    // else {
-
-    //     PD::drawBitmap(37, 75, this->cookie->getPlayer2Pos() == 1 ? Images::CheckBox_Checked_Disabled : Images::CheckBox_Empty_Disabled);
-    //     PD::drawBitmap(46, 75, Images::Position1_Disabled);
-    //     PD::drawBitmap(102, 25, this->cookie->getPlayer2Pos() == 2 ? Images::CheckBox_Checked_Disabled : Images::CheckBox_Empty_Disabled);
-    //     PD::drawBitmap(111, 25, Images::Position2_Disabled);
-    //     PD::drawBitmap(168, 75, this->cookie->getPlayer2Pos() == 3 ? Images::CheckBox_Checked_Disabled : Images::CheckBox_Empty_Disabled);
-    //     PD::drawBitmap(177, 75, Images::Position3_Disabled);
-
-    //     PD::drawBitmap(77, 65, Images::Seat_Left_Disabled);
-    //     PD::drawBitmap(103, 40, Images::Seat_Top_Disabled);
-    //     PD::drawBitmap(143, 65, Images::Seat_Right_Disabled);
-    //     PD::drawBitmap(103, 100, Images::Seat_Bot_Disabled);
-
-    // }
-
-    
 
     if (this->dialogCursor == 0)   PD::drawBitmap(41, 10, Images::OnePlayer_Selected);
     if (this->dialogCursor != 0)   PD::drawBitmap(41, 10, Images::OnePlayer);

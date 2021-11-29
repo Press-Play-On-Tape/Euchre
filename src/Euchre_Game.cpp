@@ -637,9 +637,13 @@ this->hands[i].removeCard(j);
                     }
 
                 }
-                else  if (this->gameStatus.getPoints0and2() >= Constants::WinningPoints || this->gameStatus.getPoints1and3() >= Constants::WinningPoints) {
+                else if (this->gameStatus.getPoints0and2() >= Constants::WinningPoints || this->gameStatus.getPoints1and3() >= Constants::WinningPoints) {
 
-                    this->gameState = GameState::GameOver_Init;
+                    if (PC::buttons.pressed(BTN_A)) {   
+                        PC::buttons.pollButtons();
+                        this->gameState = GameState::GameOver_Init;
+                        this->eog = 0;
+                    }
 
                 }
                 else if (PC::buttons.pressed(BTN_A)) { 

@@ -91,7 +91,8 @@ class Game {
 
         bool doSecondBid(uint8_t handNumber);
         void renderTrickOver(uint8_t positions[4], uint8_t winner);
-        void renderHandOrGameOver(uint8_t winner);
+        void renderHandOver(uint8_t winner);
+        void renderGameOver(uint8_t winner);
         void renderFinalBid(uint8_t positions[4]);
         void renderCard(Orientation orientation, Card card, int16_t x, int16_t y, bool raise, bool showCards, CardMode cardMode);
         void playSpeech(Speech speech);

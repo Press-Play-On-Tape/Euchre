@@ -111,7 +111,7 @@ void Game::renderGame(bool pause) {
                         case 60 ... 90:
                             xOffsetEOG = (this->eog - 60) * 3 / 2;
                             break;
-                            
+
                         default:
                             xOffsetEOG = 45;
                             break;
@@ -353,8 +353,8 @@ void Game::renderGame(bool pause) {
                     this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, true, CardMode::Normal);
                     break;
 
-                case GameState::Game_Open_Bid_00 ... GameState::Game_StartPlay:
-                    this->renderCard(Orientation::Bottom, this->dealerCard, 90, 59, false, false, CardMode::Normal);
+                case GameState::Game_Open_Bid_00 ... GameState::Game_Open_Bid_03:
+                    this->renderCard(Orientation::Left, this->dealerCard, 81, 44, false, false, CardMode::Normal);
                     break;
 
             }
@@ -372,7 +372,7 @@ void Game::renderGame(bool pause) {
 
                 for (uint8_t j = 0; j < 4; j++) {
 
-                    if (i % 4 == positions[j]) {
+                    if (this->gameState != GameState::GameOver && i % 4 == positions[j]) {
                         this->renderPlayedCard(playedX[j] + xOffsetEOG, playedY[j], positions[j]);
                     }
 
@@ -490,7 +490,14 @@ void Game::renderGame(bool pause) {
 
                     this->renderSoreboard(trickWinner, pointsWinner, PC::frameCount % 32 < 16, PC::frameCount % 32 < 16);
                     this->renderTrumps(this->gameStatus.getTrumps());
-                    this->renderHandOrGameOver(pointsWinner);
+
+                    if (this->gameState == GameState::Game_EndOfHand) {
+                        this->renderHandOver(pointsWinner);
+                    }
+                    else {
+                        this->renderGameOver(pointsWinner);
+                    }
+
                 }
                 break;
 
@@ -550,10 +557,7 @@ void Game::renderBids(uint8_t positions[4]) {
 
 void Game::renderFinalBid(uint8_t positions[4]) {
     
-    // uint8_t render_BannerX[4] = { 90, 31, 90, 180 };
-    // uint8_t render_BannerY[4] = { 134, 68, 27, 68 };
-    // uint8_t render_SuitX[4] = { 94, 32, 120, 180 };
-    // uint8_t render_SuitY[4] = { 135, 73, 28, 98 };
+
     uint8_t render_BannerX[4] = { 90, 31, 90, 180 };
     uint8_t render_BannerY[4] = { 139, 68, 27, 68 };
     uint8_t render_SuitX[4] = { 94, 32, 120, 180 };
@@ -594,19 +598,19 @@ void Game::renderPlayerBid() {
 
 void Game::renderPlayerSecondBid() {
 
-    PD::drawBitmap(52, 90, Images::Dialogue_Large_Background);
+    PD::drawBitmap(61, 96, Images::Dialogue_Large_Background);
 
-    if (this->cookie->getStickIt() && (this->gameState == GameState::Game_Open_Bid_03))    PD::drawBitmap(54,   92, Images::Dialogue_Pass_Disabled);
+    if (this->cookie->getStickIt() && (this->gameState == GameState::Game_Open_Bid_03))    PD::drawBitmap(54,   95, Images::Dialogue_Pass_Disabled);
 
-    if (this->dialogCursor == 0)    PD::drawBitmap(54,   92, Images::Dialogue_Pass);
-    if (this->dialogCursor == 1)    PD::drawBitmap(92,   92, Images::Dialogue_Go_Spades);
-    if (this->dialogCursor == 2)    PD::drawBitmap(130,  92, Images::Dialogue_Alone_Spades);
-    if (this->dialogCursor == 3)    PD::drawBitmap(92,  103, Images::Dialogue_Go_Clubs);
-    if (this->dialogCursor == 4)    PD::drawBitmap(130, 103, Images::Dialogue_Alone_Clubs);
-    if (this->dialogCursor == 5)    PD::drawBitmap(92,  114, Images::Dialogue_Go_Diamonds);
-    if (this->dialogCursor == 6)    PD::drawBitmap(130, 114, Images::Dialogue_Alone_Diamonds);
-    if (this->dialogCursor == 7)    PD::drawBitmap(92,  125, Images::Dialogue_Go_Hearts);
-    if (this->dialogCursor == 8)    PD::drawBitmap(130, 125, Images::Dialogue_Alone_Hearts);
+    if (this->dialogCursor == 0)    PD::drawBitmap(54,   95, Images::Dialogue_Pass);
+    if (this->dialogCursor == 1)    PD::drawBitmap(94,   95, Images::Dialogue_Go_Spades);
+    if (this->dialogCursor == 2)    PD::drawBitmap(130,  95, Images::Dialogue_Alone_Spades);
+    if (this->dialogCursor == 3)    PD::drawBitmap(94,  106, Images::Dialogue_Go_Clubs);
+    if (this->dialogCursor == 4)    PD::drawBitmap(130, 106, Images::Dialogue_Alone_Clubs);
+    if (this->dialogCursor == 5)    PD::drawBitmap(94,  117, Images::Dialogue_Go_Diamonds);
+    if (this->dialogCursor == 6)    PD::drawBitmap(130, 117, Images::Dialogue_Alone_Diamonds);
+    if (this->dialogCursor == 7)    PD::drawBitmap(94,  128, Images::Dialogue_Go_Hearts);
+    if (this->dialogCursor == 8)    PD::drawBitmap(130, 128, Images::Dialogue_Alone_Hearts);
 
 }
 
@@ -697,9 +701,7 @@ void Game::renderTrickOver(uint8_t positions[4], uint8_t winner) {
 
 }
 
-void Game::renderHandOrGameOver(uint8_t winner) {
-
-    uint8_t yOffset = this->gameState == GameState::Game_EndOfHand ? 0 : 20;
+void Game::renderHandOver(uint8_t winner) {
 
     if (this->bidWinner() == 0 || this->bidWinner() == 2) {
 
@@ -707,15 +709,9 @@ void Game::renderHandOrGameOver(uint8_t winner) {
 
             case 0 ... 2:
 
-                PD::drawBitmap(49, Constants::Dialogue_00_Y + 6 + yOffset, Images::TeamBeta);
-                PD::drawBitmap(126, Constants::Dialogue_00_Y + 8 + yOffset, Images::Points_02);
-
-                if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
-                    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Title);
-                }
-                else {
-                    this->renderGameOver_Beta();
-                }
+                PD::drawBitmap(49, Constants::Dialogue_EOH_Y, Images::TeamBeta);
+                PD::drawBitmap(126, Constants::Dialogue_EOH_Y + 2, Images::Points_02);
+                PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Title);
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
@@ -725,24 +721,15 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 }
 
                 if (this->eog == 0) {
-                    if (this->gameState == GameState::Game_EndOfHand) {
-                        this->playSpeech(Speech::TeamBetaPlus2);
-                    }
-                    else {
-                        this->playSpeech(Speech::TeamBetaWins);
-                    }
+                    this->playSpeech(Speech::TeamBetaPlus2);
                 }
 
                 break;
 
             case 3 ... 4:
 
-                PD::drawBitmap(47, Constants::Dialogue_00_Y + 6 + yOffset, Images::TeamAlpha);
-                PD::drawBitmap(128, Constants::Dialogue_00_Y + 8 + yOffset, Images::Points_01);
-
-                if (this->gameState == GameState::GameOver) {
-                    this->renderGameOver_Alpha();
-                }
+                PD::drawBitmap(47, Constants::Dialogue_EOH_Y, Images::TeamAlpha);
+                PD::drawBitmap(128, Constants::Dialogue_EOH_Y + 2, Images::Points_01);
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
@@ -752,26 +739,17 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 }
 
                 if (this->eog == 0) {
-                    if (this->gameState == GameState::Game_EndOfHand) {
-                        this->playSpeech(Speech::TeamAlphaPlus1);
-                    }
-                    else {
-                        this->playSpeech(Speech::TeamAlphaWins);
-                    }
+                    this->playSpeech(Speech::TeamAlphaPlus1);
                 }
 
                 break;
 
             case 5:
 
-                PD::drawBitmap(47, Constants::Dialogue_00_Y + 6 + yOffset, Images::TeamAlpha);
-                PD::drawBitmap(128, Constants::Dialogue_00_Y + 8 + yOffset, Images::Points_02);
+                PD::drawBitmap(47, Constants::Dialogue_EOH_Y, Images::TeamAlpha);
+                PD::drawBitmap(128, Constants::Dialogue_EOH_Y + 2, Images::Points_02);
 
                 if (!this->gameStatus.getPlayAlone()) {
-
-                    if (this->gameState == GameState::GameOver) {
-                        this->renderGameOver_Alpha();
-                    }
 
                     if (this->eog < 44) {
                         uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
@@ -781,26 +759,15 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                     }
 
                     if (this->eog == 0) {
-                        if (this->gameState == GameState::Game_EndOfHand) {
-                            this->playSpeech(Speech::TeamAlphaPlus2);
-                        }
-                        else {
-                            this->playSpeech(Speech::TeamAlphaWins);
-                        }
+                        this->playSpeech(Speech::TeamAlphaPlus2);
                     }
 
                 }
                 else {
 
-                    PD::drawBitmap(47, Constants::Dialogue_00_Y + 6 + yOffset, Images::TeamAlpha);
-                    PD::drawBitmap(128, Constants::Dialogue_00_Y + 8 + yOffset, Images::Points_04);
-
-                    if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
-                        PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::March);
-                    }
-                    else {
-                        this->renderGameOver_Alpha();
-                    }
+                    PD::drawBitmap(47, Constants::Dialogue_EOH_Y, Images::TeamAlpha);
+                    PD::drawBitmap(128, Constants::Dialogue_EOH_Y + 2, Images::Points_04);
+                    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::March);
 
                     if (this->eog < 44) {
                         uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
@@ -810,12 +777,7 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                     }
 
                     if (this->eog == 0) {
-                        if (this->gameState == GameState::Game_EndOfHand) {
-                            this->playSpeech(Speech::TeamAlphaPlus4);
-                        }
-                        else {
-                            this->playSpeech(Speech::TeamAlphaWins);
-                        }
+                        this->playSpeech(Speech::TeamAlphaPlus4);
                     }
 
                 }
@@ -831,15 +793,9 @@ void Game::renderHandOrGameOver(uint8_t winner) {
 
             case 0 ... 2:
 
-                PD::drawBitmap(47, Constants::Dialogue_00_Y + 4 + yOffset, Images::TeamAlpha);
-                PD::drawBitmap(128, Constants::Dialogue_00_Y + 6 + yOffset, Images::Points_02);
-                
-                if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
-                    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Title);
-                }
-                else {
-                    this->renderGameOver_Alpha();
-                }
+                PD::drawBitmap(47, Constants::Dialogue_EOH_Y, Images::TeamAlpha);
+                PD::drawBitmap(128, Constants::Dialogue_EOH_Y + 2, Images::Points_02);
+                PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::Title);
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
@@ -849,24 +805,15 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 }
 
                 if (this->eog == 0) {
-                    if (this->gameState == GameState::Game_EndOfHand) {
-                        this->playSpeech(Speech::TeamAlphaPlus2);
-                    }
-                    else {
-                        this->playSpeech(Speech::TeamAlphaWins);
-                    }
+                    this->playSpeech(Speech::TeamAlphaPlus2);
                 }
 
                 break;
 
             case 3 ... 4:
 
-                PD::drawBitmap(49, Constants::Dialogue_00_Y + 4 + yOffset, Images::TeamBeta);
-                PD::drawBitmap(126, Constants::Dialogue_00_Y + 6 + yOffset, Images::Points_01);
-
-                if (this->gameState == GameState::GameOver) {
-                    this->renderGameOver_Beta();
-                }
+                PD::drawBitmap(49, Constants::Dialogue_EOH_Y, Images::TeamBeta);
+                PD::drawBitmap(126, Constants::Dialogue_EOH_Y + 2, Images::Points_01);
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
@@ -876,12 +823,7 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                 }
 
                 if (this->eog == 0) {
-                    if (this->gameState == GameState::Game_EndOfHand) {
-                        this->playSpeech(Speech::TeamBetaPlus1);
-                    }
-                    else {
-                        this->playSpeech(Speech::TeamBetaWins);
-                    }
+                    this->playSpeech(Speech::TeamBetaPlus1);
                 }
 
                 break;
@@ -890,12 +832,8 @@ void Game::renderHandOrGameOver(uint8_t winner) {
 
                 if (!this->gameStatus.getPlayAlone()) {
 
-                    PD::drawBitmap(49, Constants::Dialogue_00_Y + 4 + yOffset, Images::TeamBeta);
-                    PD::drawBitmap(126, Constants::Dialogue_00_Y + 6 + yOffset, Images::Points_02);
-
-                    if (this->gameState == GameState::GameOver) {
-                        this->renderGameOver_Beta();
-                    }
+                    PD::drawBitmap(49, Constants::Dialogue_EOH_Y, Images::TeamBeta);
+                    PD::drawBitmap(126, Constants::Dialogue_EOH_Y + 2, Images::Points_02);
 
                     if (this->eog < 44) {
                         uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
@@ -905,26 +843,15 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                     }
 
                     if (this->eog == 0) {
-                        if (this->gameState == GameState::Game_EndOfHand) {
-                            this->playSpeech(Speech::TeamBetaPlus2);
-                        }
-                        else {
-                            this->playSpeech(Speech::TeamBetaWins);
-                        }
+                        this->playSpeech(Speech::TeamBetaPlus2);
                     }
 
                 }
                 else {
 
-                    PD::drawBitmap(49, Constants::Dialogue_00_Y + 4 + yOffset, Images::TeamBeta);
-                    PD::drawBitmap(126, Constants::Dialogue_00_Y + 6 + yOffset, Images::Points_04);
-
-                    if (this->gameState == GameState::Game_EndOfHand || this->counter < Constants::EOG_Delay) {
-                        PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::March);
-                    }
-                    else {
-                        this->renderGameOver_Beta();
-                    }
+                    PD::drawBitmap(49, Constants::Dialogue_EOH_Y, Images::TeamBeta);
+                    PD::drawBitmap(126, Constants::Dialogue_EOH_Y + 2, Images::Points_04);
+                    PD::drawBitmap(Constants::EOHText_X, Constants::EOHText_Y, Images::March);
 
                     if (this->eog < 44) {
                         uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
@@ -934,12 +861,114 @@ void Game::renderHandOrGameOver(uint8_t winner) {
                     }
 
                     if (this->eog == 0) {
-                        if (this->gameState == GameState::Game_EndOfHand) {
-                            this->playSpeech(Speech::TeamBetaPlus4);
-                        }
-                        else {
-                            this->playSpeech(Speech::TeamBetaWins);
-                        }                        
+                        this->playSpeech(Speech::TeamBetaPlus4);
+                    }
+
+                }
+                break;
+
+        }                
+
+    }
+
+    if (this->eog < 500) this->eog++;
+
+}
+
+
+void Game::renderGameOver(uint8_t winner) {
+
+    if (this->bidWinner() == 0 || this->bidWinner() == 2) {
+
+        switch (this->gameStatus.getTricks0and2()) {
+
+            case 0 ... 2:
+
+                this->renderGameOver_Beta();
+
+                if (this->eog == 0) {
+                    this->playSpeech(Speech::TeamBetaWins);
+                }
+
+                break;
+
+            case 3 ... 4:
+
+                this->renderGameOver_Alpha();
+
+                if (this->eog == 0) {
+                    this->playSpeech(Speech::TeamAlphaWins);
+                }
+
+                break;
+
+            case 5:
+
+                if (!this->gameStatus.getPlayAlone()) {
+
+                    this->renderGameOver_Alpha();
+
+                    if (this->eog == 0) {
+                        this->playSpeech(Speech::TeamAlphaWins);
+                    }
+
+                }
+                else {
+
+                    this->renderGameOver_Alpha();
+
+                    if (this->eog == 0) {
+                        this->playSpeech(Speech::TeamAlphaWins);
+                    }
+
+                }
+                break;
+
+        }                
+
+    }
+
+    else if (this->bidWinner() == 1 || this->bidWinner() == 3) {
+
+        switch (this->gameStatus.getTricks1and3()) {
+
+            case 0 ... 2:
+
+                this->renderGameOver_Alpha();
+
+                if (this->eog == 0) {
+                    this->playSpeech(Speech::TeamAlphaWins);
+                }
+
+                break;
+
+            case 3 ... 4:
+
+                this->renderGameOver_Beta();
+
+                if (this->eog == 0) {
+                    this->playSpeech(Speech::TeamBetaWins);
+                }
+
+                break;
+
+            case 5:
+
+                if (!this->gameStatus.getPlayAlone()) {
+
+                    this->renderGameOver_Beta();
+
+                    if (this->eog == 0) {
+                        this->playSpeech(Speech::TeamBetaWins);
+                    }
+
+                }
+                else {
+
+                    this->renderGameOver_Beta();
+
+                    if (this->eog == 0) {
+                        this->playSpeech(Speech::TeamBetaWins);
                     }
 
                 }
@@ -955,17 +984,108 @@ void Game::renderHandOrGameOver(uint8_t winner) {
 
 void Game::renderGameOver_Alpha() {
 
-    PD::drawBitmap(Constants::EOGText_X1, Constants::EOGText_Y1, Images::EOG_Team);
-    PD::drawBitmap(Constants::EOGText_X3, Constants::EOGText_Y3,  Images::EOG_Wins);
-    PD::drawBitmap(Constants::EOGText_X21, Constants::EOGText_Y2, Images::EOG_Alpha);
+    #ifdef FADE_IN
+
+        uint8_t frame = 0;
+
+        switch (this->eog) {
+
+            case 0:
+                frame = 0;
+                // this->eog++;
+                break;
+
+            case 1 ... 15:
+                frame = this->eog;
+                // this->eog++;
+                break;
+
+            default: 
+                frame = 16;
+                break;
+
+        }
+
+        if (frame > 0) {
+
+    #endif
+
+            PD::drawBitmap(Constants::EOGText_X1, Constants::EOGText_Y1, Images::EOG_Team);
+            PD::drawBitmap(Constants::EOGText_X3, Constants::EOGText_Y3,  Images::EOG_Wins);
+            PD::drawBitmap(Constants::EOGText_X21, Constants::EOGText_Y2, Images::EOG_Alpha);
+
+    #ifdef FADE_IN
+
+            if (frame <= 15) {
+
+                for (uint8_t y = Constants::EOGText_Y1; y < Constants::EOGText_Y2 + 50; y = y + 4) {
+
+                    for (uint8_t x = Constants::EOGText_X22; x < Constants::EOGText_X3 + 144; x = x + 4) {
+
+                        PD::drawBitmap(x, y, Images::Dither_Green[15 - frame]);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    #endif
 
 }
 
 void Game::renderGameOver_Beta() {
 
-    PD::drawBitmap(Constants::EOGText_X1, Constants::EOGText_Y1, Images::EOG_Team);
-    PD::drawBitmap(Constants::EOGText_X3, Constants::EOGText_Y3,  Images::EOG_Wins);
-    PD::drawBitmap(Constants::EOGText_X21, Constants::EOGText_Y2, Images::EOG_Alpha);
-//SJH    PD::drawBitmap(Constants::EOGText_X22, Constants::EOGText_Y2, Images::EOG_Beta);
+    #ifdef FADE_IN
+
+        uint8_t frame = 0;
+
+        switch (this->eog) {
+
+            case 0:
+                frame = 0;
+                // this->eog++;
+                break;
+
+            case 1 ... 15:
+                frame = this->eog;
+                // this->eog++;
+                break;
+
+            default: 
+                frame = 16;
+                break;
+
+        }
+
+        if (frame > 0) {
+
+    #endif
+
+            PD::drawBitmap(Constants::EOGText_X1, Constants::EOGText_Y1, Images::EOG_Team);
+            PD::drawBitmap(Constants::EOGText_X3, Constants::EOGText_Y3,  Images::EOG_Wins);
+            PD::drawBitmap(Constants::EOGText_X22, Constants::EOGText_Y2, Images::EOG_Beta);
+
+    #ifdef FADE_IN
+
+            if (frame <= 15) {
+
+                for (uint8_t y = Constants::EOGText_Y1; y < Constants::EOGText_Y2 + 50; y = y + 4) {
+
+                    for (uint8_t x = Constants::EOGText_X22; x < Constants::EOGText_X3 + 144; x = x + 4) {
+
+                        PD::drawBitmap(x, y, Images::Dither_Green[15 - frame]);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    #endif
 
 }

@@ -9,6 +9,7 @@
 #define _DEBUG_SOUNDS
 #define SOUNDS
 #define COOKIE_INITIALISED 58
+#define FADE_IN
 
 enum Debug {
     None = 0,
@@ -51,6 +52,7 @@ namespace Constants {
     constexpr uint8_t AllWinners = 5;
     constexpr uint8_t BidDialogueDelay = 30;
     constexpr uint8_t Dialogue_00_Y = 134;
+    constexpr uint8_t Dialogue_EOH_Y = 156;
     constexpr uint8_t NoPlayer = 4;
 
     constexpr uint8_t WinningPoints = 1;//SJH 10 
@@ -63,12 +65,14 @@ namespace Constants {
     constexpr uint8_t EOGText_X21 = 23;
     constexpr uint8_t EOGText_X22 = 38;
     constexpr uint8_t EOGText_X3 = 38;
-    constexpr uint8_t EOGText_Y1 = 20;   
-    constexpr uint8_t EOGText_Y2 = 60;   
-    constexpr uint8_t EOGText_Y3 = 100;   
+    constexpr uint8_t EOGText_Y1 = 24;   
+    constexpr uint8_t EOGText_Y2 = 64;   
+    constexpr uint8_t EOGText_Y3 = 104;   
 
-    constexpr uint8_t EOGPoints_X = 120;
-    constexpr uint8_t EOGPoints_Y = 60;   
+    // constexpr uint8_t EOGPoints_X = 120;
+    // constexpr uint8_t EOGPoints_Y = 60;   
+    constexpr uint8_t EOGPoints_X = 141;
+    constexpr uint8_t EOGPoints_Y = 95;   
 
 
     constexpr char instructions[5][19] = { 
