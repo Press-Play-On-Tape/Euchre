@@ -9,7 +9,10 @@
 #define _DEBUG_SOUNDS
 #define SOUNDS
 #define COOKIE_INITIALISED 58
+
 #define FADE_IN
+#define _FADE_IN_SLOW
+#define FADE_IN_FAST
 
 enum Debug {
     None = 0,

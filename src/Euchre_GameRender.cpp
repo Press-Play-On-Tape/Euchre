@@ -992,12 +992,14 @@ void Game::renderGameOver_Alpha() {
 
             case 0:
                 frame = 0;
-                // this->eog++;
                 break;
 
-            case 1 ... 15:
+            #ifdef FADE_IN_SLOW
+                case 1 ... 15:
+            #else
+                case 1 ... 7:
+            #endif
                 frame = this->eog;
-                // this->eog++;
                 break;
 
             default: 
@@ -1018,11 +1020,26 @@ void Game::renderGameOver_Alpha() {
 
             if (frame <= 15) {
 
-                for (uint8_t y = Constants::EOGText_Y1; y < Constants::EOGText_Y2 + 50; y = y + 4) {
+                for (uint8_t y = Constants::EOGText_Y1; y < Constants::EOGText_Y3 + 50; y = y + 4) {
 
                     for (uint8_t x = Constants::EOGText_X22; x < Constants::EOGText_X3 + 144; x = x + 4) {
 
-                        PD::drawBitmap(x, y, Images::Dither_Green[15 - frame]);
+                        #ifdef FADE_IN_SLOW
+                            if (this->gameStatus.getPlayerView() == 0) {
+                                PD::drawBitmap(x, y, Images::Dither_Green_Slow[15 - frame]);
+                            }
+                            else {
+                                PD::drawBitmap(x, y, Images::Dither_Blue_Slow[15 - frame]);
+                            }
+                        #else
+                            if (this->gameStatus.getPlayerView() == 0) {
+                                PD::drawBitmap(x, y, Images::Dither_Green_Fast[7 - frame]);
+                            }
+                            else {
+                                PD::drawBitmap(x, y, Images::Dither_Blue_Fast[7 - frame]);
+                            }
+                        #endif
+
 
                     }
 
@@ -1046,12 +1063,14 @@ void Game::renderGameOver_Beta() {
 
             case 0:
                 frame = 0;
-                // this->eog++;
                 break;
 
-            case 1 ... 15:
+            #ifdef FADE_IN_SLOW
+                case 1 ... 15:
+            #else
+                case 1 ... 7:
+            #endif
                 frame = this->eog;
-                // this->eog++;
                 break;
 
             default: 
@@ -1072,11 +1091,25 @@ void Game::renderGameOver_Beta() {
 
             if (frame <= 15) {
 
-                for (uint8_t y = Constants::EOGText_Y1; y < Constants::EOGText_Y2 + 50; y = y + 4) {
+                for (uint8_t y = Constants::EOGText_Y1; y < Constants::EOGText_Y3 + 50; y = y + 4) {
 
                     for (uint8_t x = Constants::EOGText_X22; x < Constants::EOGText_X3 + 144; x = x + 4) {
 
-                        PD::drawBitmap(x, y, Images::Dither_Green[15 - frame]);
+                        #ifdef FADE_IN_SLOW
+                            if (this->gameStatus.getPlayerView() == 0) {
+                                PD::drawBitmap(x, y, Images::Dither_Green_Slow[15 - frame]);
+                            }
+                            else {
+                                PD::drawBitmap(x, y, Images::Dither_Blue_Slow[15 - frame]);
+                            }
+                        #else
+                            if (this->gameStatus.getPlayerView() == 0) {
+                                PD::drawBitmap(x, y, Images::Dither_Green_Fast[7 - frame]);
+                            }
+                            else {
+                                PD::drawBitmap(x, y, Images::Dither_Blue_Fast[7 - frame]);
+                            }
+                        #endif
 
                     }
 
