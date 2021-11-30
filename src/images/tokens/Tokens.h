@@ -51,7 +51,6 @@ namespace Images {
     #include "bottom/Hands_11_Bot.h"
     #include "bottom/Hands_12_Bot.h"
     #include "bottom/Hands_13_Bot.h"
-    #include "bottom/Hands_14_Bot.h"
 
     const uint8_t * const Tricks_Bot[] = { 
         Tricks_00_Bot,
@@ -104,7 +103,6 @@ namespace Images {
         Hands_11_Bot,
         Hands_12_Bot,
         Hands_13_Bot,
-        Hands_14_Bot,
     };
 
 };

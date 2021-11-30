@@ -65,7 +65,7 @@ struct GameStatus {
 
     public:
 
-        void init() {
+        void init(bool resetPoints) {
 
             for (uint8_t i = 0; i < 4; i++) {
 
@@ -88,8 +88,11 @@ struct GameStatus {
             }
 
             this->playAlone = false;
-            this->points0and2 = 0;
-            this->points1and3 = 0;
+
+            if (resetPoints) {
+                this->points0and2 = 0;
+                this->points1and3 = 0;
+            }
 
         }
 

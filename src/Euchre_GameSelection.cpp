@@ -20,7 +20,7 @@ void Game::selection_Init() {
         this->instructionFile.read(PD::getBuffer(), (220 * 176 / 2));
     }
 
-    PD::setColor(3);
+    PD::setColor(0);
     PD::fillRect(32, 0, 186, 176);
 
 }   

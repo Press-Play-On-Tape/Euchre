@@ -2,6 +2,7 @@
 
 namespace Images {
 
+    #include "Background.h"
     #include "Title.h"
     #include "Suits.h"
     #include "Card_Blue.h"

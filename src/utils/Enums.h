@@ -11,8 +11,8 @@
 #define COOKIE_INITIALISED 58
 
 #define FADE_IN
-#define _FADE_IN_SLOW
-#define FADE_IN_FAST
+#define FADE_IN_SLOW
+#define _FADE_IN_FAST
 
 enum Debug {
     None = 0,
@@ -58,7 +58,7 @@ namespace Constants {
     constexpr uint8_t Dialogue_EOH_Y = 156;
     constexpr uint8_t NoPlayer = 4;
 
-    constexpr uint8_t WinningPoints = 1;//SJH 10 
+    constexpr uint8_t WinningPoints = 10;
     constexpr uint8_t EOG_Delay = 90;
 
     constexpr uint8_t EOHText_X = 7;
@@ -72,11 +72,8 @@ namespace Constants {
     constexpr uint8_t EOGText_Y2 = 64;   
     constexpr uint8_t EOGText_Y3 = 104;   
 
-    // constexpr uint8_t EOGPoints_X = 120;
-    // constexpr uint8_t EOGPoints_Y = 60;   
     constexpr uint8_t EOGPoints_X = 141;
     constexpr uint8_t EOGPoints_Y = 95;   
-
 
     constexpr char instructions[5][19] = { 
         "music/Euch_910.raw", "music/Euch_911.raw", "music/Euch_912.raw", "music/Euch_913.raw",
@@ -271,7 +268,7 @@ enum class Speech : uint8_t {
     TeamBetaPlus1 = 35,
     TeamBetaPlus2,
     TeamBetaPlus4,
-    TeamAlphaWins = 37,
+    TeamAlphaWins = 38,
     TeamBetaWins,
 };
 

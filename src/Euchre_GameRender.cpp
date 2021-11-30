@@ -91,7 +91,11 @@ void Game::renderGame(bool pause) {
 
     PD::fillScreen(this->gameStatus.getPlayerView() == 0 ? 3 : 1);
 
+    if (this->cookie->getNumberOfPlayers() == 1) {
+        PD::drawBitmap(32, 69, Images::Background);
+    }
     
+
     // EOG?
 
     if (this->gameState == GameState::GameOver) {
@@ -525,7 +529,7 @@ void Game::renderSoreboard(uint8_t tricksWinner, uint8_t pointsWinner, bool show
 
     // Score board ..
 
-    PD::drawBitmap(166, 0, Images::Scoreboard);
+    PD::drawBitmap(168, 2, Images::Scoreboard);
     if (tricksWinner == Constants::AllWinners || ((tricksWinner == 0 || tricksWinner == 2) && showTrick) || tricksWinner == 1 || tricksWinner == 3) PD::drawBitmap(195, 1, Images::Tricks_Bot[this->gameStatus.getTricks0and2()]);
     if (pointsWinner == Constants::AllWinners || ((pointsWinner == 0 || pointsWinner == 2) && showHand)  || pointsWinner == 1 || pointsWinner == 3) PD::drawBitmap(206, 1, Images::Hands_Bot[this->gameStatus.getPoints0and2()]);
     if (tricksWinner == Constants::AllWinners || ((tricksWinner == 1 || tricksWinner == 3) && showTrick) || tricksWinner == 0 || tricksWinner == 2) PD::drawBitmap(195, 11, Images::Tricks_Bot[this->gameStatus.getTricks1and3()]);
@@ -558,8 +562,8 @@ void Game::renderBids(uint8_t positions[4]) {
 void Game::renderFinalBid(uint8_t positions[4]) {
     
 
-    uint8_t render_BannerX[4] = { 90, 31, 90, 180 };
-    uint8_t render_BannerY[4] = { 139, 68, 27, 68 };
+    uint8_t render_BannerX[4] = { 104, 32, 92, 181 };
+    uint8_t render_BannerY[4] = { 140, 82, 28, 70 };
     uint8_t render_SuitX[4] = { 94, 32, 120, 180 };
     uint8_t render_SuitY[4] = { 140, 73, 28, 98 };
     
@@ -628,8 +632,8 @@ void Game::renderPlayACard() {
 
 void Game::renderTrumps(CardSuit trumps) {
 
-    PD::drawBitmap(0, 0, Images::Trumps);
-    PD::drawBitmap(34, 1, Images::Suits_Bot[static_cast<uint8_t>(trumps)]);
+    PD::drawBitmap(1, 1, Images::Trumps);
+    PD::drawBitmap(35, 1, Images::Suits_Bot[static_cast<uint8_t>(trumps)]);
 
 }
 
@@ -683,8 +687,8 @@ void Game::renderTrickOver(uint8_t positions[4], uint8_t winner) {
         const uint8_t dialogue_X[4] = { 88, 20, 96, 140 }; 
         const uint8_t dialogue_Y[4] = { 120, 85, 20, 72 }; 
 
-        const uint8_t text_X[4] = { 91, 30, 99, 144 }; 
-        const uint8_t text_Y[4] = { 124, 89,31, 76 }; 
+        const uint8_t text_X[4] = { 92, 31, 100, 145 }; 
+        const uint8_t text_Y[4] = { 125, 90, 32, 77 }; 
 
         for (uint8_t i = 0; i < 4; i++) {
 
@@ -715,9 +719,12 @@ void Game::renderHandOver(uint8_t winner) {
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                    PD::drawBitmap(Constants::EOGPoints_X + Images::MinusTwo_CentreX - Images::MinusTwo_OffsetsX[index], 
-                                   Constants::EOGPoints_Y + Images::MinusTwo_CentreY - Images::MinusTwo_OffsetsY[index], 
-                                   Images::MinusTwo[index]);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::Two_CentreX - Images::Two_OffsetsX[index] + Images::Two_OffsetsX2[index], 
+                                   Constants::EOGPoints_Y + Images::Two_CentreY - Images::Two_OffsetsY[index], 
+                                   Images::Two[index]);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::Two_CentreX - Images::Two_OffsetsX[index] + Images::Sign_Two_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::Two_CentreY - Images::Two_OffsetsY[index] + Images::Sign_Two_OffsetsY[index], 
+                                   Images::Minus[index]);
                 }
 
                 if (this->eog == 0) {
@@ -733,9 +740,12 @@ void Game::renderHandOver(uint8_t winner) {
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                    PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
-                                   Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
-                                   Images::PlusOne[index]);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::One_CentreX - Images::One_OffsetsX[index] + Images::One_OffsetsX2[index], 
+                                   Constants::EOGPoints_Y + Images::One_CentreY - Images::One_OffsetsY[index], 
+                                   Images::One[index]);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::One_CentreX - Images::One_OffsetsX[index] + Images::Sign_One_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::One_CentreY - Images::One_OffsetsY[index] + Images::Sign_One_OffsetsY[index], 
+                                   Images::Plus[index]);
                 }
 
                 if (this->eog == 0) {
@@ -746,16 +756,19 @@ void Game::renderHandOver(uint8_t winner) {
 
             case 5:
 
-                PD::drawBitmap(47, Constants::Dialogue_EOH_Y, Images::TeamAlpha);
-                PD::drawBitmap(128, Constants::Dialogue_EOH_Y + 2, Images::Points_02);
-
                 if (!this->gameStatus.getPlayAlone()) {
+
+                    PD::drawBitmap(47, Constants::Dialogue_EOH_Y, Images::TeamAlpha);
+                    PD::drawBitmap(128, Constants::Dialogue_EOH_Y + 2, Images::Points_02);
 
                     if (this->eog < 44) {
                         uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusTwo_CentreX - Images::PlusTwo_OffsetsX[index], 
-                                       Constants::EOGPoints_Y + Images::PlusTwo_CentreY - Images::PlusTwo_OffsetsY[index], 
-                                       Images::PlusTwo[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::Two_CentreX - Images::Two_OffsetsX[index] + Images::Two_OffsetsX2[index], 
+                                       Constants::EOGPoints_Y + Images::Two_CentreY - Images::Two_OffsetsY[index], 
+                                       Images::Two[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::Two_CentreX - Images::Two_OffsetsX[index] + Images::Sign_Two_OffsetsX[index],  
+                                       Constants::EOGPoints_Y + Images::Two_CentreY - Images::Two_OffsetsY[index] + Images::Sign_Two_OffsetsY[index], 
+                                       Images::Plus[index]);
                     }
 
                     if (this->eog == 0) {
@@ -771,9 +784,12 @@ void Game::renderHandOver(uint8_t winner) {
 
                     if (this->eog < 44) {
                         uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
-                                       Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
-                                       Images::PlusFour[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::Four_CentreX - Images::Four_OffsetsX[index] + Images::Four_OffsetsX2[index], 
+                                       Constants::EOGPoints_Y + Images::Four_CentreY - Images::Four_OffsetsY[index], 
+                                       Images::Four[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::Four_CentreX - Images::Four_OffsetsX[index] + Images::Sign_Four_OffsetsX[index],  
+                                       Constants::EOGPoints_Y + Images::Four_CentreY - Images::Four_OffsetsY[index] + Images::Sign_Four_OffsetsY[index], 
+                                       Images::Plus[index]);
                     }
 
                     if (this->eog == 0) {
@@ -799,9 +815,12 @@ void Game::renderHandOver(uint8_t winner) {
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                    PD::drawBitmap(Constants::EOGPoints_X + Images::MinusTwo_CentreX - Images::MinusTwo_OffsetsX[index], 
-                                   Constants::EOGPoints_Y + Images::MinusTwo_CentreY - Images::MinusTwo_OffsetsY[index], 
-                                   Images::MinusTwo[index]);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::Two_CentreX - Images::Two_OffsetsX[index] + Images::Two_OffsetsX2[index], 
+                                   Constants::EOGPoints_Y + Images::Two_CentreY - Images::Two_OffsetsY[index], 
+                                   Images::Two[index]);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::Two_CentreX - Images::Two_OffsetsX[index] + Images::Sign_Two_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::Two_CentreY - Images::Two_OffsetsY[index] + Images::Sign_Two_OffsetsY[index], 
+                                   Images::Minus[index]);
                 }
 
                 if (this->eog == 0) {
@@ -817,9 +836,12 @@ void Game::renderHandOver(uint8_t winner) {
 
                 if (this->eog < 44) {
                     uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                    PD::drawBitmap(Constants::EOGPoints_X + Images::PlusOne_CentreX - Images::PlusOne_OffsetsX[index], 
-                                   Constants::EOGPoints_Y + Images::PlusOne_CentreY - Images::PlusOne_OffsetsY[index], 
-                                   Images::PlusOne[index]);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::One_CentreX - Images::One_OffsetsX[index] + Images::One_OffsetsX2[index], 
+                                   Constants::EOGPoints_Y + Images::One_CentreY - Images::One_OffsetsY[index], 
+                                   Images::One[index]);
+                    PD::drawBitmap(Constants::EOGPoints_X + Images::One_CentreX - Images::One_OffsetsX[index] + Images::Sign_One_OffsetsX[index], 
+                                   Constants::EOGPoints_Y + Images::One_CentreY - Images::One_OffsetsY[index] + Images::Sign_One_OffsetsY[index], 
+                                   Images::Plus[index]);
                 }
 
                 if (this->eog == 0) {
@@ -837,9 +859,12 @@ void Game::renderHandOver(uint8_t winner) {
 
                     if (this->eog < 44) {
                         uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusTwo_CentreX - Images::PlusTwo_OffsetsX[index], 
-                                       Constants::EOGPoints_Y + Images::PlusTwo_CentreY - Images::PlusTwo_OffsetsY[index], 
-                                       Images::PlusTwo[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::Two_CentreX - Images::Two_OffsetsX[index] + Images::Two_OffsetsX2[index], 
+                                       Constants::EOGPoints_Y + Images::Two_CentreY - Images::Two_OffsetsY[index], 
+                                       Images::Two[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::Two_CentreX - Images::Two_OffsetsX[index] + Images::Sign_Two_OffsetsX[index], 
+                                       Constants::EOGPoints_Y + Images::Two_CentreY - Images::Two_OffsetsY[index] + Images::Sign_Two_OffsetsY[index], 
+                                       Images::Plus[index]);
                     }
 
                     if (this->eog == 0) {
@@ -855,9 +880,12 @@ void Game::renderHandOver(uint8_t winner) {
 
                     if (this->eog < 44) {
                         uint8_t index = (this->eog / 4 > 4 ? 4 : this->eog / 4);
-                        PD::drawBitmap(Constants::EOGPoints_X + Images::PlusFour_CentreX - Images::PlusFour_OffsetsX[index], 
-                                       Constants::EOGPoints_Y + Images::PlusFour_CentreY - Images::PlusFour_OffsetsY[index], 
-                                       Images::PlusFour[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::Four_CentreX - Images::Four_OffsetsX[index] + Images::Four_OffsetsX2[index], 
+                                       Constants::EOGPoints_Y + Images::Four_CentreY - Images::Four_OffsetsY[index], 
+                                       Images::Four[index]);
+                        PD::drawBitmap(Constants::EOGPoints_X + Images::Four_CentreX - Images::Four_OffsetsX[index] + Images::Sign_Four_OffsetsX[index],  
+                                       Constants::EOGPoints_Y + Images::Four_CentreY - Images::Four_OffsetsY[index] + Images::Sign_Four_OffsetsY[index], 
+                                       Images::Plus[index]);
                     }
 
                     if (this->eog == 0) {

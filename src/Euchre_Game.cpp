@@ -13,10 +13,12 @@ void Game::game_Init() {
 
     this->gameState = GameState::Game_NewHand_Init;
     this->nextState = GameState::None;
-    this->gameStatus.init();
+    this->gameStatus.init(true);
     this->gameStatus.setDealer(3);
     this->gameStatus.setPlayerView(0);
-    // this->gameStatus.setDealer(0);
+
+    this->gameStatus.setDealer(0);//SJH
+
 
 }   
 
@@ -67,7 +69,7 @@ void Game::game() {
             this->bidCursor = 0;
             this->dialogCursor = 0;
             this->gameState = GameState::Game_NewHand_00;
-            this->gameStatus.init();
+            this->gameStatus.init(false);
             [[fallthrough]]
 
         case GameState::Game_NewHand_00 ... GameState::Game_NewHand_07:
@@ -134,39 +136,39 @@ void Game::game() {
 // this->print();
 
 
-// this->dealerCard.init(CardSuit::Clubs, Cards::Queen);
+// this->dealerCard.init(CardSuit::Clubs, Cards::Ace);
 
-// this->hands[0].getCard(0).init(CardSuit::Hearts, Cards::Ten);
-// this->hands[0].getCard(1).init(CardSuit::Hearts, Cards::Jack);
-// this->hands[0].getCard(2).init(CardSuit::Clubs, Cards::Queen);
+// this->hands[0].getCard(0).init(CardSuit::Hearts, Cards::Ace);
+// this->hands[0].getCard(1).init(CardSuit::Diamonds, Cards::Queen);
+// this->hands[0].getCard(2).init(CardSuit::Clubs, Cards::Nine);
 // this->hands[0].getCard(3).init(CardSuit::Clubs, Cards::King);
-// this->hands[0].getCard(4).init(CardSuit::Clubs, Cards::Jack);
+// this->hands[0].getCard(4).init(CardSuit::Spades, Cards::Nine);
 
-// this->hands[1].getCard(0).init(CardSuit::Spades, Cards::Nine);
-// this->hands[1].getCard(1).init(CardSuit::Diamonds, Cards::Nine);
-// this->hands[1].getCard(2).init(CardSuit::Diamonds, Cards::Ten);
-// this->hands[1].getCard(3).init(CardSuit::Diamonds, Cards::Ace);
-// this->hands[1].getCard(4).init(CardSuit::Clubs, Cards::Nine);
+// this->hands[1].getCard(0).init(CardSuit::Spades, Cards::King);
+// this->hands[1].getCard(1).init(CardSuit::Diamonds, Cards::Ten);
+// this->hands[1].getCard(2).init(CardSuit::Diamonds, Cards::Jack);
+// this->hands[1].getCard(3).init(CardSuit::Diamonds, Cards::King);
+// this->hands[1].getCard(4).init(CardSuit::Diamonds, Cards::Ace);
 
-// this->hands[2].getCard(0).init(CardSuit::Spades, Cards::Queen);
-// this->hands[2].getCard(2).init(CardSuit::Diamonds, Cards::Jack);
-// this->hands[2].getCard(1).init(CardSuit::Hearts, Cards::Nine);
-// this->hands[2].getCard(3).init(CardSuit::Hearts, Cards::Ace);
-// this->hands[2].getCard(4).init(CardSuit::Clubs, Cards::Ten);
+// this->hands[2].getCard(0).init(CardSuit::Spades, Cards::Ten);
+// this->hands[2].getCard(2).init(CardSuit::Spades, Cards::Ace);
+// this->hands[2].getCard(1).init(CardSuit::Clubs, Cards::Ten);
+// this->hands[2].getCard(3).init(CardSuit::Clubs, Cards::Queen);
+// this->hands[2].getCard(4).init(CardSuit::Hearts, Cards::Queen);
 
-// this->hands[3].getCard(0).init(CardSuit::Spades, Cards::King);
-// this->hands[3].getCard(1).init(CardSuit::Spades, Cards::Ace);
-// this->hands[3].getCard(2).init(CardSuit::Hearts, Cards::Queen);
-// this->hands[3].getCard(3).init(CardSuit::Clubs, Cards::Ace);
-// this->hands[3].getCard(4).init(CardSuit::Spades, Cards::Jack);
+// this->hands[3].getCard(0).init(CardSuit::Spades, Cards::Queen);
+// this->hands[3].getCard(1).init(CardSuit::Clubs, Cards::Jack);
+// this->hands[3].getCard(2).init(CardSuit::Diamonds, Cards::Nine);
+// this->hands[3].getCard(3).init(CardSuit::Hearts, Cards::Ten);
+// this->hands[3].getCard(4).init(CardSuit::Hearts, Cards::King);
 
 // this->print();
 
-for(uint8_t i = 0; i < 4; i++) {
-for(uint8_t j = 0; j < 4; j++) {
-this->hands[i].removeCard(j);
-}
-}
+// for(uint8_t i = 0; i < 4; i++) {
+// for(uint8_t j = 0; j < 4; j++) {
+// this->hands[i].removeCard(j);
+// }
+// }
 
 
             }
