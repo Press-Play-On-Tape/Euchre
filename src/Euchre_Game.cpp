@@ -17,9 +17,6 @@ void Game::game_Init() {
     this->gameStatus.setDealer(3);
     this->gameStatus.setPlayerView(0);
 
-    this->gameStatus.setDealer(0);//SJH
-
-
 }   
 
 

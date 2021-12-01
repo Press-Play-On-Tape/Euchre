@@ -673,7 +673,7 @@ bool Game::isHuman(uint8_t playerIdx) {
 }
 
 void Game::firstValidCard(uint8_t playerIdx) {
-printf("firstValidCard: ");
+
     if (!this->isHuman(playerIdx)) return;
 
     this->bidCursor = 255;
@@ -681,14 +681,11 @@ printf("firstValidCard: ");
     if (this->cookie->getHighlightPlayable()) {
 
         CardSuit suitLed = this->gameStatus.getSuitLed();
-printf("Suit Led: %i\n", (uint16_t)suitLed);
-        for (uint8_t i = 0; i < this->hands[playerIdx].getCardsInHand(); i++) {
 
-printf("Card %i: suit %i, trumps %i, hasSuit %i\n", i, (uint16_t)this->hands[playerIdx].getCard(i).getSuit(this->gameStatus.getTrumps()), (uint16_t)this->gameStatus.getTrumps(), (uint16_t)this->hands[playerIdx].hasSuit(suitLed, this->gameStatus.getTrumps()));
+        for (uint8_t i = 0; i < this->hands[playerIdx].getCardsInHand(); i++) {
 
             if (!(this->hands[playerIdx].getCard(i).getSuit(this->gameStatus.getTrumps()) != suitLed && this->hands[playerIdx].hasSuit(suitLed, this->gameStatus.getTrumps()))) {
                 this->bidCursor = i;
-printf("Select %i\n",i);
                 break;
             }
 
